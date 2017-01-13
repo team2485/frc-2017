@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 /**
  * 
  * Used to act on multiple speed controllers at once, or to treat many speed
- * controllers as one. Also has the ability to monitor current and ramp voltage.
+ * controllers as one. Also has the ability to ramp voltage and scale inputs.
  * 
  * @author Ben Clark
  * @author Patrick Wamsley
@@ -18,17 +18,18 @@ public class SpeedControllerWrapper implements SpeedController {
 
 	private SpeedController[] speedControllerList;
 	private double[] scaleFactors;
-	private boolean rampMode = false;
-	private double rampRate;
-	private double lastPWM;
+	private RampRate rampRate;
+	private double desiredPWM;
+	private long period = 10;
 
 	public SpeedControllerWrapper(SpeedController[] speedControllerList, double[] scaleFactors) {
 
 		this.speedControllerList = speedControllerList;
 		
 		setScaleFactors(scaleFactors);
-
-
+		
+		new RampThread().start();
+		
 	}
 
 	public SpeedControllerWrapper(SpeedController[] speedControllerList) {
@@ -74,6 +75,7 @@ public class SpeedControllerWrapper implements SpeedController {
 			scaleFactors[i] /= maxValue;
 
 		}
+
 		this.scaleFactors = scaleFactors;
 	}
 
@@ -87,33 +89,52 @@ public class SpeedControllerWrapper implements SpeedController {
 
 		double sum = 0;
 
-		for (SpeedController s : speedControllerList)
+		for (SpeedController s : speedControllerList) {
 			sum += s.get();
+		}
 
 		return sum / speedControllerList.length;
 	}
 
 	@Override
-	public void set(double speed) {
-		speed = rampPWM(speed);
+	public void set(double pwm) {
+		if (rampRate == null) {
+			setRaw(pwm);
+		} else {
+			desiredPWM = pwm;
+		}		
+	}
+	
+	private void setRaw(double pwm) {
 		for (int i = 0; i < speedControllerList.length; i++) {
-			speedControllerList[i].set(speed * scaleFactors[i]);	
+			speedControllerList[i].set(pwm * scaleFactors[i]);	
 		}
 	}
 
 	/**
-	 * ignores all ramping and may stop very quickly, don't use lightly
+	 * Allow you to override the ramp rate when setting values
+	 * @param pwm new pwm to take effect immediately without ramp
+	 */
+	public void emergencySet(double pwm) {
+		setRaw(pwm);
+		
+		if (rampRate != null) {
+			rampRate.setLastValue(pwm);
+		}
+	}
+	
+	/**
+	 * Allow you to override the ramp rate when stopping motor 
 	 */
 	public void emergencyStop() {
-		for (SpeedController s : speedControllerList)
-			s.set(0);
-		lastPWM = 0;
+		emergencySet(0);
 	}
 
 	@Override
 	public void setInverted(boolean isInverted) {
-		for (SpeedController s : speedControllerList)
+		for (SpeedController s : speedControllerList) {
 			s.setInverted(isInverted);
+		}
 	}
 
 	@Override
@@ -128,46 +149,63 @@ public class SpeedControllerWrapper implements SpeedController {
 		}
 	}
 
-	public void setRampMode(boolean rampMode) {
-		this.rampMode = rampMode;
-	}
-
-	public void setRampRate(double rampRate) {
-		this.rampRate = rampRate;
-		this.rampMode = true;
-	}
-
-	public boolean isRampMode() {
-		return rampMode;
-	}
-
-	public double getRampRate() {
-		return rampRate;
-	}
-
 	/**
-	 * 
-	 * @param desiredPWM
-	 *            the value that you would like to set the speedcontrollers to
-	 * @return the value that the speed controller should be set to
+	 * Set maximum rate of change of voltage
+	 * @param rampRate maximum rate of change per 10 ms
 	 */
-	private double rampPWM(double desiredPWM) {
+	public void setRampRate(double rampRate) {
+		setRampRate(rampRate, rampRate);
+	}
+	
+	/**
+	 * Set maximum rate of change of voltage in each direction
+	 * @param rampRateUp maximum increase in voltage per 10 ms
+	 * @param rampRateDown maximum decrease in voltage per 10 ms
+	 */
+	public void setRampRate(double rampRateUp, double rampRateDown) {
+		setRampRate(rampRateUp, rampRateDown, 10);
+	}
+	
+	/**
+	 * Set maximum rate of change of voltage in each direction
+	 * @param rampRateUp maximum increase in voltage per period
+	 * @param rampRateDown maximum decrease in voltage per period
+	 * @param period ms, time between voltage ramp calculations 
+	 */
+	public void setRampRate(double rampRateUp, double rampRateDown, long period) {
+		this.period = period;		
+		rampRate = new RampRate(rampRateUp, rampRateDown);
 
-		if (rampMode && rampRate > 0) {
-			if (desiredPWM - lastPWM > rampRate) {
-				desiredPWM = lastPWM + rampRate;
-			} else if (desiredPWM - lastPWM < -rampRate) {
-				desiredPWM = lastPWM - rampRate;
-			}
-		}
-		lastPWM = desiredPWM;
-		return desiredPWM;
+	}
+	
+	/**
+	 * Disables all voltage ramping, but does not change motor value
+	 */
+	public void disableVoltageRamp() {
+		rampRate = null;
 	}
 
 	@Override
 	public void stopMotor() {
 		for (SpeedController sc : speedControllerList) {
 			sc.stopMotor();
+		}
+	}
+	
+	private class RampThread extends Thread {
+		@Override
+		public void run() {
+			super.run();
+			while (true) {
+				if (rampRate != null) {
+					setRaw(rampRate.getNextValue(desiredPWM));
+				}
+				try {
+					Thread.sleep(period);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 }

@@ -12,6 +12,11 @@ public class RampRate {
 		lastValue = 0;
 	}
 	
+	/**
+	 * Used to get next value by moving from the last value toward the desired value, without exceeding the ramp rate
+	 * @param desired target value
+	 * @return actual value
+	 */
 	public double getNextValue(double desired) {
 		if ((lastValue > 0 && desired < 0) || (lastValue < 0 && desired > 0)) {
 			desired = 0; // makes sure desired and lastValue have the same sign to make math easy
@@ -40,5 +45,13 @@ public class RampRate {
 		}
 		
 		return lastValue;
+	}
+	
+	/**
+	 * Used to immediately set the last value, potentially not following ramp rate
+	 * @param lastValue new value to be treated as the last value
+	 */
+	public void setLastValue(double lastValue) {
+		this.lastValue = lastValue;
 	}
 }
