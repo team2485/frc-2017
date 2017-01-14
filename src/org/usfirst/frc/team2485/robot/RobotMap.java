@@ -1,7 +1,11 @@
 package org.usfirst.frc.team2485.robot;
-
 import org.usfirst.frc.team2485.subsystems.DriveTrain;
-import org.usfirst.frc.team2485.util.WarlordsPIDController;
+import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
+
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.TalonSRX;
+import edu.wpi.first.wpilibj.VictorSP;
+
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -14,9 +18,10 @@ public class RobotMap {
 //	public static Relay compressorSpike;
 //	public static DigitalInput pressureSwitch;
 	
+	
 	public static DriveTrain driveTrain;
 	
-	
+	public static SpeedControllerWrapper leftDrive, rightDrive;
 	
 	public static void init() {
 
@@ -25,10 +30,12 @@ public class RobotMap {
 		
 		driveTrain = new DriveTrain();
 		
+		
+		leftDrive = new SpeedControllerWrapper(new SpeedController[] {new VictorSP(1)});
+		rightDrive = new SpeedControllerWrapper(new SpeedController[] {new VictorSP(1)});
+		
 	}
 
 	public static void updateConstants() {
-
 	}
-
 }

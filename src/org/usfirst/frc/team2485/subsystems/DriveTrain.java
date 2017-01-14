@@ -1,32 +1,35 @@
 package org.usfirst.frc.team2485.subsystems;
 
+import org.usfirst.frc.team2485.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.Subsystem;
+
 /**
-* @author Nicholas Contreras
-*/
+ * @author Nicholas Contreras
+ */
 
-public class DriveTrain {
-
-	private static final double STEERING_DEADBAND = 0.1;
-	private static final double THROTTLE_DEADBAND = 0.1;
+public class DriveTrain extends Subsystem{
+	public enum DriveSpeeds{
+		SLOW_SPEED_RATING,
+		NORMAL_SPEED_RATING,
+		FAST_SPEED_RATING;
+		
+		public double getSpeedFactor(){
+			return 0.6 + this.ordinal()*.02;
+		}
+	}
+	private static final double STEERING_DEADBAND = 0.05;
+	private static final double THROTTLE_DEADBAND = 0.05;
+	private double driveSpeed = DriveSpeeds.NORMAL_SPEED_RATING.getSpeedFactor();
 	
 	private WarlordsPIDController leftVelocityPID, rightVelocityPID;
 	
-	public enum DriveSpeed {
-		SLOW_SPEED_RATING, NORMAL_SPEED_RATING, FAST_SPEED_RATING;
-		
-		public double getSpeedFactor() {
-			return 0.6 + this.ordinal() * 0.2;
-		}
-	}
-	
-	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
-
-	public void setDriveSpeed(DriveSpeed speed) {
+	public void setDriveSpeed(DriveSpeeds speed){
 		driveSpeed = speed.getSpeedFactor();
 	}
 	
@@ -44,20 +47,15 @@ public class DriveTrain {
 
 		boolean isHighGear = isQuickTurn;
 
-		double steeringNonLinearity;
+		double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.01, 1);
+		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.01, 1);
 
-		double steering = ThresholdHandler.deadbandAndScale(controllerX,
-				STEERING_DEADBAND, 0.01, 1);
-		double throttle = ThresholdHandler.deadbandAndScale(controllerY,
-				THROTTLE_DEADBAND, 0.01, 1);
-
+		double leftPwm, rightPwm, overPower;
+		double sensitivity = .85;
 		double angularPower;
 		double linearPower;
 		
 		linearPower = throttle;
-		
-		double leftPwm, rightPwm, overPower;
-		double sensitivity = 0.85;
 
 		// Quickturn!
 		if (isQuickTurn) {
@@ -90,6 +88,9 @@ public class DriveTrain {
 		leftPwm *= driveSpeed;
 		rightPwm *= driveSpeed;
 
+		leftPwm *= driveSpeed;
+		rightPwm *= driveSpeed;
+
 		setLeftRight(leftPwm, rightPwm);
 	}
 	
@@ -110,5 +111,10 @@ public class DriveTrain {
 
 		RobotMap.leftDrive.set(leftOutput);
 		RobotMap.rightDrive.set(rightOutput);
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+		Scheduler.getInstance().add(new DriveWithControllers());
 	}
 }

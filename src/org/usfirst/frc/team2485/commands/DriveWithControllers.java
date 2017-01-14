@@ -1,33 +1,25 @@
 package org.usfirst.frc.team2485.commands;
 
 import org.usfirst.frc.team2485.robot.OI;
+import org.usfirst.frc.team2485.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-/**
-* @author Nicholas Contreras
-*/
-
-public class DriveWithControllers extends Command {
+public class DriveWithControllers extends Command{
 	
-	public public DriveWithControllers() {
-	}
-	
-	@Override
-	protected void initialize() {
+	public DriveWithControllers(){
+		requires(RobotMap.driveTrain);
 	}
 	
 	@Override
 	protected void execute() {
 		double foward = -OI.xBox.getRawAxis(1);
 		double right = OI.xBox.getRawAxis(4);
+		RobotMap.driveTrain.warlordDrive(foward, right);
+		
 	}
-	
-	
-
 	@Override
 	protected boolean isFinished() {
 		return false;
 	}
-
 }
