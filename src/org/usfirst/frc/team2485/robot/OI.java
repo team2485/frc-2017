@@ -23,6 +23,15 @@ public class OI {
     public static void init(){
     	xBox = new Joystick(0);
     	joystick = new Joystick(1);
+    	
     }
+    
+    public static boolean getLeftTrigger(){
+		return xBox.getRawAxis(XBOX_LTRIGGER) > 0.4;
+	}
+	
+	public static boolean getRightTrigger(){
+		return xBox.getRawAxis(XBOX_RTRIGGER) > 0.4;
+	}
 }
 

@@ -1,4 +1,6 @@
 package org.usfirst.frc.team2485.robot;
+import org.usfirst.frc.team2485.subsystems.DriveTrain;
+
 
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
@@ -11,15 +13,21 @@ public class RobotMap {
 //	public static Relay compressorSpike;
 //	public static DigitalInput pressureSwitch;
 	
+	
+	public static DriveTrain driveTrain;
+	
 	public static void init() {
 
 //		compressorSpike = new Relay(0);
 //		pressureSwitch = new DigitalInput(10);
 		
+		driveTrain = new DriveTrain();
+		
 	}
 
 	public static void updateConstants() {
 
+		
 	}
 
 }

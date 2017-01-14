@@ -1,13 +1,34 @@
 package org.usfirst.frc.team2485.subsystems;
 
+import org.usfirst.frc.team2485.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.OI;
+import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
 
-/**
-* @author Nicholas Contreras
-*/
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class DriveTrain {
+/**
+ * @author Nicholas Contreras
+ */
+
+public class DriveTrain extends Subsystem{
+	public enum DriveSpeeds{
+		SLOW_SPEED_RATING,
+		NORMAL_SPEED_RATING,
+		FAST_SPEED_RATING;
+		
+		public double getSpeedFactor(){
+			return 0.6 + this.ordinal()*.02;
+		}
+	}
+	private static final double STEERING_DEADBAND = 0.05;
+	private static final double THROTTLE_DEADBAND = 0.05;
+	private double driveSpeed = DriveSpeeds.NORMAL_SPEED_RATING.getSpeedFactor();
+	
+	public void setDriveSpeed(DriveSpeeds speed){
+		driveSpeed = speed.getSpeedFactor();
+	}
 
 	/**
 	 * W.A.R. Lord Drive This drive method is based off of Team 254's Ultimate
@@ -19,107 +40,28 @@ public class DriveTrain {
 	 */
 	public void warlordDrive(double controllerY, double controllerX) {
 
-		if (OI.xBox.getRawAxis(OI.XBOX_LTRIGGER) > 0.4) {
-			driveSpeed = SLOW_SPEED_RATING;
-		} else if (OI.xBox.getRawAxis(OI.XBOX_RTRIGGER) > 0.4) {
-			driveSpeed = FAST_SPEED_RATING;
-		} else {
-			driveSpeed = NORMAL_SPEED_RATING;
-		}
-
-		isQuickTurn = OI.xBox.getRawButton(OI.XBOX_RBUMPER);
+		boolean isQuickTurn = OI.xBox.getRawButton(OI.XBOX_RBUMPER);
 
 		boolean isHighGear = isQuickTurn;
 
-		double steeringNonLinearity;
-
-		double steering = ThresholdHandler.deadbandAndScale(controllerX,
-				STEERING_DEADBAND, 0.01, 1);
-		double throttle = ThresholdHandler.deadbandAndScale(controllerY,
-				THROTTLE_DEADBAND, 0.01, 1);
-
-		double negInertia = steering - oldSteering;
-		oldSteering = steering;
-
-		if (isHighGear) {
-			steeringNonLinearity = 0.6;
-			// Apply a sin function that's scaled to make it feel better.
-			steering = Math
-					.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
-					/ Math.sin(Math.PI / 2.0 * steeringNonLinearity);
-			steering = Math
-					.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
-					/ Math.sin(Math.PI / 2.0 * steeringNonLinearity);
-		} else {
-			steeringNonLinearity = 0.5;
-			// Apply a sin function that's scaled to make it feel better.
-			steering = Math
-					.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
-					/ Math.sin(Math.PI / 2.0 * steeringNonLinearity);
-			steering = Math
-					.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
-					/ Math.sin(Math.PI / 2.0 * steeringNonLinearity);
-			steering = Math
-					.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
-					/ Math.sin(Math.PI / 2.0 * steeringNonLinearity);
-		}
+		double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.01, 1);
+		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.01, 1);
 
 		double leftPwm, rightPwm, overPower;
-		double sensitivity = 1.7;
+		double sensitivity = .85;
 
 		double angularPower;
 		double linearPower;
 
-		// Negative inertia!
-		double negInertiaAccumulator = 0.0;
-		double negInertiaScalar;
-		if (isHighGear) {
-			negInertiaScalar = 5.0;
-			sensitivity = SENSITIVITY_HIGH;
-		} else {
-			if (steering * negInertia > 0) {
-				negInertiaScalar = 2.5;
-			} else {
-				if (Math.abs(steering) > 0.65) {
-					negInertiaScalar = 5.0;
-				} else {
-					negInertiaScalar = 3.0;
-				}
-			}
-			sensitivity = SENSITIVITY_LOW;
-		}
-		double negInertiaPower = negInertia * negInertiaScalar;
-		negInertiaAccumulator += negInertiaPower;
-
-		steering = steering + negInertiaAccumulator;
 		linearPower = throttle;
 
 		// Quickturn!
 		if (isQuickTurn) {
-			if (Math.abs(linearPower) < 0.2) {
-				double alpha = 0.1;
-				steering = steering > 1 ? 1.0 : steering;
-				quickStopAccumulator = (1 - alpha) * quickStopAccumulator
-						+ alpha * steering * 0.5;
-			}
 			overPower = 1.0;
-			if (isHighGear) {
-				sensitivity = 1.0;
-			} else {
-				sensitivity = 1.0;
-			}
 			angularPower = steering;
 		} else {
 			overPower = 0.0;
-			angularPower = throttle * steering * sensitivity
-					- quickStopAccumulator;
-			if (quickStopAccumulator > 1) {
-				quickStopAccumulator -= 1;
-			} else if (quickStopAccumulator < -1) {
-				quickStopAccumulator += 1;
-			} else {
-				quickStopAccumulator = 0.0;
-			}
+			angularPower = throttle * steering * sensitivity;
 		}
 
 		rightPwm = leftPwm = linearPower;
@@ -141,7 +83,25 @@ public class DriveTrain {
 			rightPwm = -1.0;
 		}
 
+		leftPwm *= driveSpeed;
+		rightPwm *= driveSpeed;
+
 		setLeftRight(leftPwm, rightPwm);
 	}
-	
+
+	private void setLeftRight(double leftPwm, double rightPwm) {
+		// TODO Auto-generated method stub
+		leftVelocityPID.disable();
+		rightVelocityPID.disable();
+
+		RobotMap.leftDrive.set(leftPwm);
+		RobotMap.rightDrive.set(rightPwm);
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+		// TODO Auto-generated method stub
+		Scheduler.getInstance().add(new DriveWithControllers());
+	}
+
 }
