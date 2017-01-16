@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -15,17 +16,25 @@ import org.usfirst.frc.team2485.robot.Robot;
  * to save constants to a file rather than being hard coded.
  * 
  * @author Ben Clark
- * @author Patrick Wamsley
  * @author Jeremy McCulloch
  */
 public class ConstantsIO {
-
-	public static final String ROBO_RIO_CONSTANTS_FILE_PATH = "/home/lvuser/Constants.txt";
+	public static final String ROBO_RIO_CONSTANTS_FILE_PATH = "/home/lvuser/constants.txt";
 
 	public static HashMap<String, String> data;
 
-	public static void init() {
+	public static double kP_DriveVelocity;
+	public static double kI_DriveVelocity;
+	public static double kD_DriveVelocity;
+	public static double kF_DriveVelocity;
+	
+	public static double kP_DriveCurrent;
+	public static double kI_DriveCurrent;
+	public static double kD_DriveCurrent;
 
+
+	public static void init() {
+		
 		System.out.println("ConstantsIO .class file loc: " + ConstantsIO.class.getResource("").getPath());
 
 		if (Robot.isSimulation()) {
@@ -44,9 +53,31 @@ public class ConstantsIO {
 				e1.printStackTrace();
 			}
 		}
-
 		
+//		createUnMatchedConstants();
 
+		kP_DriveVelocity = Double.parseDouble(data.get("kP_DriveVelocity"));
+		kI_DriveVelocity = Double.parseDouble(data.get("kI_DriveVelocity"));
+		kD_DriveVelocity = Double.parseDouble(data.get("kD_DriveVelocity"));
+		kF_DriveVelocity = Double.parseDouble(data.get("kF_DriveVelocity"));
+
+		kP_DriveCurrent = Double.parseDouble(data.get("kP_DriveCurrent"));
+		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
+		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
+ 	
+		
+	}
+
+	private static void createUnMatchedConstants() {
+		Field[] fields = ConstantsIO.class.getDeclaredFields();
+		
+		for (int i = 0; i < fields.length; i++) {
+			fields[i].getName().startsWith("k");
+			
+			if (!data.containsKey(fields[i].getName())) {
+				
+			}
+		}
 	}
 
 	/**
@@ -55,7 +86,7 @@ public class ConstantsIO {
 	private static String findConstantsFile() {
 		File curFolder = new File(ConstantsIO.class.getResource("").getPath());
 
-		while (!curFolder.getName().equals("frc-2016-command-based")) {
+		while (!curFolder.getName().equals("frc-2017")) {
 			curFolder = curFolder.getParentFile();
 			System.out.println("Backed out to: " + curFolder.getPath());
 		}

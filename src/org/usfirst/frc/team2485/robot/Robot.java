@@ -5,6 +5,7 @@ import org.usfirst.frc.team2485.util.ConstantsIO;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
@@ -16,7 +17,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void disabledInit() {
-		// Reset and disable subsytems
+		
 	}
 
 	public void disabledPeriodic() {
@@ -28,12 +29,11 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		ConstantsIO.init();
 		RobotMap.updateConstants();
-
+		RobotMap.driveTrain.setRate(.5, .5);
 	}
 
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-
 		updateSmartDashboard();
 
 	}
@@ -47,6 +47,10 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 
 		updateSmartDashboard();
+		System.out.println("Left Drive Encoder Rate: " + RobotMap.rightDriveEnc.getRate());
+		System.out.println("Right Drive Encoder Rate: " + RobotMap.rightDriveEnc.getRate());
+		
+		
 	}
 
 	public void testInit() {
@@ -67,6 +71,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void updateSmartDashboard() {
-		
+		SmartDashboard.putNumber("Right Talon Current", RobotMap.driveTalonRight.getOutputCurrent());
+		SmartDashboard.putNumber("Left Talon Current", RobotMap.driveTalonLeft.getOutputCurrent());
 	}
 }

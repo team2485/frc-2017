@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -13,7 +12,7 @@ import edu.wpi.first.wpilibj.PIDSource;
  * Class that implements a standard PID Control Loop without the abnormalities of WPI's PIDController class
  * @author Jeremy McCulloch
  */
-public class WarlordsPIDController {
+public class WarlordsPIDController extends WarlordsControlSystem {
 	
 	private double kP, kI, kD, kF, kC;
 	private PIDSource source;
@@ -57,111 +56,14 @@ public class WarlordsPIDController {
 	 * @param period how often PID calculation is done (millis)
 	 * @param bufferLength number of values used to calculate averageError
 	 */
-	public WarlordsPIDController(double kP, double kI, double kD, double kF, double kC, 
-			long period, int bufferLength, PIDSource source, PIDOutput... outputs) {
-		
-		this.kP = kP;
-		this.kI = kI;
-		this.kD = kD;
-		this.kF = kF;
-		
+	public WarlordsPIDController(PIDSource source, PIDOutput... outputs) {
+		super(outputs);
 		this.source = source;
-		this.outputs = outputs;
-		this.period = period;
-		
-		pidTimer = new Timer();
-		pidTimer.schedule(new PIDTask(), 0, period);
-		
-		this.bufferLength = bufferLength;
+	
 		this.errorBuffer = new LinkedList<Double>();
 	}
 	
-	/**
-	 * 
-	 * @param kP proportional term, multiplied by the current error
-	 * @param kI integral term, multiplied by the total (sum) error
-	 * @param kD derivative term, multiplied by the change of the error
-	 * @param kF feedforward term, multiplied by the setpoint, (usually) only used in rate control
-	 * @param source input device / sensor used to monitor progress towards setpoint
-	 * @param outputs output device(s) / motor(s)  used to approach setpoint
-	 * @param period how often PID calculation is done (millis)
-	 * @param bufferLength number of values used to calculate averageError
-	 */
-	public WarlordsPIDController(double kP, double kI, double kD, double kF,
-			long period, int bufferLength, PIDSource source, PIDOutput... outputs) {
-		this(kP, kI, kD, kF, 0, period, bufferLength, source, outputs);
-	}
-	
-	/**
-	 * 
-	 * @param kP proportional term, multiplied by the current error
-	 * @param kI integral term, multiplied by the total (sum) error
-	 * @param kD derivative term, multiplied by the change of the error
-	 * @param source input device / sensor used to monitor progress towards setpoint
-	 * @param outputs output device(s) / motor(s)  used to approach setpoint
-	 * @param period how often PID calculation is done (millis)
-	 * @param bufferLength number of values used to calculate averageError
-	 */
-	public WarlordsPIDController(double kP, double kI, double kD, 
-			long period, int bufferLength, PIDSource source, PIDOutput... outputs) {
-		this(kP, kI, kD, 0, period, bufferLength, source, outputs);
-	}
-	
-	/**
-	 * Constructor that uses default period
-	 * @param kP proportional term, multiplied by the current error
-	 * @param kI integral term, multiplied by the total (sum) error
-	 * @param kD derivative term, multiplied by the change of the error
-	 * @param kF feedforward term, multiplied by the setpoint, (usually) only used in rate control
-	 * @param source input device / sensor used to monitor progress towards setpoint
-	 * @param outputs output device(s) / motor(s)  used to approach setpoint
-	 * @param period how often PID calculation is done (millis)
-	 */
-	public WarlordsPIDController(double kP, double kI, double kD, double kF, 
-			long period, PIDSource source, PIDOutput... outputs) {
-		this(kP, kI, kD, kF, period, DEFAULT_BUFFER_LENGTH, source, outputs);
-	}
-	
-	/**
-	 * Constructor that uses default period
-	 * @param kP proportional term, multiplied by the current error
-	 * @param kI integral term, multiplied by the total (sum) error
-	 * @param kD derivative term, multiplied by the change of the error
-	 * @param source input device / sensor used to monitor progress towards setpoint
-	 * @param outputs output device(s) / motor(s)  used to approach setpoint
-	 * @param period how often PID calculation is done (millis)
-	 */
-	public WarlordsPIDController(double kP, double kI, double kD, 
-			long period, PIDSource source, PIDOutput... outputs) {
-		this(kP, kI, kD, period, DEFAULT_BUFFER_LENGTH, source, outputs);
-	}
-	
-	/**
-	 * Constructor that uses default period and bufferlength
-	 * @param kP proportional term, multiplied by the current error
-	 * @param kI integral term, multiplied by the total (sum) error
-	 * @param kD derivative term, multiplied by the change of the error
-	 * @param kF feedforward term, multiplied by the setpoint, (usually) only used in rate control
-	 * @param source input device / sensor used to monitor progress towards setpoint
-	 * @param outputs output device(s) / motor(s)  used to approach setpoint
-	 */
-	public WarlordsPIDController(double kP, double kI, double kD, double kF, 
-			PIDSource source, PIDOutput... outputs) {
-		this(kP, kI, kD, kF, DEFAULT_PERIOD, source, outputs);
-	}
-	
-	/**
-	 * Constructor that uses default period and bufferlength
-	 * @param kP proportional term, multiplied by the current error
-	 * @param kI integral term, multiplied by the total (sum) error
-	 * @param kD derivative term, multiplied by the change of the error
-	 * @param source input device / sensor used to monitor progress towards setpoint
-	 * @param output output device / motor  used to approach setpoint
-	 */
-	public WarlordsPIDController(double kP, double kI, double kD, 
-			PIDSource source, PIDOutput... outputs) {
-		this(kP, kI, kD, DEFAULT_PERIOD, source, outputs);
-	}
+
 		
 	/**
 	 * Sets the gains
@@ -342,9 +244,11 @@ public class WarlordsPIDController {
 	/**
 	 * Calculates output based on sensorVal but does not read from source or write to output directly
 	 */
-	private synchronized void calculate() {
+	protected synchronized void calculate() {
 		
+		sensorVal = source.pidGet();
 		double error = setpoint - sensorVal;
+
 		
 		while (continuous && Math.abs(error) > (maxInput - minInput) / 2) {
 			if (error > 0) {
@@ -401,23 +305,15 @@ public class WarlordsPIDController {
 		
 	}
 	
-	private class PIDTask extends TimerTask {
+	
 
-		@Override
-		public void run() {
-			if (enabled) {
-				
-				sensorVal = source.pidGet();
-				calculate();
-				
-				for (PIDOutput out : outputs) {
-					out.pidWrite(result);
-				}
-				
-				
-			}
-			
-		}
+	@Override
+	public void pidWrite(double output) {
+		// TODO Auto-generated method stub
 		
 	}
+
+
+
+	
 }

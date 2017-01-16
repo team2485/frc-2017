@@ -1,6 +1,9 @@
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.commands.SetQuickTurn;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -24,6 +27,8 @@ public class OI {
     	xBox = new Joystick(0);
     	joystick = new Joystick(1);
     	
+    	new JoystickButton(xBox, XBOX_RBUMPER).whenPressed(new SetQuickTurn(true));
+    	new JoystickButton(xBox, XBOX_RBUMPER).whenReleased(new SetQuickTurn(false));
     }
     
     public static boolean getLeftTrigger() {
