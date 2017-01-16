@@ -26,14 +26,14 @@ public class DriveTrain extends Subsystem {
 	private static final double STEERING_DEADBAND = 0.05;
 	private static final double THROTTLE_DEADBAND = 0.05;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
-	
+
 	private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
 	private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
 	private static final double ABS_TOLERANCE_DRIVETO_DISTANCE = 0;
 	private static final double LOW_ENC_RATE = 0;
 	private static final int MINIMUM_AHRS_ON_TARGET_ITERATIONS = 0;
 	private int driveToOnTargetIterations;
-	
+
 	private boolean quickTurn;
 
 	private DummyOutput dummyRotateToOutput, dummyDriveToEncoderOutput;
@@ -42,29 +42,43 @@ public class DriveTrain extends Subsystem {
 
 	private RampRate leftVelocityRamp, rightVelocityRamp;
 	private WarlordsPIDController leftVelocityPID, rightVelocityPID;
-	private WarlordsPIDController leftCurrentPID, rightCurrentPID;
+	private WarlordsPIDController currentPIDLeft, currentPIDRight;
 	private int ahrsOnTargetCounter;
-	
+
 	public DriveTrain() {
 		System.out.println("Constructed");
-		ratePIDLeft = new WarlordsPIDController(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, 
-				ConstantsIO.kD_DriveVelocity, 2, RobotMap.leftDriveEncRate, RobotMap.leftDrive);
-		ratePIDRight = new WarlordsPIDController(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
-				ConstantsIO.kD_DriveVelocity, 2, RobotMap.rightDriveEncRate, RobotMap.rightDrive);
-		leftCurrentPID = new WarlordsPIDController (ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent, 
-				ConstantsIO.kD_DriveCurrent, 2, RobotMap.leftCurrentSensor, RobotMap.leftDrive);
-		rightCurrentPID = new WarlordsPIDController (ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent, 
-				ConstantsIO.kD_DriveCurrent, 2, RobotMap.rightCurrentSensor, RobotMap.rightDrive);
-		
+		ratePIDLeft = new WarlordsPIDController(RobotMap.driveEncRateLeft,
+				RobotMap.driveTrainLeft);
+		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
+				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+		ratePIDLeft.setPeriod(10);
+
+		ratePIDRight = new WarlordsPIDController(RobotMap.driveEncRateRight,
+				RobotMap.driveTrainRight);
+		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
+				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+		ratePIDRight.setPeriod(10);
+
+		currentPIDLeft = new WarlordsPIDController(RobotMap.currrentSensorLeft,
+				RobotMap.driveTrainLeft);
+		currentPIDLeft.setPID(ConstantsIO.kP_DriveCurrent,
+				ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent);
+		currentPIDLeft.setPeriod(2);
+
+		currentPIDRight = new WarlordsPIDController(
+				RobotMap.currentSensorRight, RobotMap.driveTrainRight);
+		currentPIDRight.setPID(ConstantsIO.kP_DriveCurrent,
+				ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent);
+		currentPIDRight.setPeriod(2);
 	}
-	
+
 	public void setRate(double speedLeft, double speedRight) {
 		ratePIDLeft.enable();
 		ratePIDRight.enable();
 		ratePIDLeft.setSetpoint(speedLeft);
 		ratePIDRight.setSetpoint(speedRight);
 	}
-	
+
 	public void setDriveSpeed(DriveSpeed speed) {
 		driveSpeed = speed.getSpeedFactor();
 	}
@@ -158,8 +172,11 @@ public class DriveTrain extends Subsystem {
 		rotateToPID.setOutputRange(-maxSpeed, maxSpeed);
 
 		// uses % of distance to calculate where to turn to
-		double percentDone = (RobotMap.leftDriveEnc.getDistance() + RobotMap.rightDriveEnc
-				.getDistance()) / 2 / (inches != 0 ? inches : 0.00000001);// don't divide by 0
+		double percentDone = (RobotMap.driveEncLeft.getDistance() + RobotMap.driveEncRight
+				.getDistance()) / 2 / (inches != 0 ? inches : 0.00000001);// don't
+																			// divide
+																			// by
+																			// 0
 		if (percentDone > 1) {
 			percentDone = 1;
 		} else if (percentDone < 0) {
@@ -188,7 +205,7 @@ public class DriveTrain extends Subsystem {
 			ahrsOnTargetCounter = 0;
 		}
 
-		double avgVelocity = (RobotMap.leftDriveEnc.getRate() + RobotMap.rightDriveEnc
+		double avgVelocity = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight
 				.getRate()) / 2;
 
 		if (Math.abs(driveToPID.getError()) < ABS_TOLERANCE_DRIVETO_DISTANCE
@@ -218,15 +235,15 @@ public class DriveTrain extends Subsystem {
 	 */
 	public void setLeftRight(double leftOutput, double rightOutput) {
 
-//		driveToPID.disable();
-//		
-//		leftVelocityPID.disable();
-//		rightVelocityPID.disable();
+		// driveToPID.disable();
+		//
+		// leftVelocityPID.disable();
+		// rightVelocityPID.disable();
 
-		RobotMap.leftDrive.set(leftOutput);
-		RobotMap.rightDrive.set(rightOutput);
+		RobotMap.driveTrainLeft.set(leftOutput);
+		RobotMap.driveTrainRight.set(rightOutput);
 	}
-	
+
 	/**
 	 * Sets target velocity of each tread in inches / sec
 	 * 
@@ -251,11 +268,13 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void updateConstants() {
-		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
-		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
+				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
+				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
 
 	}
-	
+
 	@Override
 	protected void initDefaultCommand() {
 		System.out.println("init default");

@@ -3,7 +3,6 @@ package org.usfirst.frc.team2485.util;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Timer;
 
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -16,7 +15,6 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	
 	private double kP, kI, kD, kF, kC;
 	private PIDSource source;
-	private PIDOutput[] outputs;
 	
 	private double integralTerm, lastPropTerm;
 	private double setpoint;
@@ -24,8 +22,6 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	private boolean saturateHighFlag, saturateLowFlag;
 	private double saturateError;
 	private double decoupleInput;
-	
-	private boolean enabled = false;
 	
 	private double minOutput = -1, maxOutput = 1;
 	
@@ -38,11 +34,6 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	
 	private double minInput, maxInput;
 	private boolean continuous;
-	
-	private long period;
-	private static final long DEFAULT_PERIOD = 10;
-	
-	private Timer pidTimer;
 	
 	/**
 	 * 
@@ -59,10 +50,9 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	public WarlordsPIDController(PIDSource source, PIDOutput... outputs) {
 		super(outputs);
 		this.source = source;
-	
+		this.bufferLength = DEFAULT_BUFFER_LENGTH;
 		this.errorBuffer = new LinkedList<Double>();
 	}
-	
 
 		
 	/**
@@ -91,29 +81,10 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	} 
 	
 	/**
-	 * @return time between PID calculations (millis)
-	 */
-	public long getPeriod() {
-		return period;
-	}
-	
-	/**
-	 * @return true if PID is currently controlling the output motor
-	 */
-	public boolean isEnabled() {
-		return enabled;
-	} 
-	
-	
-	public void enable() {
-		this.enabled = true;
-	}
-	
-	/**
 	 * Disables and clears integral and derivative terms
 	 */
 	public void disable() {
-		this.enabled = false;
+		super.disable();
 		this.integralTerm = 0;
 		this.lastPropTerm = 0;
 	}
@@ -235,10 +206,8 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	 * Frees all resources related to PID calculations
 	 */
 	public void finalize() {
-		pidTimer.cancel();
-		pidTimer = null;
+		super.finalize();
 		source = null;
-		outputs = null;
 	}
 	
 	/**
@@ -303,17 +272,13 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 			}
 		}
 		
+		for (PIDOutput out : super.outputs) {
+			out.pidWrite(result);
+		}
 	}
 	
-	
-
 	@Override
 	public void pidWrite(double output) {
-		// TODO Auto-generated method stub
-		
+		setSetpoint(output);
 	}
-
-
-
-	
 }

@@ -28,15 +28,15 @@ public class RobotMap {
 	
 	public static DriveTrain driveTrain;
 	
-	public static SpeedControllerWrapper leftDrive, rightDrive;
+	public static SpeedControllerWrapper driveTrainLeft, driveTrainRight;
 	
 	public static CANTalon driveTalonRight, driveTalonLeft;
 	
-	public static CANTalonCurrentWrapper rightCurrentSensor, leftCurrentSensor;
+	public static CANTalonCurrentWrapper currrentSensorLeft, currentSensorRight;
 	
-	public static Encoder rightDriveEnc, leftDriveEnc;
+	public static Encoder driveEncLeft, driveEncRight;
 	
-	public static EncoderWrapperRateAndDistance leftDriveEncRate, rightDriveEncRate;
+	public static EncoderWrapperRateAndDistance driveEncRateLeft, driveEncRateRight;
 	
 	public static void init() {
 
@@ -46,20 +46,20 @@ public class RobotMap {
 		driveTalonRight = new CANTalon(3);
 		driveTalonLeft = new CANTalon(2);
 		
-		rightCurrentSensor = new CANTalonCurrentWrapper(driveTalonRight);
-		leftCurrentSensor = new CANTalonCurrentWrapper(driveTalonLeft);
+		currentSensorRight = new CANTalonCurrentWrapper(driveTalonRight);
+		currentSensorRight = new CANTalonCurrentWrapper(driveTalonLeft);
 		
-		leftDriveEnc = new Encoder(2, 3);
-		leftDriveEncRate = new EncoderWrapperRateAndDistance(leftDriveEnc, PIDSourceType.kRate);
-		leftDriveEnc.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
-		rightDriveEnc = new Encoder(0, 1);
-		rightDriveEncRate = new EncoderWrapperRateAndDistance(rightDriveEnc, PIDSourceType.kRate);
-		rightDriveEnc.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+		driveEncLeft = new Encoder(2, 3);
+		driveEncRateLeft = new EncoderWrapperRateAndDistance(driveEncLeft, PIDSourceType.kRate);
+		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+		driveEncRight = new Encoder(0, 1);
+		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
+		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
 		
-		leftDrive = new SpeedControllerWrapper(new SpeedController[] {driveTalonLeft, new VictorSP(5), new VictorSP(6)});
-		leftDrive.setInverted(true);
-		rightDrive = new SpeedControllerWrapper(new SpeedController[] {new VictorSP(0), new VictorSP(2), driveTalonRight});
-		rightDrive.setInverted(false);
+		driveTrainLeft = new SpeedControllerWrapper(new SpeedController[] {driveTalonLeft, new VictorSP(5), new VictorSP(6)});
+		driveTrainLeft.setInverted(true);
+		driveTrainRight = new SpeedControllerWrapper(new SpeedController[] {new VictorSP(0), new VictorSP(2), driveTalonRight});
+		driveTrainRight.setInverted(false);
 		
 		driveTrain = new DriveTrain();
 

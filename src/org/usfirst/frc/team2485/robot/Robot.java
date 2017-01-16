@@ -47,8 +47,8 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 
 		updateSmartDashboard();
-		System.out.println("Left Drive Encoder Rate: " + RobotMap.rightDriveEnc.getRate());
-		System.out.println("Right Drive Encoder Rate: " + RobotMap.rightDriveEnc.getRate());
+		System.out.println("Left Drive Encoder Rate: " + RobotMap.driveEncRight.getRate());
+		System.out.println("Right Drive Encoder Rate: " + RobotMap.driveEncRight.getRate());
 		
 		
 	}
