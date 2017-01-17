@@ -3,7 +3,6 @@ package org.usfirst.frc.team2485.subsystems;
 import org.usfirst.frc.team2485.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.util.ConstantsIO;
-import org.usfirst.frc.team2485.util.DummyOutput;
 import org.usfirst.frc.team2485.util.RampRate;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
@@ -19,7 +18,14 @@ public class DriveTrain extends Subsystem {
 		SLOW_SPEED_RATING, NORMAL_SPEED_RATING, FAST_SPEED_RATING;
 
 		public double getSpeedFactor() {
-			return 0.6 + this.ordinal() * .02;
+			switch (this) {
+			case SLOW_SPEED_RATING:
+				return 0.6;
+			case NORMAL_SPEED_RATING:
+				return 0.8;
+			default:
+				return 1.0;
+			}
 		}
 	}
 
@@ -36,7 +42,6 @@ public class DriveTrain extends Subsystem {
 
 	private boolean quickTurn;
 
-	private DummyOutput dummyRotateToOutput, dummyDriveToEncoderOutput;
 	private WarlordsPIDController driveToPID, rotateToPID;
 	private WarlordsPIDController ratePIDLeft, ratePIDRight;
 
@@ -155,63 +160,63 @@ public class DriveTrain extends Subsystem {
 	public boolean driveToAndRotateTo(double inches, double startAngle,
 			double endAngle, double maxSpeed) {
 
-		if (!driveToPID.isEnabled()) {
-			driveToPID.enable();
-			rotateToPID.enable();
-			rotateToPID.setSetpoint(startAngle);
-		}
-		driveToPID.setSetpoint(inches);
-
-		driveToPID.setOutputRange(-maxSpeed, maxSpeed);
-		rotateToPID.setOutputRange(-maxSpeed, maxSpeed);
-
-		// uses % of distance to calculate where to turn to
-		double percentDone = (RobotMap.driveEncLeft.getDistance() + RobotMap.driveEncRight
-				.getDistance()) / 2 / (inches != 0 ? inches : 0.00000001);// don't
-																			// divide
-																			// by
-																			// 0
-		if (percentDone > 1) {
-			percentDone = 1;
-		} else if (percentDone < 0) {
-			percentDone = 0;
-		}
-		rotateToPID.setSetpoint(startAngle + (endAngle - startAngle)
-				* percentDone);
-
-		double encoderOutput = dummyDriveToEncoderOutput.get();
-		double rotateToOutput = dummyRotateToOutput.get();
-
-		// use output from PIDControllers to calculate target velocities
-		double leftVelocity = encoderOutput + rotateToOutput;
-		double rightVelocity = encoderOutput - rotateToOutput;
-
-		// ramp output from PIDControllers to prevent saturating velocity
-		// control loop
-		leftVelocity = leftVelocityRamp.getNextValue(leftVelocity);
-		rightVelocity = rightVelocityRamp.getNextValue(rightVelocity);
-
-		setLeftRightVelocity(leftVelocity, rightVelocity);
-
-		if (Math.abs(rotateToPID.getError()) < ABS_TOLERANCE_DRIVETO_ANGLE) {
-			ahrsOnTargetCounter++;
-		} else {
-			ahrsOnTargetCounter = 0;
-		}
-
-		double avgVelocity = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight
-				.getRate()) / 2;
-
-		if (Math.abs(driveToPID.getError()) < ABS_TOLERANCE_DRIVETO_DISTANCE
-				&& Math.abs(avgVelocity) < LOW_ENC_RATE
-				&& ahrsOnTargetCounter >= MINIMUM_AHRS_ON_TARGET_ITERATIONS) {
-
-			setLeftRightVelocity(0.0, 0.0); // actively stops driveTrain
-			driveToPID.disable();
-			rotateToPID.disable();
-			return true;
-
-		}
+//		if (!driveToPID.isEnabled()) {
+//			driveToPID.enable();
+//			rotateToPID.enable();
+//			rotateToPID.setSetpoint(startAngle);
+//		}
+//		driveToPID.setSetpoint(inches);
+//
+//		driveToPID.setOutputRange(-maxSpeed, maxSpeed);
+//		rotateToPID.setOutputRange(-maxSpeed, maxSpeed);
+//
+//		// uses % of distance to calculate where to turn to
+//		double percentDone = (RobotMap.driveEncLeft.getDistance() + RobotMap.driveEncRight
+//				.getDistance()) / 2 / (inches != 0 ? inches : 0.00000001);// don't
+//																			// divide
+//																			// by
+//																			// 0
+//		if (percentDone > 1) {
+//			percentDone = 1;
+//		} else if (percentDone < 0) {
+//			percentDone = 0;
+//		}
+//		rotateToPID.setSetpoint(startAngle + (endAngle - startAngle)
+//				* percentDone);
+//
+//		double encoderOutput = dummyDriveToEncoderOutput.get();
+//		double rotateToOutput = dummyRotateToOutput.get();
+//
+//		// use output from PIDControllers to calculate target velocities
+//		double leftVelocity = encoderOutput + rotateToOutput;
+//		double rightVelocity = encoderOutput - rotateToOutput;
+//
+//		// ramp output from PIDControllers to prevent saturating velocity
+//		// control loop
+//		leftVelocity = leftVelocityRamp.getNextValue(leftVelocity);
+//		rightVelocity = rightVelocityRamp.getNextValue(rightVelocity);
+//
+//		setLeftRightVelocity(leftVelocity, rightVelocity);
+//
+//		if (Math.abs(rotateToPID.getError()) < ABS_TOLERANCE_DRIVETO_ANGLE) {
+//			ahrsOnTargetCounter++;
+//		} else {
+//			ahrsOnTargetCounter = 0;
+//		}
+//
+//		double avgVelocity = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight
+//				.getRate()) / 2;
+//
+//		if (Math.abs(driveToPID.getError()) < ABS_TOLERANCE_DRIVETO_DISTANCE
+//				&& Math.abs(avgVelocity) < LOW_ENC_RATE
+//				&& ahrsOnTargetCounter >= MINIMUM_AHRS_ON_TARGET_ITERATIONS) {
+//
+//			setLeftRightVelocity(0.0, 0.0); // actively stops driveTrain
+//			driveToPID.disable();
+//			rotateToPID.disable();
+//			return true;
+//
+//		}
 
 		return false;
 
