@@ -1,15 +1,21 @@
 package org.usfirst.frc.team2485.util;
 
+import edu.wpi.first.wpilibj.PIDOutput;
+
 /**
  * Generic class to ramp an output (velocity, voltage, current, etc). Has unique up and down rates. 
  * @author Jeremy McCulloch
  */
-public class RampRate {
-	private double lastValue, upRampRate, downRampRate;
-	public RampRate(double upRampRate, double downRampRate) {
+public class RampRate extends WarlordsControlSystem{
+	
+	private double lastValue, upRampRate, downRampRate, desired;
+	
+	public RampRate(PIDOutput[] output, double upRampRate, double downRampRate){
+		super(output);
 		this.upRampRate = upRampRate;
 		this.downRampRate = downRampRate;
 		lastValue = 0;
+		desired = 0;
 	}
 	
 	/**
@@ -17,6 +23,7 @@ public class RampRate {
 	 * @param desired target value
 	 * @return actual value
 	 */
+	
 	public double getNextValue(double desired) {
 		if ((lastValue > 0 && desired < 0) || (lastValue < 0 && desired > 0)) {
 			desired = 0; // makes sure desired and lastValue have the same sign to make math easy
@@ -53,5 +60,20 @@ public class RampRate {
 	 */
 	public void setLastValue(double lastValue) {
 		this.lastValue = lastValue;
+	}
+
+	@Override
+	public void pidWrite(double output) {
+		// TODO Auto-generated method stub
+		desired = output;
+		
+	}
+
+	@Override
+	protected void calculate() {
+		// TODO Auto-generated method stub
+		
+		getNextValue(desired);
+		
 	}
 }
