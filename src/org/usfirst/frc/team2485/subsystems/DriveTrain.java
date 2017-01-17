@@ -41,7 +41,6 @@ public class DriveTrain extends Subsystem {
 	private WarlordsPIDController ratePIDLeft, ratePIDRight;
 
 	private RampRate leftVelocityRamp, rightVelocityRamp;
-	private WarlordsPIDController leftVelocityPID, rightVelocityPID;
 	private WarlordsPIDController currentPIDLeft, currentPIDRight;
 	private int ahrsOnTargetCounter;
 
@@ -59,24 +58,19 @@ public class DriveTrain extends Subsystem {
 				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
 		ratePIDRight.setPeriod(10);
 
-		currentPIDLeft = new WarlordsPIDController(RobotMap.currrentSensorLeft,
-				RobotMap.driveTrainLeft);
-		currentPIDLeft.setPID(ConstantsIO.kP_DriveCurrent,
-				ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent);
-		currentPIDLeft.setPeriod(2);
-
-		currentPIDRight = new WarlordsPIDController(
-				RobotMap.currentSensorRight, RobotMap.driveTrainRight);
-		currentPIDRight.setPID(ConstantsIO.kP_DriveCurrent,
-				ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent);
-		currentPIDRight.setPeriod(2);
-	}
-
-	public void setRate(double speedLeft, double speedRight) {
-		ratePIDLeft.enable();
-		ratePIDRight.enable();
-		ratePIDLeft.setSetpoint(speedLeft);
-		ratePIDRight.setSetpoint(speedRight);
+//		currentPIDLeft = new WarlordsPIDController(RobotMap.currrentSensorLeft,
+//				RobotMap.driveTrainLeft);
+//		currentPIDLeft.setPID(ConstantsIO.kP_DriveCurrent,
+//				ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent);
+//		currentPIDLeft.setPeriod(2);
+//
+//		currentPIDRight = new WarlordsPIDController(
+//				RobotMap.currentSensorRight, RobotMap.driveTrainRight);
+//		currentPIDRight.setPID(ConstantsIO.kP_DriveCurrent,
+//				ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent);
+//		currentPIDRight.setPeriod(2);
+		
+//		driveToPID = new WarlordsPIDController(source, outputs)
 	}
 
 	public void setDriveSpeed(DriveSpeed speed) {
@@ -235,10 +229,10 @@ public class DriveTrain extends Subsystem {
 	 */
 	public void setLeftRight(double leftOutput, double rightOutput) {
 
-		// driveToPID.disable();
-		//
-		// leftVelocityPID.disable();
-		// rightVelocityPID.disable();
+//		 driveToPID.disable();
+		
+		 ratePIDLeft.disable();
+		 ratePIDRight.disable();
 
 		RobotMap.driveTrainLeft.set(leftOutput);
 		RobotMap.driveTrainRight.set(rightOutput);
@@ -254,17 +248,17 @@ public class DriveTrain extends Subsystem {
 	 */
 	public void setLeftRightVelocity(double leftOutput, double rightOutput) {
 
-		leftVelocityPID.setPID(ConstantsIO.kP_DriveVelocity,
+		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
 				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
 				ConstantsIO.kF_DriveVelocity);
-		rightVelocityPID.setPID(ConstantsIO.kP_DriveVelocity,
+		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
 				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
 				ConstantsIO.kF_DriveVelocity);
 
-		leftVelocityPID.enable();
-		rightVelocityPID.enable();
-		leftVelocityPID.setSetpoint(leftOutput);
-		rightVelocityPID.setSetpoint(rightOutput);
+		ratePIDLeft.enable();
+		ratePIDRight.enable();
+		ratePIDLeft.setSetpoint(leftOutput);
+		ratePIDRight.setSetpoint(rightOutput);
 	}
 
 	public void updateConstants() {

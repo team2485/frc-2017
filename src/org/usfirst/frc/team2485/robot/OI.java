@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.commands.SetGearHolderPosition;
 import org.usfirst.frc.team2485.commands.SetQuickTurn;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -29,6 +30,9 @@ public class OI {
     	
     	new JoystickButton(xBox, XBOX_RBUMPER).whenPressed(new SetQuickTurn(true));
     	new JoystickButton(xBox, XBOX_RBUMPER).whenReleased(new SetQuickTurn(false));
+    	
+    	new JoystickButton(xBox, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
+    	new JoystickButton(xBox, XBOX_BTN_B).whenPressed(new SetGearHolderPosition(false));
     }
     
     public static boolean getLeftTrigger() {
