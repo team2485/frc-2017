@@ -18,18 +18,12 @@ public class SpeedControllerWrapper implements SpeedController {
 
 	private SpeedController[] speedControllerList;
 	private double[] scaleFactors;
-	private RampRate rampRate;
-	private double desiredPWM;
-	private long period = 10;
 
 	public SpeedControllerWrapper(SpeedController[] speedControllerList, double[] scaleFactors) {
 
 		this.speedControllerList = speedControllerList;
 		
-		setScaleFactors(scaleFactors);
-		
-		new RampThread().start();
-		
+		setScaleFactors(scaleFactors);		
 	}
 
 	public SpeedControllerWrapper(SpeedController[] speedControllerList) {
@@ -98,36 +92,9 @@ public class SpeedControllerWrapper implements SpeedController {
 
 	@Override
 	public void set(double pwm) {
-		if (rampRate == null) {
-			setRaw(pwm);
-		} else {
-			desiredPWM = pwm;
-		}		
-	}
-	
-	private void setRaw(double pwm) {
 		for (int i = 0; i < speedControllerList.length; i++) {
 			speedControllerList[i].set(pwm * scaleFactors[i]);	
 		}
-	}
-
-	/**
-	 * Allow you to override the ramp rate when setting values
-	 * @param pwm new pwm to take effect immediately without ramp
-	 */
-	public void emergencySet(double pwm) {
-		setRaw(pwm);
-		
-		if (rampRate != null) {
-			rampRate.setLastValue(pwm);
-		}
-	}
-	
-	/**
-	 * Allow you to override the ramp rate when stopping motor 
-	 */
-	public void emergencyStop() {
-		emergencySet(0);
 	}
 
 	@Override
@@ -149,63 +116,11 @@ public class SpeedControllerWrapper implements SpeedController {
 		}
 	}
 
-	/**
-	 * Set maximum rate of change of voltage
-	 * @param rampRate maximum rate of change per 10 ms
-	 */
-	public void setRampRate(double rampRate) {
-		setRampRate(rampRate, rampRate);
-	}
-	
-	/**
-	 * Set maximum rate of change of voltage in each direction
-	 * @param rampRateUp maximum increase in voltage per 10 ms
-	 * @param rampRateDown maximum decrease in voltage per 10 ms
-	 */
-	public void setRampRate(double rampRateUp, double rampRateDown) {
-		setRampRate(rampRateUp, rampRateDown, 10);
-	}
-	
-	/**
-	 * Set maximum rate of change of voltage in each direction
-	 * @param rampRateUp maximum increase in voltage per period
-	 * @param rampRateDown maximum decrease in voltage per period
-	 * @param period ms, time between voltage ramp calculations 
-	 */
-	public void setRampRate(double rampRateUp, double rampRateDown, long period) {
-		this.period = period;		
-		rampRate = new RampRate(rampRateUp, rampRateDown);
-
-	}
-	
-	/**
-	 * Disables all voltage ramping, but does not change motor value
-	 */
-	public void disableVoltageRamp() {
-		rampRate = null;
-	}
-
 	@Override
 	public void stopMotor() {
 		for (SpeedController sc : speedControllerList) {
 			sc.stopMotor();
 		}
 	}
-	
-	private class RampThread extends Thread {
-		@Override
-		public void run() {
-			super.run();
-			while (true) {
-				if (rampRate != null) {
-					setRaw(rampRate.getNextValue(desiredPWM));
-				}
-				try {
-					Thread.sleep(period);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+
 }
