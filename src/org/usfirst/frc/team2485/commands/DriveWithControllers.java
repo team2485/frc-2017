@@ -15,14 +15,12 @@ public class DriveWithControllers extends Command {
 	
 	@Override
 	protected void initialize() {
-		System.out.println("inited");
+
 	}
 
 	@Override
 	protected void execute() {
-		
-		System.out.println("dank memes");
-		
+				
 		double foward = -OI.xBox.getRawAxis(1);
 		double right = OI.xBox.getRawAxis(4);
 
@@ -35,6 +33,7 @@ public class DriveWithControllers extends Command {
 		}
 
 		RobotMap.driveTrain.warlordDrive(foward, right, true);
+
 	}
 
 	@Override
@@ -45,7 +44,6 @@ public class DriveWithControllers extends Command {
 	@Override
 	protected void end() {
 		RobotMap.driveTrain.setDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING);
-		System.out.println("ended");
 	}
 
 	@Override

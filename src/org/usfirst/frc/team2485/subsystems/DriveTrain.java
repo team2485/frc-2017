@@ -3,7 +3,6 @@ package org.usfirst.frc.team2485.subsystems;
 import org.usfirst.frc.team2485.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.util.ConstantsIO;
-import org.usfirst.frc.team2485.util.DummyOutput;
 import org.usfirst.frc.team2485.util.RampRate;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
@@ -20,7 +19,15 @@ public class DriveTrain extends Subsystem {
 		SLOW_SPEED_RATING, NORMAL_SPEED_RATING, FAST_SPEED_RATING;
 
 		public double getSpeedFactor() {
-			return 0.6 + this.ordinal() * .2;
+
+			switch (this) {
+			case SLOW_SPEED_RATING:
+				return 0.6;
+			case NORMAL_SPEED_RATING:
+				return 0.8;
+			default:
+				return 1.0;
+			}
 		}
 	}
 
@@ -37,7 +44,6 @@ public class DriveTrain extends Subsystem {
 
 	private boolean quickTurn;
 
-	private DummyOutput dummyRotateToOutput, dummyDriveToEncoderOutput;
 	private WarlordsPIDController driveToPID, rotateToPID;
 	private WarlordsPIDController ratePIDLeft, ratePIDRight;
 
@@ -147,6 +153,7 @@ public class DriveTrain extends Subsystem {
 		} else {
 			setLeftRight(leftPwm, rightPwm); 	
 		}
+
 	}
 
 //	/**
