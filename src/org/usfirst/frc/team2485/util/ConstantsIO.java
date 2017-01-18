@@ -32,6 +32,9 @@ public class ConstantsIO {
 	public static double kI_DriveCurrent;
 	public static double kD_DriveCurrent;
 
+	public static double kUpRamp_DriveVoltage;
+	public static double kDownRamp_DriveVoltage;
+
 
 	public static void init() {
 		
@@ -65,7 +68,10 @@ public class ConstantsIO {
 		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
 		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
  	
-		
+
+		kUpRamp_DriveVoltage = Double.parseDouble(data.get("kUpRamp_DriveVoltage"));
+		kDownRamp_DriveVoltage = Double.parseDouble(data.get("kDownRamp_DriveVoltage"));
+
 	}
 
 	private static void createUnMatchedConstants() {

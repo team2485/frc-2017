@@ -34,7 +34,7 @@ public class DriveWithControllers extends Command {
 			RobotMap.driveTrain.setDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING);
 		}
 
-		RobotMap.driveTrain.warlordDrive(foward, right);
+		RobotMap.driveTrain.warlordDrive(foward, right, true);
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import org.usfirst.frc.team2485.util.RampRate;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
+import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -19,12 +20,12 @@ public class DriveTrain extends Subsystem {
 		SLOW_SPEED_RATING, NORMAL_SPEED_RATING, FAST_SPEED_RATING;
 
 		public double getSpeedFactor() {
-			return 0.6 + this.ordinal() * .02;
+			return 0.6 + this.ordinal() * .2;
 		}
 	}
 
-	private static final double STEERING_DEADBAND = 0.05;
-	private static final double THROTTLE_DEADBAND = 0.05;
+	private static final double STEERING_DEADBAND = 0.1;
+	private static final double THROTTLE_DEADBAND = 0.1;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
 
 	private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
@@ -40,23 +41,30 @@ public class DriveTrain extends Subsystem {
 	private WarlordsPIDController driveToPID, rotateToPID;
 	private WarlordsPIDController ratePIDLeft, ratePIDRight;
 
-	private RampRate leftVelocityRamp, rightVelocityRamp;
+	private RampRate leftVoltageRamp, rightVoltageRamp;
 	private WarlordsPIDController currentPIDLeft, currentPIDRight;
 	private int ahrsOnTargetCounter;
 
 	public DriveTrain() {
 		System.out.println("Constructed");
+		
+		leftVoltageRamp = new RampRate(new PIDOutput[] {RobotMap.driveTrainLeft}, 
+				ConstantsIO.kUpRamp_DriveVoltage, ConstantsIO.kDownRamp_DriveVoltage);
+		rightVoltageRamp = new RampRate(new PIDOutput[] {RobotMap.driveTrainRight}, 
+				ConstantsIO.kUpRamp_DriveVoltage, ConstantsIO.kDownRamp_DriveVoltage);
+		
 		ratePIDLeft = new WarlordsPIDController(RobotMap.driveEncRateLeft,
-				RobotMap.driveTrainLeft);
+				leftVoltageRamp);
 		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
 				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
 		ratePIDLeft.setPeriod(10);
 
 		ratePIDRight = new WarlordsPIDController(RobotMap.driveEncRateRight,
-				RobotMap.driveTrainRight);
+				rightVoltageRamp);
 		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
 				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
 		ratePIDRight.setPeriod(10);
+		
 
 //		currentPIDLeft = new WarlordsPIDController(RobotMap.currrentSensorLeft,
 //				RobotMap.driveTrainLeft);
@@ -89,7 +97,7 @@ public class DriveTrain extends Subsystem {
 	 *            controllerY should be positive for forward motion
 	 * @param controllerX
 	 */
-	public void warlordDrive(double controllerY, double controllerX) {
+	public void warlordDrive(double controllerY, double controllerX, boolean usesVelocity) {
 
 		double steering = ThresholdHandler.deadbandAndScale(controllerX,
 				STEERING_DEADBAND, 0.01, 1);
@@ -134,88 +142,92 @@ public class DriveTrain extends Subsystem {
 		leftPwm *= driveSpeed;
 		rightPwm *= driveSpeed;
 
-		setLeftRight(leftPwm, rightPwm);
-	}
-
-	/**
-	 * Used to drive in a curve using closed loop control, set startAngle =
-	 * endAngle to drive straight <br>
-	 * Uses cascaded PIDControllers to achieve optimal performance
-	 * 
-	 * @param inches
-	 *            distance to drive (inside tread if curving)
-	 * @param startAngle
-	 *            heading at beginning of turn
-	 * @param endAngle
-	 *            desired heading at end of turn
-	 * @param maxSpeed
-	 *            maximum speed of center of robot in inches / second
-	 * @return true if target has been reached
-	 */
-	public boolean driveToAndRotateTo(double inches, double startAngle,
-			double endAngle, double maxSpeed) {
-
-		if (!driveToPID.isEnabled()) {
-			driveToPID.enable();
-			rotateToPID.enable();
-			rotateToPID.setSetpoint(startAngle);
-		}
-		driveToPID.setSetpoint(inches);
-
-		driveToPID.setOutputRange(-maxSpeed, maxSpeed);
-		rotateToPID.setOutputRange(-maxSpeed, maxSpeed);
-
-		// uses % of distance to calculate where to turn to
-		double percentDone = (RobotMap.driveEncLeft.getDistance() + RobotMap.driveEncRight
-				.getDistance()) / 2 / (inches != 0 ? inches : 0.00000001);// don't
-																			// divide
-																			// by
-																			// 0
-		if (percentDone > 1) {
-			percentDone = 1;
-		} else if (percentDone < 0) {
-			percentDone = 0;
-		}
-		rotateToPID.setSetpoint(startAngle + (endAngle - startAngle)
-				* percentDone);
-
-		double encoderOutput = dummyDriveToEncoderOutput.get();
-		double rotateToOutput = dummyRotateToOutput.get();
-
-		// use output from PIDControllers to calculate target velocities
-		double leftVelocity = encoderOutput + rotateToOutput;
-		double rightVelocity = encoderOutput - rotateToOutput;
-
-		// ramp output from PIDControllers to prevent saturating velocity
-		// control loop
-		leftVelocity = leftVelocityRamp.getNextValue(leftVelocity);
-		rightVelocity = rightVelocityRamp.getNextValue(rightVelocity);
-
-		setLeftRightVelocity(leftVelocity, rightVelocity);
-
-		if (Math.abs(rotateToPID.getError()) < ABS_TOLERANCE_DRIVETO_ANGLE) {
-			ahrsOnTargetCounter++;
+		if (usesVelocity) {
+			setLeftRightVelocity(leftPwm * 40, rightPwm * 40);
 		} else {
-			ahrsOnTargetCounter = 0;
+			setLeftRight(leftPwm, rightPwm); 	
 		}
-
-		double avgVelocity = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight
-				.getRate()) / 2;
-
-		if (Math.abs(driveToPID.getError()) < ABS_TOLERANCE_DRIVETO_DISTANCE
-				&& Math.abs(avgVelocity) < LOW_ENC_RATE
-				&& ahrsOnTargetCounter >= MINIMUM_AHRS_ON_TARGET_ITERATIONS) {
-
-			setLeftRightVelocity(0.0, 0.0); // actively stops driveTrain
-			driveToPID.disable();
-			rotateToPID.disable();
-			return true;
-
-		}
-
-		return false;
-
 	}
+
+//	/**
+//	 * Used to drive in a curve using closed loop control, set startAngle =
+//	 * endAngle to drive straight <br>
+//	 * Uses cascaded PIDControllers to achieve optimal performance
+//	 * 
+//	 * @param inches
+//	 *            distance to drive (inside tread if curving)
+//	 * @param startAngle
+//	 *            heading at beginning of turn
+//	 * @param endAngle
+//	 *            desired heading at end of turn
+//	 * @param maxSpeed
+//	 *            maximum speed of center of robot in inches / second
+//	 * @return true if target has been reached
+//	 */
+//	public boolean driveToAndRotateTo(double inches, double startAngle,
+//			double endAngle, double maxSpeed) {
+//
+//		if (!driveToPID.isEnabled()) {
+//			driveToPID.enable();
+//			rotateToPID.enable();
+//			rotateToPID.setSetpoint(startAngle);
+//		}
+//		driveToPID.setSetpoint(inches);
+//
+//		driveToPID.setOutputRange(-maxSpeed, maxSpeed);
+//		rotateToPID.setOutputRange(-maxSpeed, maxSpeed);
+//
+//		// uses % of distance to calculate where to turn to
+//		double percentDone = (RobotMap.driveEncLeft.getDistance() + RobotMap.driveEncRight
+//				.getDistance()) / 2 / (inches != 0 ? inches : 0.00000001);// don't
+//																			// divide
+//																			// by
+//																			// 0
+//		if (percentDone > 1) {
+//			percentDone = 1;
+//		} else if (percentDone < 0) {
+//			percentDone = 0;
+//		}
+//		rotateToPID.setSetpoint(startAngle + (endAngle - startAngle)
+//				* percentDone);
+//
+//		double encoderOutput = dummyDriveToEncoderOutput.get();
+//		double rotateToOutput = dummyRotateToOutput.get();
+//
+//		// use output from PIDControllers to calculate target velocities
+//		double leftVelocity = encoderOutput + rotateToOutput;
+//		double rightVelocity = encoderOutput - rotateToOutput;
+//
+//		// ramp output from PIDControllers to prevent saturating velocity
+//		// control loop
+//		leftVelocity = leftVelocityRamp.getNextValue(leftVelocity);
+//		rightVelocity = rightVelocityRamp.getNextValue(rightVelocity);
+//
+//		setLeftRightVelocity(leftVelocity, rightVelocity);
+//
+//		if (Math.abs(rotateToPID.getError()) < ABS_TOLERANCE_DRIVETO_ANGLE) {
+//			ahrsOnTargetCounter++;
+//		} else {
+//			ahrsOnTargetCounter = 0;
+//		}
+//
+//		double avgVelocity = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight
+//				.getRate()) / 2;
+//
+//		if (Math.abs(driveToPID.getError()) < ABS_TOLERANCE_DRIVETO_DISTANCE
+//				&& Math.abs(avgVelocity) < LOW_ENC_RATE
+//				&& ahrsOnTargetCounter >= MINIMUM_AHRS_ON_TARGET_ITERATIONS) {
+//
+//			setLeftRightVelocity(0.0, 0.0); // actively stops driveTrain
+//			driveToPID.disable();
+//			rotateToPID.disable();
+//			return true;
+//
+//		}
+//
+//		return false;
+//
+//	}
 
 	/**
 	 * Sends outputs values to the left and right side of the drive base after
@@ -255,10 +267,28 @@ public class DriveTrain extends Subsystem {
 				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
 				ConstantsIO.kF_DriveVelocity);
 
-		ratePIDLeft.enable();
-		ratePIDRight.enable();
-		ratePIDLeft.setSetpoint(leftOutput);
-		ratePIDRight.setSetpoint(rightOutput);
+		if (leftOutput != 0) {
+			ratePIDLeft.enable();
+			leftVoltageRamp.enable();
+			ratePIDLeft.setSetpoint(leftOutput);
+		} else {
+			ratePIDLeft.disable();
+			leftVoltageRamp.disable();
+			RobotMap.driveTrainLeft.set(0);
+		}
+		
+		if (rightOutput != 0) {
+			ratePIDRight.enable();
+			rightVoltageRamp.enable();
+			ratePIDRight.setSetpoint(rightOutput);
+		} else {
+			ratePIDRight.disable();
+			rightVoltageRamp.disable();
+			RobotMap.driveTrainRight.set(0);
+		}
+		
+		
+		
 	}
 
 	public void updateConstants() {
@@ -273,5 +303,16 @@ public class DriveTrain extends Subsystem {
 	protected void initDefaultCommand() {
 		System.out.println("init default");
 		setDefaultCommand(new DriveWithControllers());
+	}
+
+	public void reset() {
+		ratePIDLeft.disable();
+		ratePIDRight.disable();
+		leftVoltageRamp.disable();
+		rightVoltageRamp.disable();
+	}
+	
+	public double getLeftVelocityAvgError() {
+		return ratePIDLeft.getAvgError();
 	}
 }

@@ -18,7 +18,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void disabledInit() {
-		
+		RobotMap.driveTrain.reset();
 	}
 
 	public void disabledPeriodic() {
@@ -30,7 +30,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		ConstantsIO.init();
 		RobotMap.updateConstants();
-		RobotMap.driveTrain.setLeftRightVelocity(15, 15);
+//		RobotMap.driveTrain.setLeftRightVelocity(40, 40);
 //		RobotMap.driveTrain.setLeftRight(0.25, 0.25);
 	}
 
@@ -41,6 +41,8 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
+//		RobotMap.driveTrain.setLeftRightVelocity(-20, -20);
+
 		ConstantsIO.init();
 		RobotMap.updateConstants();
 	}
@@ -74,7 +76,6 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void updateSmartDashboard() {
-		SmartDashboard.putNumber("Right Enc", RobotMap.driveEncRight.getRate());
-		SmartDashboard.putNumber("Left Enc", RobotMap.driveEncLeft.getRate());
+		SmartDashboard.putNumber("avg error", RobotMap.driveTrain.getLeftVelocityAvgError());
 	}
 }
