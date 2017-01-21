@@ -109,16 +109,19 @@ public class UnifiedCamera {
 		niCamera.setExposureManual(exposure);
 		niCamera.setWhiteBalanceManual(whiteBalance);
 		niCamera.setFPS(framesPerSecond);
+		niCamera.updateSettings();
 	}
 	
 	public void setAutoSettings(){
 		niCamera.setWhiteBalanceAuto();
 		niCamera.setExposureAuto();
+		niCamera.updateSettings();
 	}
 	
 	public void holdCurrentSettings(){
 		niCamera.setExposureHoldCurrent();
 		niCamera.setWhiteBalanceHoldCurrent();
+		niCamera.updateSettings();
 	}
 	
 	public void streamToSmartDashboard(){
