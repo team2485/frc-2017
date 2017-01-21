@@ -2,6 +2,7 @@ package org.usfirst.frc.team2485.robot;
 import org.usfirst.frc.team2485.subsystems.DriveTrain;
 import org.usfirst.frc.team2485.subsystems.GearHolder;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
+import org.usfirst.frc.team2485.util.UnifiedCamera;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
@@ -47,6 +48,8 @@ public class RobotMap {
 	// subsystems
 	public static GearHolder gearHolder;
 	public static DriveTrain driveTrain;
+	
+	public static UnifiedCamera unifiedCamera;
 
 
 	public static void init() {
