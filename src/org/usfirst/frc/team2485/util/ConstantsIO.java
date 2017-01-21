@@ -74,6 +74,7 @@ public class ConstantsIO {
 
 	}
 
+	@SuppressWarnings("unused")
 	private static void createUnMatchedConstants() {
 		Field[] fields = ConstantsIO.class.getDeclaredFields();
 		

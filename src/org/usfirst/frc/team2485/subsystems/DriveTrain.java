@@ -7,7 +7,6 @@ import org.usfirst.frc.team2485.util.RampRate;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
-import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -237,67 +236,67 @@ public class DriveTrain extends Subsystem {
 //
 //	}
 
-	/**
-	 * Sends outputs values to the left and right side of the drive base after
-	 * scaling based on virtual gear. <br>
-	 * The parameters should both be positive to move forward. One side has
-	 * inverted motors...do not send a negative to one side and a positive to
-	 * the other for forward or backwards motion.
-	 *
-	 * @param leftOutput
-	 * @param rightOutput
-	 */
-	public void setLeftRight(double leftOutput, double rightOutput) {
-
-//		 driveToPID.disable();
-		
-		 ratePIDLeft.disable();
-		 ratePIDRight.disable();
-
-		RobotMap.driveTrainLeft.set(leftOutput);
-		RobotMap.driveTrainRight.set(rightOutput);
-	}
-
-	/**
-	 * Sets target velocity of each tread in inches / sec
-	 * 
-	 * @param leftOutput
-	 *            left target velocity
-	 * @param rightOutput
-	 *            right target velocity
-	 */
-	public void setLeftRightVelocity(double leftOutput, double rightOutput) {
-
-		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
-				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
-				ConstantsIO.kF_DriveVelocity);
-		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
-				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
-				ConstantsIO.kF_DriveVelocity);
-
-		if (leftOutput != 0) {
-			ratePIDLeft.enable();
-			leftVoltageRamp.enable();
-			ratePIDLeft.setSetpoint(leftOutput);
-		} else {
-			ratePIDLeft.disable();
-			leftVoltageRamp.disable();
-			RobotMap.driveTrainLeft.set(0);
-		}
-		
-		if (rightOutput != 0) {
-			ratePIDRight.enable();
-			rightVoltageRamp.enable();
-			ratePIDRight.setSetpoint(rightOutput);
-		} else {
-			ratePIDRight.disable();
-			rightVoltageRamp.disable();
-			RobotMap.driveTrainRight.set(0);
-		}
-		
-		
-		
-	}
+//	/**
+//	 * Sends outputs values to the left and right side of the drive base after
+//	 * scaling based on virtual gear. <br>
+//	 * The parameters should both be positive to move forward. One side has
+//	 * inverted motors...do not send a negative to one side and a positive to
+//	 * the other for forward or backwards motion.
+//	 *
+//	 * @param leftOutput
+//	 * @param rightOutput
+//	 */
+//	public void setLeftRight(double leftOutput, double rightOutput) {
+//
+////		 driveToPID.disable();
+//		
+//		 ratePIDLeft.disable();
+//		 ratePIDRight.disable();
+//
+//		RobotMap.driveTrainLeft.set(leftOutput);
+//		RobotMap.driveTrainRight.set(rightOutput);
+//	}
+//
+//	/**
+//	 * Sets target velocity of each tread in inches / sec
+//	 * 
+//	 * @param leftOutput
+//	 *            left target velocity
+//	 * @param rightOutput
+//	 *            right target velocity
+//	 */
+//	public void setLeftRightVelocity(double leftOutput, double rightOutput) {
+//
+//		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
+//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
+//				ConstantsIO.kF_DriveVelocity);
+//		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
+//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
+//				ConstantsIO.kF_DriveVelocity);
+//
+//		if (leftOutput != 0) {
+//			ratePIDLeft.enable();
+//			leftVoltageRamp.enable();
+//			ratePIDLeft.setSetpoint(leftOutput);
+//		} else {
+//			ratePIDLeft.disable();
+//			leftVoltageRamp.disable();
+//			RobotMap.driveTrainLeft.set(0);
+//		}
+//		
+//		if (rightOutput != 0) {
+//			ratePIDRight.enable();
+//			rightVoltageRamp.enable();
+//			ratePIDRight.setSetpoint(rightOutput);
+//		} else {
+//			ratePIDRight.disable();
+//			rightVoltageRamp.disable();
+//			RobotMap.driveTrainRight.set(0);
+//		}
+//		
+//		
+//		
+//	}
 
 	public void updateConstants() {
 		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,

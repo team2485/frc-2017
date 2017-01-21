@@ -2,17 +2,13 @@ package org.usfirst.frc.team2485.robot;
 import org.usfirst.frc.team2485.subsystems.DriveTrain;
 import org.usfirst.frc.team2485.subsystems.GearHolder;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
-import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
-import com.sun.xml.internal.ws.api.Cancelable;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.VictorSP;
 
 
 /**
@@ -38,7 +34,7 @@ public class RobotMap {
 	
 
 	// speed controllers
-	public static SpeedControllerWrapper driveTrainLeft, driveTrainRight;
+//	public static SpeedControllerWrapper driveTrainLeft, driveTrainRight;
 	public static CANTalon driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3;
 	
 	//solenoids
@@ -94,13 +90,15 @@ public class RobotMap {
 		driveRight2.set(driveRightPort1);
 		driveRight3.set(driveRightPort1);
 		
+		driveLeft1.setInverted(true);
+		
 		driveEncLeft.setReverseDirection(true);
 		driveEncRight.setReverseDirection(false);
 		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
 		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
 		
-		driveTrainLeft.setInverted(true);
-		driveTrainRight.setInverted(false);
+//		driveTrainLeft.setInverted(true);
+//		driveTrainRight.setInverted(false);
 
 		
 		//construct subsytems

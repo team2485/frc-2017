@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
-public class TransferNode implements PIDSource,  PIDOutput{
+public class TransferNode implements PIDSource,  PIDOutput {
 	
 	double output;
 	

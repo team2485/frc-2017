@@ -65,7 +65,6 @@ public class RampRate extends WarlordsControlSystem {
 
 	@Override
 	protected void calculate() {
-		// TODO Auto-generated method stub
 		for (PIDOutput out : outputs) {
 			out.pidWrite(getNextValue(setpoint));
 		}

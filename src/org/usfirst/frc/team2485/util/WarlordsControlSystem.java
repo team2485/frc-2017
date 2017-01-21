@@ -1,12 +1,7 @@
 package org.usfirst.frc.team2485.util;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
-
-
 
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -17,7 +12,6 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 	protected PIDOutput[] outputs;
 	protected PIDSource[] sources;
 	protected double setpoint;
-	
 
 	private boolean enabled = false;
 
@@ -26,21 +20,26 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 
 	private Timer pidTimer;
 
-	public WarlordsControlSystem(PIDOutput[] outputs, PIDSource[] sources){
+	public WarlordsControlSystem(PIDOutput[] outputs, PIDSource[] sources) {
 		
 		this.outputs = outputs;
 		this.sources = sources;
+		
 		pidTimer = new Timer(true);
 		pidTimer.schedule(new PIDTask(), 0, period);
+		
 	}
 
 	/**
-	 * @return time between PID calculations (millis)
+	 * @return time between calculations (millis)
 	 */
 	public long getPeriod() {
 		return period;
 	}
 	
+	/**
+	 * @param period time between calculations (millis)
+	 */
 	public void setPeriod(long period) {
 		this.period = period;
 		pidTimer.cancel();
@@ -49,13 +48,15 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 	}
 	
 	/**
-	 * @return true if PID is currently controlling the output motor
+	 * @return true if calculate is currently being run
 	 */
 	public boolean isEnabled() {
 		return enabled;
 	} 
 
-
+	/**
+	 * makes calculate start running periodically
+	 */
 	public void enable() {
 		this.enabled = true;
 	}
@@ -65,11 +66,9 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 	 */
 	public void disable() {
 		this.enabled = false;
-		
 	}
 
 	
-
 	/**
 	 * Frees all resources related to PID calculations
 	 */
@@ -77,22 +76,24 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 		pidTimer.cancel();
 		pidTimer = null;
 		outputs = null;
+		sources = null;
 	}
 
 	/**
 	 * Calculates output based on sensorVal but does not read from source or write to output directly
 	 */
 	protected abstract void calculate();
+	
 	@Override
 	public void pidWrite(double output) {
-		// TODO Auto-generated method stub
-		setpoint = output;
+		setSetpoint(output);
 	}
-	public void setSetpoint(double setpoint){
-		this.setpoint=setpoint;
-
+	
+	public void setSetpoint(double setpoint) {
+		this.setpoint = setpoint;
 	}
-	public double getSetpoint(){
+	
+	public double getSetpoint() {
 		return setpoint;
 	}
 	private class PIDTask extends TimerTask {
@@ -100,12 +101,8 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 		@Override
 		public void run() {
 			if (enabled) {
-
 				calculate();
-
 			}
-
 		}
-
 	}
 }

@@ -129,14 +129,10 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	 * @param setpoint new setpoint 
 	 */
 	public void setSetpoint(double setpoint) {
-		this.setpoint = setpoint;
+		super.setSetpoint(setpoint);
 		synchronized (errorBuffer) {
 			errorBuffer = new LinkedList<Double>();
 		}
-	}
-	
-	public double getSetpoint() {
-		return setpoint;
 	}
 	
 	/**
