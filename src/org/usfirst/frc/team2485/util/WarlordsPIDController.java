@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj.PIDSource;
 public class WarlordsPIDController extends WarlordsControlSystem {
 	
 	private double kP, kI, kD, kF, kC;
-	private PIDSource source;
+	
 	
 	private double integralTerm, lastPropTerm;
-	private double setpoint;
+
 	private double sensorVal, result;
 	private boolean saturateHighFlag, saturateLowFlag;
 	private double saturateError;
@@ -48,8 +48,7 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	 * @param bufferLength number of values used to calculate averageError
 	 */
 	public WarlordsPIDController(PIDSource source, PIDOutput... outputs) {
-		super(outputs);
-		this.source = source;
+		super(outputs, new PIDSource[]{source});
 		this.bufferLength = DEFAULT_BUFFER_LENGTH;
 		this.errorBuffer = new LinkedList<Double>();
 	}
@@ -144,7 +143,7 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	 * @return error as calculated by the PID control loop
 	 */
 	public double getError() {
-		return setpoint - source.pidGet();
+		return setpoint - sources[0].pidGet();
 	}
 	
 	/**
@@ -201,21 +200,14 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 			return Math.abs(getAvgError()) < absoluteTolerance;
 		}
 	}
-	
-	/**
-	 * Frees all resources related to PID calculations
-	 */
-	public void finalize() {
-		super.finalize();
-		source = null;
-	}
+
 	
 	/**
 	 * Calculates output based on sensorVal but does not read from source or write to output directly
 	 */
 	protected synchronized void calculate() {
 		
-		sensorVal = source.pidGet();
+		sensorVal = sources[0].pidGet();
 		double error = setpoint - sensorVal;
 
 		

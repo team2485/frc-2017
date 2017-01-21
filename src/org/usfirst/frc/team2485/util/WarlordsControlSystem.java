@@ -15,6 +15,9 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 	
 	
 	protected PIDOutput[] outputs;
+	protected PIDSource[] sources;
+	protected double setpoint;
+	
 
 	private boolean enabled = false;
 
@@ -23,8 +26,10 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 
 	private Timer pidTimer;
 
-	public WarlordsControlSystem(PIDOutput[] outputs) {
+	public WarlordsControlSystem(PIDOutput[] outputs, PIDSource[] sources){
+		
 		this.outputs = outputs;
+		this.sources = sources;
 		pidTimer = new Timer(true);
 		pidTimer.schedule(new PIDTask(), 0, period);
 	}
@@ -78,7 +83,18 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 	 * Calculates output based on sensorVal but does not read from source or write to output directly
 	 */
 	protected abstract void calculate();
-	
+	@Override
+	public void pidWrite(double output) {
+		// TODO Auto-generated method stub
+		setpoint = output;
+	}
+	public void setSetpoint(double setpoint){
+		this.setpoint=setpoint;
+
+	}
+	public double getSetpoint(){
+		return setpoint;
+	}
 	private class PIDTask extends TimerTask {
 
 		@Override
