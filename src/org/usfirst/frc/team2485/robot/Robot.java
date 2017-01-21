@@ -59,6 +59,8 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void testInit() {
+		RobotMap.driveLeft1.set(5);
+		RobotMap.driveRight1.set(5);
 		ConstantsIO.init();
 		RobotMap.updateConstants();
 	}

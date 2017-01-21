@@ -54,23 +54,23 @@ public class DriveTrain extends Subsystem {
 	public DriveTrain() {
 		System.out.println("Constructed");
 		
-		leftVoltageRamp = new RampRate(new PIDOutput[] {RobotMap.driveTrainLeft}, 
-				ConstantsIO.kUpRamp_DriveVoltage, ConstantsIO.kDownRamp_DriveVoltage);
-		rightVoltageRamp = new RampRate(new PIDOutput[] {RobotMap.driveTrainRight}, 
-				ConstantsIO.kUpRamp_DriveVoltage, ConstantsIO.kDownRamp_DriveVoltage);
-		
-		ratePIDLeft = new WarlordsPIDController(RobotMap.driveEncRateLeft,
-				leftVoltageRamp);
-		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
-				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
-		ratePIDLeft.setPeriod(10);
-
-		ratePIDRight = new WarlordsPIDController(RobotMap.driveEncRateRight,
-				rightVoltageRamp);
-		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
-				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
-		ratePIDRight.setPeriod(10);
-		
+//		leftVoltageRamp = new RampRate(new PIDOutput[] {RobotMap.driveTrainLeft}, 
+//				ConstantsIO.kUpRamp_DriveVoltage, ConstantsIO.kDownRamp_DriveVoltage);
+//		rightVoltageRamp = new RampRate(new PIDOutput[] {RobotMap.driveTrainRight}, 
+//				ConstantsIO.kUpRamp_DriveVoltage, ConstantsIO.kDownRamp_DriveVoltage);
+//		
+//		ratePIDLeft = new WarlordsPIDController(RobotMap.driveEncRateLeft,
+//				leftVoltageRamp);
+//		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
+//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+//		ratePIDLeft.setPeriod(10);
+//
+//		ratePIDRight = new WarlordsPIDController(RobotMap.driveEncRateRight,
+//				rightVoltageRamp);
+//		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
+//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+//		ratePIDRight.setPeriod(10);
+//		
 
 //		currentPIDLeft = new WarlordsPIDController(RobotMap.currrentSensorLeft,
 //				RobotMap.driveTrainLeft);
@@ -148,12 +148,13 @@ public class DriveTrain extends Subsystem {
 		leftPwm *= driveSpeed;
 		rightPwm *= driveSpeed;
 
-		if (usesVelocity) {
-			setLeftRightVelocity(leftPwm * 40, rightPwm * 40);
-		} else {
-			setLeftRight(leftPwm, rightPwm); 	
-		}
-
+//		if (usesVelocity) {
+//			setLeftRightVelocity(leftPwm * 40, rightPwm * 40);
+//		} else {
+//			setLeftRight(leftPwm, rightPwm); 	
+//		}
+		RobotMap.driveLeft1.set(leftPwm*20);
+		RobotMap.driveRight1.set(rightPwm*20);
 	}
 
 //	/**
