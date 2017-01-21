@@ -34,9 +34,32 @@ public class ConstantsIO {
 
 	public static double kUpRamp_DriveVoltage;
 	public static double kDownRamp_DriveVoltage;
+	
+	public static double kP_Shooter;
+
+	public static double kI_Shooter;
+
+	public static double kD_Shooter;
+
+	public static double kF_Shooter;
+	
+	public static double kP_Feeder;
+
+	public static double kI_Feeder;
+
+	public static double kD_Feeder;
+
+	public static double kF_Feeder;
+	
+	public static double kShotRPS;
+		
+	public static double kFeederRPS;
+
+	public static double kRollersPower;
 
 
 	public static void init() {
+		
 		
 		System.out.println("ConstantsIO .class file loc: " + ConstantsIO.class.getResource("").getPath());
 
@@ -72,6 +95,28 @@ public class ConstantsIO {
 		kUpRamp_DriveVoltage = Double.parseDouble(data.get("kUpRamp_DriveVoltage"));
 		kDownRamp_DriveVoltage = Double.parseDouble(data.get("kDownRamp_DriveVoltage"));
 
+		
+		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));
+		
+		kI_Shooter = Double.parseDouble(data.get("kI_Shooter"));
+		
+		kD_Shooter = Double.parseDouble(data.get("kD_Shooter"));
+		
+		kF_Shooter = Double.parseDouble(data.get("kF_Shooter"));
+		
+		kP_Feeder = Double.parseDouble(data.get("kP_Feeder"));
+		
+		kI_Feeder = Double.parseDouble(data.get("kI_Feeder"));
+		
+		kD_Feeder = Double.parseDouble(data.get("kD_Feeder"));
+		
+		kF_Feeder = Double.parseDouble(data.get("kF_Feeder"));
+		
+		kShotRPS = Double.parseDouble(data.get("kShotRPS"));
+		
+		kFeederRPS = Double.parseDouble(data.get("kFeederRPS"));
+		
+		kRollersPower = Double.parseDouble(data.get("kRollersPower"));
 	}
 
 	@SuppressWarnings("unused")

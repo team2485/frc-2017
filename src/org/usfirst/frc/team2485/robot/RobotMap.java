@@ -1,7 +1,11 @@
 package org.usfirst.frc.team2485.robot;
 import org.usfirst.frc.team2485.subsystems.DriveTrain;
+import org.usfirst.frc.team2485.subsystems.Feeder;
 import org.usfirst.frc.team2485.subsystems.GearHolder;
+import org.usfirst.frc.team2485.subsystems.IntakeRollers;
+import org.usfirst.frc.team2485.subsystems.Shooter;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
+import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
@@ -9,6 +13,7 @@ import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.VictorSP;
 
 
 /**
@@ -30,12 +35,21 @@ public class RobotMap {
 	public static int driveRightPort1 = 0;
 	public static int driveRightPort2 = 0;
 	public static int driveRightPort3 = 0;
+	public static int kShooterEncoderPortA = 0, kShooterEncoderPortB = 0;
+	public static int kShooterMotorPort = 0;
+	public static int kIntakeMotorPort = 0;
+	public static int kFeederEncoderPortA = 0, kFeederEncoderPortB = 0;
+	public static int kFeederMotorPort = 0;
+	
 
 	
 
 	// speed controllers
 //	public static SpeedControllerWrapper driveTrainLeft, driveTrainRight;
 	public static CANTalon driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3;
+	public static SpeedControllerWrapper shooterMotor;		
+	public static SpeedControllerWrapper intakeMotor;
+	public static SpeedControllerWrapper feederMotor;
 	
 	//solenoids
 	public static Solenoid gearSolenoid1, gearSolenoid2;
@@ -43,10 +57,15 @@ public class RobotMap {
 	//sensors
 	public static Encoder driveEncLeft, driveEncRight;
 	public static EncoderWrapperRateAndDistance driveEncRateLeft, driveEncRateRight;
+	public static Encoder shooterEncoder;	
+	public static Encoder feederEncoder;
 	
 	// subsystems
 	public static GearHolder gearHolder;
 	public static DriveTrain driveTrain;
+	public static Shooter shooter;
+	public static IntakeRollers intake;
+	public static Feeder feeder;
 
 
 	public static void init() {
@@ -69,6 +88,17 @@ public class RobotMap {
 		driveEncRight = new Encoder(0, 1);
 		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
 		
+		shooterMotor = new SpeedControllerWrapper(new VictorSP(kShooterMotorPort));
+		intakeMotor = new SpeedControllerWrapper(new VictorSP(kIntakeMotorPort));
+		feederMotor = new SpeedControllerWrapper(new VictorSP(kFeederMotorPort));
+		
+		shooterEncoder = new Encoder(kShooterEncoderPortA, kShooterEncoderPortB);
+		feederEncoder = new Encoder(kFeederEncoderPortA, kFeederEncoderPortB);
+				
+		
+			
+
+				
 //		driveTrainLeft = new SpeedControllerWrapper(new SpeedController[] {new VictorSP(4), new VictorSP(5), new VictorSP(6)});
 //		driveTrainRight = new SpeedControllerWrapper(new SpeedController[] {new VictorSP(0), new VictorSP(2), new VictorSP(1)});
 
@@ -97,6 +127,7 @@ public class RobotMap {
 		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
 		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
 		
+
 //		driveTrainLeft.setInverted(true);
 //		driveTrainRight.setInverted(false);
 
@@ -104,6 +135,11 @@ public class RobotMap {
 		//construct subsytems
 		driveTrain = new DriveTrain();
 		gearHolder = new GearHolder();
+		
+		intake = new IntakeRollers();
+		feeder = new Feeder();
+		shooter = new Shooter(); 
+		
 
 	}
 
