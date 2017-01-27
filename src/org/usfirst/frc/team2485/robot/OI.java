@@ -1,10 +1,11 @@
 package org.usfirst.frc.team2485.robot;
 
-import org.usfirst.frc.team2485.commands.AdjustCameraSettings;
 import org.usfirst.frc.team2485.commands.SetGearHolderPosition;
 import org.usfirst.frc.team2485.commands.SetQuickTurn;
+import org.usfirst.frc.team2485.robot.commands.SetLights;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
@@ -35,8 +36,8 @@ public class OI {
     	new JoystickButton(xBox, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
     	new JoystickButton(xBox, XBOX_BTN_B).whenPressed(new SetGearHolderPosition(false));
     	
-    	new JoystickButton(xBox, XBOX_BTN_X).whenPressed(new AdjustCameraSettings(RobotMap.unifiedCamera, 50, 50, 50, 15));
-    	new JoystickButton (xBox, XBOX_BTN_Y).whenPressed(new AdjustCameraSettings(RobotMap.unifiedCamera, 0, 0, 50, 15));
+    	new JoystickButton (xBox, XBOX_LBUMPER).whenPressed(new SetLights(Relay.Value.kForward));
+    	new JoystickButton (xBox, XBOX_LBUMPER).whenReleased(new SetLights(Relay.Value.kOff));
     }
     
     public static boolean getLeftTrigger() {

@@ -26,7 +26,7 @@ public class SpeedControllerWrapper implements SpeedController {
 		setScaleFactors(scaleFactors);		
 	}
 
-	public SpeedControllerWrapper(SpeedController[] speedControllerList) {
+	public SpeedControllerWrapper(SpeedController... speedControllerList) {
 		this(speedControllerList, null);
 	}
 

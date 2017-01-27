@@ -299,24 +299,24 @@ public class DriveTrain extends Subsystem {
 //	}
 
 	public void updateConstants() {
-		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
-				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
-		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
-				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+//		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
+//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+//		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
+//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
 
 	}
 
 	@Override
 	protected void initDefaultCommand() {
 		System.out.println("init default");
-		setDefaultCommand(new DriveWithControllers());
+		//setDefaultCommand(new DriveWithControllers());
 	}
 
 	public void reset() {
-		ratePIDLeft.disable();
-		ratePIDRight.disable();
-		leftVoltageRamp.disable();
-		rightVoltageRamp.disable();
+//		ratePIDLeft.disable();
+//		ratePIDRight.disable();
+//		leftVoltageRamp.disable();
+//		rightVoltageRamp.disable();
 	}
 	
 	public double getLeftVelocityAvgError() {

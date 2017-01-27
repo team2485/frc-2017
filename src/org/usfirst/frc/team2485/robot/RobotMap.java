@@ -5,17 +5,14 @@ import org.usfirst.frc.team2485.subsystems.GearHolder;
 import org.usfirst.frc.team2485.subsystems.IntakeRollers;
 import org.usfirst.frc.team2485.subsystems.Shooter;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
-
-import org.usfirst.frc.team2485.util.UnifiedCamera;
-
 import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
-
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.VictorSP;
 
@@ -33,23 +30,23 @@ public class RobotMap {
 	 
 	//constants
 	public static final double wheelRadius = 2;
-	public static int driveLeftPort1 = 0;
-	public static int driveLeftPort2 = 0;
-	public static int driveLeftPort3 = 0;
-	public static int driveRightPort1 = 0;
-	public static int driveRightPort2 = 0;
-	public static int driveRightPort3 = 0;
-	public static int kShooterEncoderPortA = 0, kShooterEncoderPortB = 0;
+	public static int driveRightPort1 = 1;
+	public static int driveRightPort2 = 6;
+	public static int driveRightPort3 = 2;
+	public static int driveLeftPort1 = 3;
+	public static int driveLeftPort2 = 4;
+	public static int driveLeftPort3 = 5;
+	public static int kShooterEncoderPortA = 0, kShooterEncoderPortB = 1;
 	public static int kShooterMotorPort = 0;
-	public static int kIntakeMotorPort = 0;
-	public static int kFeederEncoderPortA = 0, kFeederEncoderPortB = 0;
-	public static int kFeederMotorPort = 0;
+	public static int kIntakeMotorPort = 1;
+	public static int kFeederEncoderPortA = 2, kFeederEncoderPortB = 3;
+	public static int kFeederMotorPort = 2;
 	
 
 	
 
 	// speed controllers
-//	public static SpeedControllerWrapper driveTrainLeft, driveTrainRight;
+	public static SpeedControllerWrapper driveTrainRight, driveTrainLeft;
 	public static CANTalon driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3;
 	public static SpeedControllerWrapper shooterMotor;		
 	public static SpeedControllerWrapper intakeMotor;
@@ -69,11 +66,12 @@ public class RobotMap {
 	public static DriveTrain driveTrain;
 
 	
-	public static UnifiedCamera unifiedCamera;
+	public static UsbCamera usbCam;
 
 	public static Shooter shooter;
 	public static IntakeRollers intake;
 	public static Feeder feeder;
+	public static Relay lightSpike;
 
 	
 
@@ -92,10 +90,13 @@ public class RobotMap {
 		driveRight2 = new CANTalon(driveRightPort2);
 		driveRight3 = new CANTalon(driveRightPort3);
 		
-		driveEncLeft = new Encoder(2, 3);
-		driveEncRateLeft = new EncoderWrapperRateAndDistance(driveEncLeft, PIDSourceType.kRate);
-		driveEncRight = new Encoder(0, 1);
-		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
+		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2, driveLeft3);
+		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRight3);
+		
+//		driveEncLeft = new Encoder(2, 3);
+//		driveEncRateLeft = new EncoderWrapperRateAndDistance(driveEncLeft, PIDSourceType.kRate);
+//		driveEncRight = new Encoder(0, 1);
+//		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
 		
 		shooterMotor = new SpeedControllerWrapper(new VictorSP(kShooterMotorPort));
 		intakeMotor = new SpeedControllerWrapper(new VictorSP(kIntakeMotorPort));
@@ -103,6 +104,10 @@ public class RobotMap {
 		
 		shooterEncoder = new Encoder(kShooterEncoderPortA, kShooterEncoderPortB);
 		feederEncoder = new Encoder(kFeederEncoderPortA, kFeederEncoderPortB);
+		
+		lightSpike = new Relay(0);
+		
+		usbCam = new UsbCamera("cam0", 0);
 				
 		
 			
@@ -117,24 +122,20 @@ public class RobotMap {
 		
 		//configure hardware
 		driveLeft1.changeControlMode(TalonControlMode.Current);
-		driveLeft2.changeControlMode(TalonControlMode.Follower);
-		driveLeft3.changeControlMode(TalonControlMode.Follower);
+		driveLeft2.changeControlMode(TalonControlMode.Current);
+		driveLeft3.changeControlMode(TalonControlMode.Current);
 		
 		driveRight1.changeControlMode(TalonControlMode.Current);
-		driveRight2.changeControlMode(TalonControlMode.Follower);
-		driveRight3.changeControlMode(TalonControlMode.Follower);
+		driveRight2.changeControlMode(TalonControlMode.Current);
+		driveRight3.changeControlMode(TalonControlMode.Current);
 		
-		driveLeft2.set(driveLeftPort1);
-		driveLeft3.set(driveLeftPort1);
-		driveRight2.set(driveRightPort1);
-		driveRight3.set(driveRightPort1);
+		driveTrainLeft.setInverted(true);
 		
-		driveLeft1.setInverted(true);
-		
-		driveEncLeft.setReverseDirection(true);
-		driveEncRight.setReverseDirection(false);
-		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
-		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+//		unifiedCamera = new UnifiedCamera(0);
+//		driveEncLeft.setReverseDirection(true);
+//		driveEncRight.setReverseDirection(false);
+//		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+//		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
 		
 
 //		driveTrainLeft.setInverted(true);
