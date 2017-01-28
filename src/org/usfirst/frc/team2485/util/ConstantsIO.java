@@ -57,6 +57,11 @@ public class ConstantsIO {
 
 	public static double kRollersPower;
 
+	public static double kP_DriveSteering;
+	public static double kI_DriveSteering;
+	public static double kD_DriveSteering;
+	public static double kF_DriveSteering;
+
 
 	public static void init() {
 		
