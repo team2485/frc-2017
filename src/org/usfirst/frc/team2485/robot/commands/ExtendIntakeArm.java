@@ -10,20 +10,13 @@ public class ExtendIntakeArm extends InstantCommand{
 	private Solenoid intakeArmSolenoid;
 	
 	public ExtendIntakeArm(){
-		requires(RobotMap.intake);
-		this.intakeArmSolenoid = RobotMap.intakeArmSolenoid;
-	}
-	
-	public void extendIntakeArm(boolean extended){
-		
-		if(extended){
-			intakeArmSolenoid.set(true);
-		}
-		else
-			intakeArmSolenoid.set(false);
+		requires(RobotMap.intakeArm);
 		
 	}
 	
-	
+	public void initialize(){
+		RobotMap.intakeArm.extend();
+	}
+		
 
 }

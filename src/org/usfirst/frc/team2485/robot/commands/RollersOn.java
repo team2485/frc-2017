@@ -12,13 +12,13 @@ public class RollersOn extends InstantCommand {
 	private double intakeRollerSpeed;
 
 	public RollersOn() {
-		requires(RobotMap.intake);
+		requires(RobotMap.intakeRollers);
 		this.intakeRollerSpeed = ConstantsIO.intakeRollerSpeed;
 	}
 	
 	@Override
 	protected void initialize() {
-		RobotMap.intake.setManual(intakeRollerSpeed);
+		RobotMap.intakeRollers.setManual(intakeRollerSpeed);
 	}
 
 }
