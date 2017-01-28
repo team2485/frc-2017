@@ -1,8 +1,8 @@
 package org.usfirst.frc.team2485.robot;
 
-import org.usfirst.frc.team2485.commands.SetGearHolderPosition;
-import org.usfirst.frc.team2485.commands.SetQuickTurn;
+import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
 import org.usfirst.frc.team2485.robot.commands.SetLights;
+import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;

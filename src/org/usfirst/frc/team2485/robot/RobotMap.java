@@ -54,6 +54,7 @@ public class RobotMap {
 	
 	//solenoids
 	public static Solenoid gearSolenoid1, gearSolenoid2;
+	public static Solenoid intakeArmSolenoid;
 
 	//sensors
 	public static Encoder driveEncLeft, driveEncRight;
@@ -118,6 +119,7 @@ public class RobotMap {
 
 		gearSolenoid1 = new Solenoid(0);
 		gearSolenoid2 = new Solenoid(1);
+		intakeArmSolenoid = new Solenoid(2);
 						
 		
 		//configure hardware

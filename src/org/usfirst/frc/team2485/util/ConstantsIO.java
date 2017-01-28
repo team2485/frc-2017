@@ -22,6 +22,8 @@ public class ConstantsIO {
 	public static final String ROBO_RIO_CONSTANTS_FILE_PATH = "/home/lvuser/constants.txt";
 
 	public static HashMap<String, String> data;
+	
+	public static double intakeRollerSpeed;
 
 	public static double kP_DriveVelocity;
 	public static double kI_DriveVelocity;
@@ -81,6 +83,8 @@ public class ConstantsIO {
 		}
 		
 //		createUnMatchedConstants();
+		
+		intakeRollerSpeed = .5;
 
 		kP_DriveVelocity = Double.parseDouble(data.get("kP_DriveVelocity"));
 		kI_DriveVelocity = Double.parseDouble(data.get("kI_DriveVelocity"));
