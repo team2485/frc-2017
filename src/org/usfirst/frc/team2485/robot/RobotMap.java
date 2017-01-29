@@ -1,7 +1,9 @@
 package org.usfirst.frc.team2485.robot;
+import org.usfirst.frc.team2485.subsystems.Climber;
 import org.usfirst.frc.team2485.subsystems.DriveTrain;
 import org.usfirst.frc.team2485.subsystems.Feeder;
 import org.usfirst.frc.team2485.subsystems.GearHolder;
+import org.usfirst.frc.team2485.subsystems.IntakeArm;
 import org.usfirst.frc.team2485.subsystems.IntakeRollers;
 import org.usfirst.frc.team2485.subsystems.Shooter;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
@@ -41,6 +43,7 @@ public class RobotMap {
 	public static int kIntakeMotorPort = 1;
 	public static int kFeederEncoderPortA = 2, kFeederEncoderPortB = 3;
 	public static int kFeederMotorPort = 2;
+	public static int kClimberMotorPort = 0;
 	
 
 	
@@ -51,9 +54,11 @@ public class RobotMap {
 	public static SpeedControllerWrapper shooterMotor;		
 	public static SpeedControllerWrapper intakeMotor;
 	public static SpeedControllerWrapper feederMotor;
+	public static SpeedControllerWrapper climberMotor;
 	
 	//solenoids
 	public static Solenoid gearSolenoid1, gearSolenoid2;
+	public static Solenoid intakeArmSolenoid;
 
 	//sensors
 	public static Encoder driveEncLeft, driveEncRight;
@@ -69,7 +74,10 @@ public class RobotMap {
 	public static UsbCamera usbCam;
 
 	public static Shooter shooter;
-	public static IntakeRollers intake;
+	public static IntakeRollers intakeRollers;
+	public static IntakeArm intakeArm;
+	public static Climber climber;
+	
 	public static Feeder feeder;
 	public static Relay lightSpike;
 
@@ -101,6 +109,7 @@ public class RobotMap {
 		shooterMotor = new SpeedControllerWrapper(new VictorSP(kShooterMotorPort));
 		intakeMotor = new SpeedControllerWrapper(new VictorSP(kIntakeMotorPort));
 		feederMotor = new SpeedControllerWrapper(new VictorSP(kFeederMotorPort));
+		climberMotor = new SpeedControllerWrapper(new VictorSP(kClimberMotorPort));
 		
 		shooterEncoder = new Encoder(kShooterEncoderPortA, kShooterEncoderPortB);
 		feederEncoder = new Encoder(kFeederEncoderPortA, kFeederEncoderPortB);
@@ -118,6 +127,7 @@ public class RobotMap {
 
 		gearSolenoid1 = new Solenoid(0);
 		gearSolenoid2 = new Solenoid(1);
+		intakeArmSolenoid = new Solenoid(2);
 						
 		
 		//configure hardware
@@ -146,9 +156,11 @@ public class RobotMap {
 		driveTrain = new DriveTrain();
 		gearHolder = new GearHolder();
 		
-		intake = new IntakeRollers();
+		intakeRollers = new IntakeRollers();
+		intakeArm = new IntakeArm();
 		feeder = new Feeder();
 		shooter = new Shooter(); 
+		climber = new Climber();
 		
 
 	}

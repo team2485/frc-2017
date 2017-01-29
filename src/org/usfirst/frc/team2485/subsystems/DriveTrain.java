@@ -1,12 +1,14 @@
 package org.usfirst.frc.team2485.subsystems;
 
-import org.usfirst.frc.team2485.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.RobotMap;
+import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.util.ConstantsIO;
-import org.usfirst.frc.team2485.util.RampRate;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
+import org.usfirst.frc.team2485.util.TransferNode;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -34,56 +36,52 @@ public class DriveTrain extends Subsystem {
 	private static final double THROTTLE_DEADBAND = 0.1;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
 
-	private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
-	private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
-	private static final double ABS_TOLERANCE_DRIVETO_DISTANCE = 0;
-	private static final double LOW_ENC_RATE = 0;
-	private static final int MINIMUM_AHRS_ON_TARGET_ITERATIONS = 0;
-	private int driveToOnTargetIterations;
+//	private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
+//	private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
+//	private static final double ABS_TOLERANCE_DRIVETO_DISTANCE = 0;
+//	private static final double LOW_ENC_RATE = 0;
+//	private static final int MINIMUM_AHRS_ON_TARGET_ITERATIONS = 0;
+//	private int driveToOnTargetIterations;
 
 	private boolean quickTurn;
 
 	private WarlordsPIDController driveToPID, rotateToPID;
 	private WarlordsPIDController ratePIDLeft, ratePIDRight;
 
-	private RampRate leftVoltageRamp, rightVoltageRamp;
-	private WarlordsPIDController currentPIDLeft, currentPIDRight;
+	private TransferNode throttleTransferNode;
+	private WarlordsPIDController steeringPidController;
 	private int ahrsOnTargetCounter;
-
+	private TransferNode steeringTransferNode;
+	private PIDSource curvatureSource;
+	
 	public DriveTrain() {
-		System.out.println("Constructed");
-		
-//		leftVoltageRamp = new RampRate(new PIDOutput[] {RobotMap.driveTrainLeft}, 
-//				ConstantsIO.kUpRamp_DriveVoltage, ConstantsIO.kDownRamp_DriveVoltage);
-//		rightVoltageRamp = new RampRate(new PIDOutput[] {RobotMap.driveTrainRight}, 
-//				ConstantsIO.kUpRamp_DriveVoltage, ConstantsIO.kDownRamp_DriveVoltage);
-//		
-//		ratePIDLeft = new WarlordsPIDController(RobotMap.driveEncRateLeft,
-//				leftVoltageRamp);
-//		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
-//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
-//		ratePIDLeft.setPeriod(10);
-//
-//		ratePIDRight = new WarlordsPIDController(RobotMap.driveEncRateRight,
-//				rightVoltageRamp);
-//		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
-//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
-//		ratePIDRight.setPeriod(10);
-//		
-
-//		currentPIDLeft = new WarlordsPIDController(RobotMap.currrentSensorLeft,
-//				RobotMap.driveTrainLeft);
-//		currentPIDLeft.setPID(ConstantsIO.kP_DriveCurrent,
-//				ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent);
-//		currentPIDLeft.setPeriod(2);
-//
-//		currentPIDRight = new WarlordsPIDController(
-//				RobotMap.currentSensorRight, RobotMap.driveTrainRight);
-//		currentPIDRight.setPID(ConstantsIO.kP_DriveCurrent,
-//				ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent);
-//		currentPIDRight.setPeriod(2);
-		
-//		driveToPID = new WarlordsPIDController(source, outputs)
+		throttleTransferNode = new TransferNode(0);
+		steeringTransferNode = new TransferNode(0);
+		curvatureSource = new PIDSource() {
+			
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public double pidGet() {
+				double leftVelocity = RobotMap.driveEncLeft.getRate();
+				double rightVelocity = RobotMap.driveEncRight.getRate();
+				
+				return (leftVelocity - rightVelocity) / (leftVelocity + rightVelocity);
+			}
+			
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		};
+		steeringPidController = new WarlordsPIDController(curvatureSource, steeringTransferNode);
+		steeringPidController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
+				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
 	}
 
 	public void setDriveSpeed(DriveSpeed speed) {
@@ -155,7 +153,18 @@ public class DriveTrain extends Subsystem {
 		RobotMap.driveLeft1.set(leftPwm*20);
 		RobotMap.driveRight1.set(rightPwm*20);
 	}
+	public void warlordDrive2(double controllerY, double controllerX, boolean usesVelocity) {
 
+		double steering = ThresholdHandler.deadbandAndScale(controllerX,
+				STEERING_DEADBAND, 0.01, 1);
+		double throttle = ThresholdHandler.deadbandAndScale(controllerY,
+				THROTTLE_DEADBAND, 0.01, 1);
+		
+		throttleTransferNode.setOutput(throttle);
+		steeringPidController.enable();
+		steeringPidController.setSetpoint(steering);
+		
+	}
 //	/**
 //	 * Used to drive in a curve using closed loop control, set startAngle =
 //	 * endAngle to drive straight <br>
@@ -299,10 +308,8 @@ public class DriveTrain extends Subsystem {
 //	}
 
 	public void updateConstants() {
-//		ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
-//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
-//		ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
-//				ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity);
+		steeringPidController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
+				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
 
 	}
 
@@ -313,13 +320,6 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void reset() {
-//		ratePIDLeft.disable();
-//		ratePIDRight.disable();
-//		leftVoltageRamp.disable();
-//		rightVoltageRamp.disable();
-	}
-	
-	public double getLeftVelocityAvgError() {
-		return ratePIDLeft.getAvgError();
+		steeringPidController.disable();
 	}
 }

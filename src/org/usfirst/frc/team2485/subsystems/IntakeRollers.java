@@ -4,19 +4,17 @@ import org.usfirst.frc.team2485.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-
-
 public class IntakeRollers extends Subsystem {
-
+	
 	public IntakeRollers() {
-		disableIntake();
+		disableIntakeRollers();
 	}
 
 	public void setManual(double pwm) {
 		RobotMap.intakeMotor.set(pwm);
 	}
 
-	public void disableIntake() {
+	public void disableIntakeRollers() {
 		RobotMap.intakeMotor.set(0);
 	}
 
@@ -35,6 +33,6 @@ public class IntakeRollers extends Subsystem {
 	}
 
 	public void reset() {
-		disableIntake();
+		disableIntakeRollers();
 	}
 }
