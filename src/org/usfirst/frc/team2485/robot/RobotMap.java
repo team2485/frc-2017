@@ -107,7 +107,7 @@ public class RobotMap {
 		
 		lightSpike = new Relay(0);
 		
-		usbCam = new UsbCamera("cam0", 0);
+//		usbCam = new UsbCamera("cam0", 0);
 				
 		
 			

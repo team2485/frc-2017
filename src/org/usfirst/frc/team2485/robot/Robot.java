@@ -15,12 +15,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
-	private boolean cameraFound;
-                  
 	
 	public void robotInit() {
-		
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		ConstantsIO.init();
 		RobotMap.init();
@@ -43,6 +39,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		ConstantsIO.init();
 		RobotMap.updateConstants();
+		
+		CameraServer.getInstance().startAutomaticCapture(0);
 	}
 
 	public void autonomousPeriodic() {
