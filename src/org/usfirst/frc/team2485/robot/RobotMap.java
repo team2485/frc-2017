@@ -43,7 +43,7 @@ public class RobotMap {
 	public static int kIntakeMotorPort = 1;
 	public static int kFeederEncoderPortA = 2, kFeederEncoderPortB = 3;
 	public static int kFeederMotorPort = 2;
-	public static int kClimberMotorPort = 0;
+	public static int kClimberMotorPort = 7;
 	
 
 	
@@ -80,9 +80,7 @@ public class RobotMap {
 	
 	public static Feeder feeder;
 	public static Relay lightSpike;
-
 	
-
 	public static void init() {
 		
 		

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.robot.commands.FlashLights;
 import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
 import org.usfirst.frc.team2485.robot.commands.SetLights;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
@@ -35,6 +36,11 @@ public class OI {
     	
     	new JoystickButton(xBox, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
     	new JoystickButton(xBox, XBOX_BTN_B).whenPressed(new SetGearHolderPosition(false));
+    	
+    	FlashLights flashLights = new FlashLights();
+    	new JoystickButton(xBox, XBOX_BTN_X).whenPressed(flashLights);
+    	new JoystickButton(xBox, XBOX_BTN_Y).cancelWhenPressed(flashLights);
+    	
     	
     	new JoystickButton (xBox, XBOX_LBUMPER).whenPressed(new SetLights(Relay.Value.kForward));
     	new JoystickButton (xBox, XBOX_LBUMPER).whenReleased(new SetLights(Relay.Value.kOff));
