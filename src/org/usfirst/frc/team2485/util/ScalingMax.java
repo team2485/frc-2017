@@ -40,11 +40,6 @@ public class ScalingMax extends WarlordsControlSystem {
 			// and check to make sure the scaled down version is scaled down
 			// enough
 
-			/*
-			 * QUESTION: what if it can't be scaled down whole-numberedly
-			 * enough?
-			 */
-
 			for (int factor = (int) Math.ceil(max); factor > 2; factor--) {
 				if (xVal % factor == 0) {
 					if (yVal % factor == 0) {
