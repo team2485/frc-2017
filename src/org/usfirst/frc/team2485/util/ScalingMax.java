@@ -51,21 +51,23 @@ public class ScalingMax extends WarlordsControlSystem {
 						if (((yVal / factor) < max) && ((xVal / factor) < max)) {
 							ratio = factor;
 							break;
+						} else {
+							yVal/=factor;
+							xVal/=factor;
+							continue;
 						}
 					}
 				}
 			}
+			
+			//reassign values
+			xVal/=ratio;
+			yVal/=ratio;
 
 			// reassign negatives if needed
-			if (isNegX)
-				xVal = -(xVal / ratio);
-			else
-				xVal = (xVal / ratio);
-
-			if (isNegY)
-				yVal = -(yVal / ratio);
-			else
-				yVal = (yVal / ratio);
+			//look you guys I used ternary operators!
+			xVal = isNegX ? -xVal : xVal;
+			yVal = isNegY ? -yVal : yVal; 
 
 		}
 
