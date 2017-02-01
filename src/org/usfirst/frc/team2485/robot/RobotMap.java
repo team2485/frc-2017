@@ -57,7 +57,8 @@ public class RobotMap {
 	public static SpeedControllerWrapper climberMotor;
 	
 	//solenoids
-	public static Solenoid gearSolenoid1, gearSolenoid2;
+	public static Solenoid gearSolenoidBottom1, gearSolenoidBottom2;
+	public static Solenoid gearSolenoidTop1, gearSolenoidTop2;
 	public static Solenoid intakeArmSolenoid;
 
 	//sensors
@@ -123,8 +124,10 @@ public class RobotMap {
 //		driveTrainLeft = new SpeedControllerWrapper(new SpeedController[] {new VictorSP(4), new VictorSP(5), new VictorSP(6)});
 //		driveTrainRight = new SpeedControllerWrapper(new SpeedController[] {new VictorSP(0), new VictorSP(2), new VictorSP(1)});
 
-		gearSolenoid1 = new Solenoid(0);
-		gearSolenoid2 = new Solenoid(1);
+		gearSolenoidBottom1 = new Solenoid(0);
+		gearSolenoidBottom2 = new Solenoid(1);
+		gearSolenoidTop1 = new Solenoid(3);
+		gearSolenoidTop2 = new Solenoid(4); 
 		intakeArmSolenoid = new Solenoid(2);
 						
 		

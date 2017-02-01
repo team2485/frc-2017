@@ -6,13 +6,23 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GearHolder extends Subsystem {
 
-	public void setOpen(boolean open) {
-
-		RobotMap.gearSolenoid1.set(open);
-		RobotMap.gearSolenoid2.set(!open);
+	public void setBottomOpen(boolean open) {
+		
+		RobotMap.gearSolenoidBottom1.set(open);
+		RobotMap.gearSolenoidBottom2.set(!open);
+		
+	}
+	
+	public void setChuteOpen (boolean open) {
+		
+		RobotMap.gearSolenoidTop1.set(open);
+		RobotMap.gearSolenoidTop2.set(!open);
+		
 	}
 
 	@Override
 	protected void initDefaultCommand() {
+
 	}
+	
 }
