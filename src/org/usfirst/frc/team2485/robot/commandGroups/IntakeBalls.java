@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class IntakeBalls extends CommandGroup{
 	
 	public IntakeBalls(){
-		addParallel(new ExtendIntakeArm());
+		addParallel(new ExtendIntakeArm(true));
 		addParallel(new RollersOn());
 	}
 

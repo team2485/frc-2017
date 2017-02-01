@@ -8,15 +8,19 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 public class ExtendIntakeArm extends InstantCommand{
 	
 	private Solenoid intakeArmSolenoid;
+	private boolean booooo;
 	
-	public ExtendIntakeArm(){
+	public ExtendIntakeArm(boolean booooo){
 		requires(RobotMap.intakeArm);
+		this.booooo = booooo;
 		
 	}
 	
 	public void initialize(){
-		RobotMap.intakeArm.extend();
+		if(booooo)
+			RobotMap.intakeArm.extend();
+		else
+			RobotMap.intakeArm.reset();
 	}
-		
 
 }
