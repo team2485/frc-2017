@@ -100,7 +100,7 @@ public class DriveTrain extends Subsystem {
 	 *            controllerY should be positive for forward motion
 	 * @param controllerX
 	 */
-	public void warlordDrive(double controllerY, double controllerX, boolean usesVelocity) {
+	public void warlordDrive(double controllerY, double controllerX, boolean useCurrent) {
 
 		double steering = ThresholdHandler.deadbandAndScale(controllerX,
 				STEERING_DEADBAND, 0.01, 1);
@@ -316,7 +316,7 @@ public class DriveTrain extends Subsystem {
 	@Override
 	protected void initDefaultCommand() {
 		System.out.println("init default");
-		setDefaultCommand(new DriveWithControllers());
+		setDefaultCommand(new DriveWithControllers(false));
 	}
 
 	public void reset() {
