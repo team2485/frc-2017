@@ -3,6 +3,7 @@ package org.usfirst.frc.team2485.subsystems;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.util.ConstantsIO;
+import org.usfirst.frc.team2485.util.PIDSourceWrapper;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
 import org.usfirst.frc.team2485.util.TransferNode;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
@@ -35,7 +36,8 @@ public class DriveTrain extends Subsystem {
 	private static final double STEERING_DEADBAND = 0.1;
 	private static final double THROTTLE_DEADBAND = 0.1;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
-
+	private static final double MAX_CURRENT = 20;
+	
 //	private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
 //	private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
 //	private static final double ABS_TOLERANCE_DRIVETO_DISTANCE = 0;
@@ -54,31 +56,28 @@ public class DriveTrain extends Subsystem {
 	private TransferNode steeringTransferNode;
 	private PIDSource curvatureSource;
 	
+	private PIDSource rightPrescaledCurrent;
+	private PIDSource leftPrescaledCurrent;
+	
 	public DriveTrain() {
 		throttleTransferNode = new TransferNode(0);
 		steeringTransferNode = new TransferNode(0);
-		curvatureSource = new PIDSource() {
-			
-			@Override
-			public void setPIDSourceType(PIDSourceType pidSource) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public double pidGet() {
+		curvatureSource = new PIDSourceWrapper(()-> {
 				double leftVelocity = RobotMap.driveEncLeft.getRate();
 				double rightVelocity = RobotMap.driveEncRight.getRate();
 				
 				return (leftVelocity - rightVelocity) / (leftVelocity + rightVelocity);
-			}
+			});
+		
+		rightPrescaledCurrent = new PIDSourceWrapper(()-> {
+			return MAX_CURRENT*throttleTransferNode.getOutput()*(1-steeringTransferNode.getOutput());
+			});
+		
+		leftPrescaledCurrent = new PIDSourceWrapper(()-> {
+			return MAX_CURRENT*throttleTransferNode.getOutput()*(1+steeringTransferNode.getOutput());
+		});
 			
-			@Override
-			public PIDSourceType getPIDSourceType() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		};
+			
 		steeringPidController = new WarlordsPIDController(curvatureSource, steeringTransferNode);
 		steeringPidController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
