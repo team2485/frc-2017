@@ -4,6 +4,7 @@ package org.usfirst.frc.team2485.robot;
 import org.opencv.core.Mat;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -34,8 +35,9 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		ConstantsIO.init();
 		RobotMap.updateConstants();
-		CameraServer.getInstance().startAutomaticCapture(0);
-
+		UsbCamera usb = CameraServer.getInstance().startAutomaticCapture(0);
+		usb.setExposureManual(0);
+		usb.setBrightness(0);
 	}
 	
 	Mat newMat = new Mat();
