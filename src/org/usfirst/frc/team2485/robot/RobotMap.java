@@ -16,6 +16,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.VictorSP;
 
 
@@ -66,6 +67,7 @@ public class RobotMap {
 	public static EncoderWrapperRateAndDistance driveEncRateLeft, driveEncRateRight;
 	public static Encoder shooterEncoder;	
 	public static Encoder feederEncoder;
+	public static Ultrasonic gearDetector;
 	
 	// subsystems
 	public static GearHolder gearHolder;

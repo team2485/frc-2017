@@ -2,10 +2,11 @@ package org.usfirst.frc.team2485.subsystems;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GearHolder extends Subsystem {
-
+	
 	public void setBottomOpen(boolean open) {
 		
 		RobotMap.gearSolenoidBottom1.set(open);
@@ -23,6 +24,11 @@ public class GearHolder extends Subsystem {
 	@Override
 	protected void initDefaultCommand() {
 
+	}
+	
+	public boolean gearDetected() {
+		//Not an accurate value
+		return RobotMap.gearDetector.getRangeInches() < 2;
 	}
 	
 }
