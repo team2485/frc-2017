@@ -4,10 +4,12 @@ import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 import org.usfirst.frc.team2485.util.PIDSourceWrapper;
+import org.usfirst.frc.team2485.util.ScalingMax;
 import org.usfirst.frc.team2485.util.ThresholdHandler;
 import org.usfirst.frc.team2485.util.TransferNode;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
+import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -55,6 +57,7 @@ public class DriveTrain extends Subsystem {
 	private int ahrsOnTargetCounter;
 	private TransferNode steeringTransferNode;
 	private PIDSource curvatureSource;
+	private ScalingMax scalingMax;
 	
 	private PIDSource rightPrescaledCurrent;
 	private PIDSource leftPrescaledCurrent;
@@ -70,14 +73,17 @@ public class DriveTrain extends Subsystem {
 			});
 		
 		rightPrescaledCurrent = new PIDSourceWrapper(()-> {
-			return MAX_CURRENT*throttleTransferNode.getOutput()*(1-steeringTransferNode.getOutput());
+			return MAX_CURRENT * throttleTransferNode.getOutput()*(1-steeringTransferNode.getOutput());
 			});
 		
 		leftPrescaledCurrent = new PIDSourceWrapper(()-> {
-			return MAX_CURRENT*throttleTransferNode.getOutput()*(1+steeringTransferNode.getOutput());
+			return MAX_CURRENT * throttleTransferNode.getOutput()*(1+steeringTransferNode.getOutput());
 		});
-			
-			
+		
+		scalingMax = new ScalingMax(new PIDOutput[] { RobotMap.driveTrainLeft, RobotMap.driveTrainRight}, 
+				new PIDSource[] { leftPrescaledCurrent, rightPrescaledCurrent});
+		scalingMax.setSetpoint(MAX_CURRENT);
+					
 		steeringPidController = new WarlordsPIDController(curvatureSource, steeringTransferNode);
 		steeringPidController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
