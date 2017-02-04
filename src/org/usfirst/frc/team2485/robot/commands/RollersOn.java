@@ -8,17 +8,14 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 
 
 public class RollersOn extends InstantCommand {
-	
-	private double intakeRollerSpeed;
 
 	public RollersOn() {
 		requires(RobotMap.intakeRollers);
-		this.intakeRollerSpeed = ConstantsIO.intakeRollerSpeed;
 	}
 	
 	@Override
 	protected void initialize() {
-		RobotMap.intakeRollers.setManual(intakeRollerSpeed);
+		RobotMap.intakeRollers.setManual(ConstantsIO.intakeRollerSpeed);
 	}
 
 }
