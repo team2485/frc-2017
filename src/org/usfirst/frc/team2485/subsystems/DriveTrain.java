@@ -150,8 +150,8 @@ public class DriveTrain extends Subsystem {
 //		} else {
 //			setLeftRight(leftPwm, rightPwm); 	
 //		}
-		RobotMap.driveLeft1.set(leftPwm*20);
-		RobotMap.driveRight1.set(rightPwm*20);
+		RobotMap.driveTrainLeft.set(leftPwm);
+		RobotMap.driveTrainRight.set(rightPwm);
 	}
 	public void warlordDrive2(double controllerY, double controllerX, boolean usesVelocity) {
 
@@ -316,7 +316,7 @@ public class DriveTrain extends Subsystem {
 	@Override
 	protected void initDefaultCommand() {
 		System.out.println("init default");
-		//setDefaultCommand(new DriveWithControllers());
+		setDefaultCommand(new DriveWithControllers());
 	}
 
 	public void reset() {

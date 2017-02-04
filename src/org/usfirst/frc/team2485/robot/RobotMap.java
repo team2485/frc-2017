@@ -34,10 +34,10 @@ public class RobotMap {
 	//constants
 	public static final double wheelRadius = 2;
 	public static int driveRightPort1 = 1;
-	public static int driveRightPort2 = 6;
+	public static int driveRightPort2 = 4;
 	public static int driveRightPort3 = 2;
 	public static int driveLeftPort1 = 3;
-	public static int driveLeftPort2 = 4;
+	public static int driveLeftPort2 = 6;
 	public static int driveLeftPort3 = 5;
 	public static int kShooterEncoderPortA = 0, kShooterEncoderPortB = 1;
 	public static int kShooterMotorPort = 0;
@@ -134,13 +134,13 @@ public class RobotMap {
 						
 		
 		//configure hardware
-		driveLeft1.changeControlMode(TalonControlMode.Current);
-		driveLeft2.changeControlMode(TalonControlMode.Current);
-		driveLeft3.changeControlMode(TalonControlMode.Current);
-		
-		driveRight1.changeControlMode(TalonControlMode.Current);
-		driveRight2.changeControlMode(TalonControlMode.Current);
-		driveRight3.changeControlMode(TalonControlMode.Current);
+//		driveLeft1.changeControlMode(TalonControlMode.Current);
+//		driveLeft2.changeControlMode(TalonControlMode.Current);
+//		driveLeft3.changeControlMode(TalonControlMode.Current);
+//		
+//		driveRight1.changeControlMode(TalonControlMode.Current);
+//		driveRight2.changeControlMode(TalonControlMode.Current);
+//		driveRight3.changeControlMode(TalonControlMode.Current);
 		
 		driveTrainLeft.setInverted(true);
 		

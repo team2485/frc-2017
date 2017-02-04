@@ -94,41 +94,41 @@ public class ConstantsIO {
 		intakeRollerSpeed = .5;
 		climberSpeed = .5;
 
-		kP_DriveVelocity = Double.parseDouble(data.get("kP_DriveVelocity"));
-		kI_DriveVelocity = Double.parseDouble(data.get("kI_DriveVelocity"));
-		kD_DriveVelocity = Double.parseDouble(data.get("kD_DriveVelocity"));
-		kF_DriveVelocity = Double.parseDouble(data.get("kF_DriveVelocity"));
+		kP_DriveVelocity = 0; //Double.parseDouble(data.get("kP_DriveVelocity"));
+		kI_DriveVelocity = 0; //Double.parseDouble(data.get("kI_DriveVelocity"));
+		kD_DriveVelocity = 0; //Double.parseDouble(data.get("kD_DriveVelocity"));
+		kF_DriveVelocity = 0; //Double.parseDouble(data.get("kF_DriveVelocity"));
 
-		kP_DriveCurrent = Double.parseDouble(data.get("kP_DriveCurrent"));
-		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
-		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
+		kP_DriveCurrent = 0; //Double.parseDouble(data.get("kP_DriveCurrent"));
+		kI_DriveCurrent = 0; //Double.parseDouble(data.get("kI_DriveCurrent"));
+		kD_DriveCurrent = 0; //Double.parseDouble(data.get("kD_DriveCurrent"));
  	
 
-		kUpRamp_DriveVoltage = Double.parseDouble(data.get("kUpRamp_DriveVoltage"));
-		kDownRamp_DriveVoltage = Double.parseDouble(data.get("kDownRamp_DriveVoltage"));
+		kUpRamp_DriveVoltage = 0; //Double.parseDouble(data.get("kUpRamp_DriveVoltage"));
+		kDownRamp_DriveVoltage = 0; //Double.parseDouble(data.get("kDownRamp_DriveVoltage"));
 
 		
-		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));
+		kP_Shooter = 0; //Double.parseDouble(data.get("kP_Shooter"));
 		
-		kI_Shooter = Double.parseDouble(data.get("kI_Shooter"));
+		kI_Shooter = 0; //Double.parseDouble(data.get("kI_Shooter"));
 		
-		kD_Shooter = Double.parseDouble(data.get("kD_Shooter"));
+		kD_Shooter = 0; //Double.parseDouble(data.get("kD_Shooter"));
 		
-		kF_Shooter = Double.parseDouble(data.get("kF_Shooter"));
+		kF_Shooter = 0; //Double.parseDouble(data.get("kF_Shooter"));
 		
-		kP_Feeder = Double.parseDouble(data.get("kP_Feeder"));
+		kP_Feeder = 0; //Double.parseDouble(data.get("kP_Feeder"));
 		
-		kI_Feeder = Double.parseDouble(data.get("kI_Feeder"));
+		kI_Feeder = 0; //Double.parseDouble(data.get("kI_Feeder"));
 		
-		kD_Feeder = Double.parseDouble(data.get("kD_Feeder"));
+		kD_Feeder = 0; //Double.parseDouble(data.get("kD_Feeder"));
 		
-		kF_Feeder = Double.parseDouble(data.get("kF_Feeder"));
+		kF_Feeder = 0; //Double.parseDouble(data.get("kF_Feeder"));
 		
-		kShotRPS = Double.parseDouble(data.get("kShotRPS"));
+		kShotRPS = 0; //Double.parseDouble(data.get("kShotRPS"));
 		
-		kFeederRPS = Double.parseDouble(data.get("kFeederRPS"));
+		kFeederRPS = 0; //Double.parseDouble(data.get("kFeederRPS"));
 		
-		kRollersPower = Double.parseDouble(data.get("kRollersPower"));
+		kRollersPower = 0; //Double.parseDouble(data.get("kRollersPower"));
 	}
 
 	@SuppressWarnings("unused")
