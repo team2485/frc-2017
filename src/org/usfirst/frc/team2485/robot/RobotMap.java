@@ -40,7 +40,7 @@ public class RobotMap {
 	public static int driveLeftPort2 = 6;
 	public static int driveLeftPort3 = 5;
 	public static int kShooterEncoderPortA = 4, kShooterEncoderPortB = 5;
-	public static int kLeftDriveEnc1 = 0, kLeftDriveEnc2 = 1;
+	public static int kLeftDriveEnc1 = 1, kLeftDriveEnc2 = 0;
 	public static int kRightDriveEnc1 = 2, kRightDriveEnc2 = 3;
 	public static int kShooterMotorPort = 0;
 	public static int kIntakeMotorPort = 1;

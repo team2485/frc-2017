@@ -34,9 +34,6 @@ public class ConstantsIO {
 	public static double kP_DriveCurrent;
 	public static double kI_DriveCurrent;
 	public static double kD_DriveCurrent;
-
-	public static double kUpRamp_DriveVoltage;
-	public static double kDownRamp_DriveVoltage;
 	
 	public static double kP_Shooter;
 
@@ -65,8 +62,8 @@ public class ConstantsIO {
 	public static double kD_DriveSteering;
 	public static double kF_DriveSteering;
 
-	public static double kUpRamp_DriveCurrent;
-	public static double kDownRamp_DriveCurrent;
+	public static double kUpRamp_Drive;
+	public static double kDownRamp_Drive;
 	
 
 
@@ -105,13 +102,9 @@ public class ConstantsIO {
 		kP_DriveCurrent = Double.parseDouble(data.get("kP_DriveCurrent"));
 		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
 		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
- 	
 
-		kUpRamp_DriveVoltage = Double.parseDouble(data.get("kUpRamp_DriveVoltage"));
-		kDownRamp_DriveVoltage = Double.parseDouble(data.get("kDownRamp_DriveVoltage"));
-
-		kUpRamp_DriveCurrent = Double.parseDouble(data.get("kUpRamp_DriveCurrent"));
-		kDownRamp_DriveCurrent = Double.parseDouble(data.get("kDownRamp_DriveCurrent"));
+		kUpRamp_Drive = Double.parseDouble(data.get("kUpRamp_Drive"));
+		kDownRamp_Drive = Double.parseDouble(data.get("kDownRamp_Drive"));
 
 		
 		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));

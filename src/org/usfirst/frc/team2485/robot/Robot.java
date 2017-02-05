@@ -99,9 +99,8 @@ public class Robot extends IterativeRobot {
 		// RobotMap.driveTrain.getLeftVelocityAvgError());
 		SmartDashboard.putNumber("Left Current", RobotMap.driveLeft2.getOutputCurrent());
 		SmartDashboard.putNumber("Right Current", RobotMap.driveRight2.getOutputCurrent());
-		SmartDashboard.putNumber("Curvature", RobotMap.driveTrain.getCurvature());
+		SmartDashboard.putNumber("Curvature Error", RobotMap.driveTrain.getCurvatureError());
 		SmartDashboard.putNumber("Steering", RobotMap.driveTrain.getSteering());
-		System.out.println("Right Current: " + RobotMap.driveRight2.getOutputCurrent());
 
 		SmartDashboard.putBoolean("Test Boolean", System.currentTimeMillis() % 1000 > 500);
 		SmartDashboard.putNumber("Test Number", System.currentTimeMillis() % 1000);

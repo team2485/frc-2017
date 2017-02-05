@@ -40,8 +40,8 @@ public class ScalingMax extends WarlordsControlSystem {
 			outVals[i] = inVals[i] / maxRatio;
 			outputs[i].pidWrite(outVals[i]);
 			
-			System.out.println("inVal" + i + "=" + inVals[i]);
-			System.out.println("outVal" + i + "=" + outVals[i]);
+//			System.out.println("inVal" + i + "=" + inVals[i]);
+//			System.out.println("outVal" + i + "=" + outVals[i]);
 		}
 		
 

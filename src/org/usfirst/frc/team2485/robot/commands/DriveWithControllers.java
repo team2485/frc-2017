@@ -7,18 +7,18 @@ import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveWithControllers extends Command {
-	private boolean isCurrent;
+	private int mode;
+	public static int hasCheeseFlag = 0x1, useCurrentFlag = 0x2, hasSteeringCorrectionFlag = 0x4, 
+			useVelocityFlag = 0x8;
 
-	public DriveWithControllers(boolean isCurrent) {
+	public DriveWithControllers(int mode) {
 		requires(RobotMap.driveTrain);
 		setInterruptible(true);
-		this.isCurrent = isCurrent;
+		this.mode = mode;
 	}
 
 	@Override
 	protected void initialize() {
-		RobotMap.driveTrain.setCurrentModeLeft(isCurrent);
-		RobotMap.driveTrain.setCurrentModeRight(isCurrent);
 	}
 
 	@Override
@@ -34,8 +34,8 @@ public class DriveWithControllers extends Command {
 		} else {
 			RobotMap.driveTrain.setDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING);
 		}
-
-		RobotMap.driveTrain.warlordDrive(foward, right, isCurrent);
+		RobotMap.driveTrain.warlordDrive(foward, right, (mode & useCurrentFlag) != 0, (mode & hasCheeseFlag) != 0, 
+				(mode & hasSteeringCorrectionFlag) != 0, (mode & useVelocityFlag) != 0);
 
 	}
 
