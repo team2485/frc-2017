@@ -18,7 +18,7 @@ public class Climber extends Subsystem{
 	}
 	
 	public void climb(){
-		RobotMap.climberMotor.set(ConstantsIO.climberSpeed);
+		RobotMap.climberMotor.set(ConstantsIO.kClimberSpeed);
 	}
 	
 	public void stopClimbing(){

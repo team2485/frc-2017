@@ -5,6 +5,7 @@ import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 
 import com.ctre.CANTalon.TalonControlMode;
+import com.sun.glass.ui.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -19,21 +20,7 @@ public class DriveWithControllers extends Command {
 
 	@Override
 	protected void initialize() {
-		if (isCurrent) {
-			RobotMap.driveLeft1.changeControlMode(TalonControlMode.Current);
-			RobotMap.driveLeft2.changeControlMode(TalonControlMode.Current);
-			RobotMap.driveLeft3.changeControlMode(TalonControlMode.Current);
-			RobotMap.driveRight1.changeControlMode(TalonControlMode.Current);
-			RobotMap.driveRight2.changeControlMode(TalonControlMode.Current);
-			RobotMap.driveRight3.changeControlMode(TalonControlMode.Current);
-		}else{
-			RobotMap.driveLeft1.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveLeft2.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveLeft3.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveRight1.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveRight2.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveRight3.changeControlMode(TalonControlMode.PercentVbus);	
-		}
+		RobotMap.driveTrain.setCurrentMode(isCurrent);
 	}
 
 	@Override

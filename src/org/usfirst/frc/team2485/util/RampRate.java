@@ -18,6 +18,11 @@ public class RampRate extends WarlordsControlSystem {
 		lastValue = 0;
 	}
 	
+	public void setRampRates(double upRampRate, double downRampRate) {
+		this.upRampRate = upRampRate;
+		this.downRampRate = downRampRate;
+	}
+	
 	/**
 	 * Used to get next value by moving from the last value toward the desired value, without exceeding the ramp rate
 	 * @param desired target value

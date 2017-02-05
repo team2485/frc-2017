@@ -10,10 +10,10 @@ import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
 import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
 
 import com.ctre.CANTalon;
-import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Ultrasonic;
@@ -39,10 +39,12 @@ public class RobotMap {
 	public static int driveLeftPort1 = 3;
 	public static int driveLeftPort2 = 6;
 	public static int driveLeftPort3 = 5;
-	public static int kShooterEncoderPortA = 0, kShooterEncoderPortB = 1;
+	public static int kShooterEncoderPortA = 4, kShooterEncoderPortB = 5;
+	public static int kLeftDriveEnc1 = 0, kLeftDriveEnc2 = 1;
+	public static int kRightDriveEnc1 = 2, kRightDriveEnc2 = 3;
 	public static int kShooterMotorPort = 0;
 	public static int kIntakeMotorPort = 1;
-	public static int kFeederEncoderPortA = 2, kFeederEncoderPortB = 3;
+	public static int kFeederEncoderPortA = 6, kFeederEncoderPortB = 7;
 	public static int kFeederMotorPort = 2;
 	public static int kClimberMotorPort = 7;
 	
@@ -144,16 +146,16 @@ public class RobotMap {
 		
 		driveTrainLeft.setInverted(true);
 		
-//		unifiedCamera = new UnifiedCamera(0);
-//		driveEncLeft.setReverseDirection(true);
-//		driveEncRight.setReverseDirection(false);
-//		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
-//		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+		driveEncLeft = new Encoder(kLeftDriveEnc1, kLeftDriveEnc2);
+		driveEncRight = new Encoder(kRightDriveEnc1, kRightDriveEnc2);
 		
-
-//		driveTrainLeft.setInverted(true);
-//		driveTrainRight.setInverted(false);
-
+		driveEncLeft.setReverseDirection(true);
+		driveEncRight.setReverseDirection(false);
+		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+		
+		driveEncRateLeft = new EncoderWrapperRateAndDistance(driveEncLeft, PIDSourceType.kRate);
+		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
 		
 		//construct subsytems
 		driveTrain = new DriveTrain();

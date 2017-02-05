@@ -15,7 +15,7 @@ public class RollersOn extends InstantCommand {
 	
 	@Override
 	protected void initialize() {
-		RobotMap.intakeRollers.setManual(ConstantsIO.intakeRollerSpeed);
+		RobotMap.intakeRollers.setManual(ConstantsIO.kIntakeRollerSpeed);
 	}
 
 }

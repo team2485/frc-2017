@@ -23,8 +23,8 @@ public class ConstantsIO {
 
 	public static HashMap<String, String> data;
 	
-	public static double intakeRollerSpeed;
-	public static double climberSpeed;
+	public static double kIntakeRollerSpeed;
+	public static double kClimberSpeed;
 
 	public static double kP_DriveVelocity;
 	public static double kI_DriveVelocity;
@@ -64,6 +64,9 @@ public class ConstantsIO {
 	public static double kI_DriveSteering;
 	public static double kD_DriveSteering;
 	public static double kF_DriveSteering;
+
+	public static double kUpRamp_DriveCurrent;
+	public static double kDownRamp_DriveCurrent;
 	
 
 
@@ -91,44 +94,55 @@ public class ConstantsIO {
 		
 //		createUnMatchedConstants();
 		
-		intakeRollerSpeed = .5;
-		climberSpeed = .5;
+		kIntakeRollerSpeed = Double.parseDouble(data.get("kIntakeRollerSpeed"));
+		kClimberSpeed = Double.parseDouble(data.get("kClimberSpeed"));
 
-		kP_DriveVelocity = 0; //Double.parseDouble(data.get("kP_DriveVelocity"));
-		kI_DriveVelocity = 0; //Double.parseDouble(data.get("kI_DriveVelocity"));
-		kD_DriveVelocity = 0; //Double.parseDouble(data.get("kD_DriveVelocity"));
-		kF_DriveVelocity = 0; //Double.parseDouble(data.get("kF_DriveVelocity"));
+		kP_DriveVelocity = Double.parseDouble(data.get("kP_DriveVelocity"));
+		kI_DriveVelocity = Double.parseDouble(data.get("kI_DriveVelocity"));
+		kD_DriveVelocity = Double.parseDouble(data.get("kD_DriveVelocity"));
+		kF_DriveVelocity = Double.parseDouble(data.get("kF_DriveVelocity"));
 
-		kP_DriveCurrent = 0; //Double.parseDouble(data.get("kP_DriveCurrent"));
-		kI_DriveCurrent = 0; //Double.parseDouble(data.get("kI_DriveCurrent"));
-		kD_DriveCurrent = 0; //Double.parseDouble(data.get("kD_DriveCurrent"));
+		kP_DriveCurrent = Double.parseDouble(data.get("kP_DriveCurrent"));
+		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
+		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
  	
 
-		kUpRamp_DriveVoltage = 0; //Double.parseDouble(data.get("kUpRamp_DriveVoltage"));
-		kDownRamp_DriveVoltage = 0; //Double.parseDouble(data.get("kDownRamp_DriveVoltage"));
+		kUpRamp_DriveVoltage = Double.parseDouble(data.get("kUpRamp_DriveVoltage"));
+		kDownRamp_DriveVoltage = Double.parseDouble(data.get("kDownRamp_DriveVoltage"));
+
+		kUpRamp_DriveCurrent = Double.parseDouble(data.get("kUpRamp_DriveCurrent"));
+		kDownRamp_DriveCurrent = Double.parseDouble(data.get("kDownRamp_DriveCurrent"));
 
 		
-		kP_Shooter = 0; //Double.parseDouble(data.get("kP_Shooter"));
+		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));
 		
-		kI_Shooter = 0; //Double.parseDouble(data.get("kI_Shooter"));
+		kI_Shooter = Double.parseDouble(data.get("kI_Shooter"));
 		
-		kD_Shooter = 0; //Double.parseDouble(data.get("kD_Shooter"));
+		kD_Shooter = Double.parseDouble(data.get("kD_Shooter"));
 		
-		kF_Shooter = 0; //Double.parseDouble(data.get("kF_Shooter"));
+		kF_Shooter = Double.parseDouble(data.get("kF_Shooter"));
 		
-		kP_Feeder = 0; //Double.parseDouble(data.get("kP_Feeder"));
+		kP_Feeder = Double.parseDouble(data.get("kP_Feeder"));
 		
-		kI_Feeder = 0; //Double.parseDouble(data.get("kI_Feeder"));
+		kI_Feeder = Double.parseDouble(data.get("kI_Feeder"));
 		
-		kD_Feeder = 0; //Double.parseDouble(data.get("kD_Feeder"));
+		kD_Feeder = Double.parseDouble(data.get("kD_Feeder"));
 		
-		kF_Feeder = 0; //Double.parseDouble(data.get("kF_Feeder"));
+		kF_Feeder = Double.parseDouble(data.get("kF_Feeder"));
 		
-		kShotRPS = 0; //Double.parseDouble(data.get("kShotRPS"));
+		kShotRPS = Double.parseDouble(data.get("kShotRPS"));
 		
-		kFeederRPS = 0; //Double.parseDouble(data.get("kFeederRPS"));
+		kFeederRPS = Double.parseDouble(data.get("kFeederRPS"));
 		
-		kRollersPower = 0; //Double.parseDouble(data.get("kRollersPower"));
+		kRollersPower = Double.parseDouble(data.get("kRollersPower"));
+		
+		kP_DriveSteering = Double.parseDouble(data.get("kP_DriveSteering"));
+		
+		kI_DriveSteering = Double.parseDouble(data.get("kI_DriveSteering"));
+		
+		kD_DriveSteering = Double.parseDouble(data.get("kD_DriveSteering"));
+		
+		kF_DriveSteering = Double.parseDouble(data.get("kF_DriveSteering"));
 	}
 
 	@SuppressWarnings("unused")
