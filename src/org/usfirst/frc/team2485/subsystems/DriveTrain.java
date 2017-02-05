@@ -15,7 +15,6 @@ import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * @author Nicholas Contreras
@@ -41,7 +40,7 @@ public class DriveTrain extends Subsystem {
 	private static final double STEERING_DEADBAND = 0.1;
 	private static final double THROTTLE_DEADBAND = 0.2;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
-	private static final double MAX_CURRENT = 20;
+	private static final double MAX_CURRENT = 1 / 0.07, MIN_CURRENT = 0.25;
 
 	// private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
 	// private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
@@ -51,29 +50,50 @@ public class DriveTrain extends Subsystem {
 	// private int driveToOnTargetIterations;
 
 	private boolean quickTurn;
+	private boolean isCurrentLeft, isCurrentRight;
 
-	private WarlordsPIDController driveToPID, rotateToPID;
-	private WarlordsPIDController ratePIDRight;
-	private WarlordsPIDController ratePIDLeft;
+//	private WarlordsPIDController driveToPID, rotateToPID;
+//	private WarlordsPIDController ratePIDRight;
+//	private WarlordsPIDController ratePIDLeft;
 
 	private TransferNode throttleTransferNode;
 	private WarlordsPIDController steeringPidController;
-	private int ahrsOnTargetCounter;
+//	private int ahrsOnTargetCounter;
 	private TransferNode steeringTransferNode;
 	private PIDSource curvatureSource;
-	private ScalingMax scalingMax;
-	private RampRate currentRampLeft, currentRampRight;
+	private ScalingMax powerScalingMax;
+	private RampRate powerRampLeft, powerRampRight;
+	private PIDOutput leftMotorModeSwitcher, rightMotorModeSwitcher; 
+	// excuse the variable name, this represents the thing that switches between current and voltage mode depending on the power value
 
-	private PIDSource rightPrescaledCurrent;
-	private PIDSource leftPrescaledCurrent;
+	private PIDSource rightPrescaledPower;
+	private PIDSource leftPrescaledPower;
 	private double MIN_SPEED = 5;
 
 	public DriveTrain() {
-
-		currentRampLeft = new RampRate(new PIDOutput[] { RobotMap.driveTrainLeft }, ConstantsIO.kUpRamp_DriveCurrent,
-				ConstantsIO.kD_DriveCurrent);
-		currentRampRight = new RampRate(new PIDOutput[] { RobotMap.driveTrainRight }, ConstantsIO.kUpRamp_DriveCurrent,
+		
+		powerRampLeft = new RampRate(new PIDOutput[] { leftMotorModeSwitcher }, ConstantsIO.kUpRamp_DriveCurrent,
 				ConstantsIO.kDownRamp_DriveCurrent);
+		powerRampRight = new RampRate(new PIDOutput[] { rightMotorModeSwitcher }, ConstantsIO.kUpRamp_DriveCurrent,
+				ConstantsIO.kDownRamp_DriveCurrent);
+		
+		leftMotorModeSwitcher = (double out) -> {
+			if (Math.abs(out * MAX_CURRENT) >= MIN_CURRENT) {
+				setCurrentModeLeft(true);
+				RobotMap.driveTrainLeft.set(out * MAX_CURRENT);
+			} else {
+				RobotMap.driveTrainLeft.set(out);
+			}
+		};
+		
+		rightMotorModeSwitcher = (double out) -> {
+			if (Math.abs(out * MAX_CURRENT) >= MIN_CURRENT) {
+				setCurrentModeRight(true);
+				RobotMap.driveTrainRight.set(out * MAX_CURRENT);
+			} else {
+				RobotMap.driveTrainRight.set(out);
+			}
+		};
 
 		throttleTransferNode = new TransferNode(0);
 		steeringTransferNode = new TransferNode(0);
@@ -83,25 +103,26 @@ public class DriveTrain extends Subsystem {
 			return (leftVelocity - rightVelocity) / (leftVelocity + rightVelocity);
 		});
 
-		rightPrescaledCurrent = new PIDSourceWrapper(() -> { 
+		// now both from -1 -> 1 instead of in amps
+		rightPrescaledPower = new PIDSourceWrapper(() -> { 
 			if (quickTurn) {
-				return -MAX_CURRENT * steeringTransferNode.pidGet();
+				return -steeringTransferNode.pidGet();
 			} else {
-				return MAX_CURRENT * throttleTransferNode.getOutput() * (1 - steeringTransferNode.getOutput());
+				return throttleTransferNode.getOutput() * (1 - steeringTransferNode.getOutput());
 			}
 		});
 
-		leftPrescaledCurrent = new PIDSourceWrapper(() -> {
+		leftPrescaledPower = new PIDSourceWrapper(() -> {
 			if (quickTurn) {
-				return MAX_CURRENT * steeringTransferNode.pidGet();
+				return steeringTransferNode.pidGet();
 			} else {
-				return MAX_CURRENT * throttleTransferNode.getOutput() * (1 + steeringTransferNode.getOutput());
+				return throttleTransferNode.getOutput() * (1 + steeringTransferNode.getOutput());
 			}
 		});
 
-		scalingMax = new ScalingMax(new PIDOutput[] { currentRampLeft, currentRampRight },
-				new PIDSource[] { leftPrescaledCurrent, rightPrescaledCurrent });
-		scalingMax.setSetpoint(MAX_CURRENT);
+		powerScalingMax = new ScalingMax(new PIDOutput[] { powerRampLeft, powerRampRight },
+				new PIDSource[] { leftPrescaledPower, rightPrescaledPower });
+		powerScalingMax.setSetpoint(1);
 
 		steeringPidController = new WarlordsPIDController(curvatureSource, steeringTransferNode);
 		steeringPidController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
@@ -187,32 +208,22 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void warlordDriveCurrent(double controllerY, double controllerX) {
-		if (Math.abs(controllerY) < THROTTLE_DEADBAND && !quickTurn || 
-				quickTurn && Math.abs(controllerX) < STEERING_DEADBAND) {
-			steeringPidController.disable();
-			scalingMax.disable();
-			setCurrentMode(false);
-			RobotMap.driveTrainLeft.set(0);
-			RobotMap.driveTrainRight.set(0);
+
+		double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.01, 1);
+		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.01, 1);
+		throttleTransferNode.setOutput(throttle);
+		powerScalingMax.enable();
+		powerRampLeft.enable();
+		powerRampRight.enable();
+		double averageSpeed = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2;
+		if (Math.abs(averageSpeed) > MIN_SPEED && !quickTurn) {
+			steeringPidController.enable();
+			steeringPidController.setSetpoint(steering);
 		} else {
-			double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.01, 1);
-			double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.01, 1);
-			setCurrentMode(true);
-			throttleTransferNode.setOutput(throttle);
-			scalingMax.enable();
-			double averageSpeed = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2;
-			if (Math.abs(averageSpeed) > MIN_SPEED && !quickTurn) {
-				steeringPidController.enable();
-				steeringPidController.setSetpoint(steering);
-			} else {
-				steeringPidController.disable();
-				steeringTransferNode.setOutput(steering);
-			}
-			SmartDashboard.putDouble("left current", scalingMax.getOutValues()[0]);
-			SmartDashboard.putDouble("right current", scalingMax.getOutValues()[1]);
-			System.out.println("throttle = " + throttleTransferNode.getOutput());
-			System.out.println("steering = " + steeringTransferNode.getOutput());
+			steeringPidController.disable();
+			steeringTransferNode.setOutput(steering);
 		}
+
 
 	}
 	// /**
@@ -358,28 +369,38 @@ public class DriveTrain extends Subsystem {
 	//
 	//
 	// }
-	public void setCurrentMode(boolean isCurrent) {
+	public void setCurrentModeLeft(boolean isCurrent) {			
+		isCurrentLeft = isCurrent;
 		if (isCurrent) {
-			currentRampLeft.enable();
-			currentRampRight.enable();
-
 			RobotMap.driveLeft1.changeControlMode(TalonControlMode.Current);
 			RobotMap.driveLeft2.changeControlMode(TalonControlMode.Current);
 			RobotMap.driveLeft3.changeControlMode(TalonControlMode.Current);
+		} else {
+			RobotMap.driveLeft1.changeControlMode(TalonControlMode.PercentVbus);
+			RobotMap.driveLeft2.changeControlMode(TalonControlMode.PercentVbus);
+			RobotMap.driveLeft3.changeControlMode(TalonControlMode.PercentVbus);
+		}
+	}
+	
+	public void setCurrentModeRight(boolean isCurrent) {
+		isCurrentLeft = isCurrent;
+		if (isCurrent) {
 			RobotMap.driveRight1.changeControlMode(TalonControlMode.Current);
 			RobotMap.driveRight2.changeControlMode(TalonControlMode.Current);
 			RobotMap.driveRight3.changeControlMode(TalonControlMode.Current);
 		} else {
-			currentRampLeft.disable();
-			currentRampRight.disable();
-
-			RobotMap.driveLeft1.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveLeft2.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveLeft3.changeControlMode(TalonControlMode.PercentVbus);
 			RobotMap.driveRight1.changeControlMode(TalonControlMode.PercentVbus);
 			RobotMap.driveRight2.changeControlMode(TalonControlMode.PercentVbus);
 			RobotMap.driveRight3.changeControlMode(TalonControlMode.PercentVbus);
 		}
+	}
+	
+	public boolean isCurrentModeLeft() {
+		return isCurrentLeft;
+	}
+	
+	public boolean isCurrentModeRight() {
+		return isCurrentRight;
 	}
 	
 	public double getCurvature() {
@@ -395,8 +416,8 @@ public class DriveTrain extends Subsystem {
 		steeringPidController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
 
-		currentRampLeft.setRampRates(ConstantsIO.kUpRamp_DriveCurrent, ConstantsIO.kDownRamp_DriveCurrent);
-		currentRampRight.setRampRates(ConstantsIO.kUpRamp_DriveCurrent, ConstantsIO.kDownRamp_DriveCurrent);
+		powerRampLeft.setRampRates(ConstantsIO.kUpRamp_DriveCurrent, ConstantsIO.kDownRamp_DriveCurrent);
+		powerRampRight.setRampRates(ConstantsIO.kUpRamp_DriveCurrent, ConstantsIO.kDownRamp_DriveCurrent);
 	}
 
 	@Override

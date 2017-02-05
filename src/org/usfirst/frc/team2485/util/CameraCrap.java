@@ -1,10 +1,7 @@
 package org.usfirst.frc.team2485.util;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoMode.PixelFormat;
 
 /**
  * @author Ben Dorsey

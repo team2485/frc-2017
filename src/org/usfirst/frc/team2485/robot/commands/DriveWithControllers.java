@@ -4,9 +4,6 @@ import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 
-import com.ctre.CANTalon.TalonControlMode;
-import com.sun.glass.ui.Robot;
-
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveWithControllers extends Command {
@@ -20,7 +17,8 @@ public class DriveWithControllers extends Command {
 
 	@Override
 	protected void initialize() {
-		RobotMap.driveTrain.setCurrentMode(isCurrent);
+		RobotMap.driveTrain.setCurrentModeLeft(isCurrent);
+		RobotMap.driveTrain.setCurrentModeRight(isCurrent);
 	}
 
 	@Override
