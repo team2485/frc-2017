@@ -15,7 +15,6 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	
 	private double kP, kI, kD, kF, kC;
 	
-	
 	private double integralTerm, lastPropTerm;
 
 	private double sensorVal, result;
@@ -34,7 +33,7 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	
 	private double minInput, maxInput;
 	private boolean continuous;
-	
+		
 	/**
 	 * 
 	 * @param kP proportional term, multiplied by the current error
@@ -122,17 +121,6 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	 */
 	public boolean isContinuous() {
 		return continuous;
-	}
-	
-	/**
-	 * Sets setpoint and clears history of errors
-	 * @param setpoint new setpoint 
-	 */
-	public void setSetpoint(double setpoint) {
-		super.setSetpoint(setpoint);
-		synchronized (errorBuffer) {
-			errorBuffer = new LinkedList<Double>();
-		}
 	}
 	
 	/**

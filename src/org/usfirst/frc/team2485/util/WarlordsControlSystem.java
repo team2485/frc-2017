@@ -19,6 +19,9 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 	private static final long DEFAULT_PERIOD = 10;
 
 	private Timer pidTimer;
+	
+	private PIDSource setpointSource;
+
 
 	public WarlordsControlSystem(PIDOutput[] outputs, PIDSource[] sources) {
 		
@@ -78,6 +81,7 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 		outputs = null;
 		sources = null;
 	}
+	
 
 	/**
 	 * Calculates output based on sensorVal but does not read from source or write to output directly
@@ -89,7 +93,14 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 		setSetpoint(output);
 	}
 	
+	public void setSetpointSource(PIDSource source) {
+		this.setpointSource = source;
+	}
+	
 	public void setSetpoint(double setpoint) {
+		if (setpointSource != null) {
+			throw new SettingSetpointWithSetpointSourceSetException();
+		}
 		this.setpoint = setpoint;
 	}
 	
@@ -101,8 +112,19 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 		@Override
 		public void run() {
 			if (enabled) {
+				if (setpointSource != null) {
+					setpoint = setpointSource.pidGet();
+				}
 				calculate();
 			}
 		}
+	}
+	
+	@SuppressWarnings("serial")
+	private class SettingSetpointWithSetpointSourceSetException extends RuntimeException {
+		public SettingSetpointWithSetpointSourceSetException() {
+			super("Unset the setpoint source before you set the setpoint");
+		}
+		
 	}
 }
