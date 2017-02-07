@@ -12,7 +12,6 @@ import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
 import com.ctre.CANTalon.TalonControlMode;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -52,10 +51,10 @@ public class DriveTrain extends Subsystem {
 
 	private boolean isQuickTurn;
 	private boolean isCurrentLeft, isCurrentRight;
-	private double oldWheel, quickStopAccumulator;
 	private boolean useCurrent;
-	private static final double SENSITIVITY_HIGH = 0.85, SENSITIVITY_LOW = 0.75;
 
+	private double oldSteering, negInertiaAccumulator, quickStopAccumulator;
+	
 	// private WarlordsPIDController driveToPID, rotateToPID;
 	private WarlordsPIDController velocityPIDRight, velocityPIDLeft;
 
@@ -160,6 +159,111 @@ public class DriveTrain extends Subsystem {
 	public void setQuickTurn(boolean quickTurn) {
 		this.isQuickTurn = quickTurn;
 	}
+	
+	
+	public void cheesyDrive(double controllerY, double controllerX) {
+		double steeringNonLinearity;
+
+		double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.01, 1);
+		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.01, 1);
+		
+	    double negInertia = steering - oldSteering; 
+	    oldSteering = steering;
+
+	    
+	   
+	      steeringNonLinearity = 0.5;
+	      // Apply a sin function that's scaled to make it feel better.
+	      steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
+	              / Math.sin(Math.PI / 2.0 * steeringNonLinearity);
+	      steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
+	              / Math.sin(Math.PI / 2.0 * steeringNonLinearity);
+	      steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
+	              / Math.sin(Math.PI / 2.0 * steeringNonLinearity);
+	    
+
+	    double leftPwm, rightPwm, overPower;
+	    double sensitivity;
+
+	    double angularPower;
+	    double linearPower;
+
+	    // Negative inertia!
+	    double negInertiaScalar;
+	    
+	      if (steering * negInertia > 0) {
+	        negInertiaScalar = 2.5;
+	      } else {
+	        if (Math.abs(steering) > 0.65) {
+	          negInertiaScalar = 5.0;
+	        } else {
+	          negInertiaScalar = 3.0;
+	        }
+	      }
+	      sensitivity = .75;
+	    
+	    double negInertiaPower = negInertia * negInertiaScalar;
+	    negInertiaAccumulator += negInertiaPower;
+
+	    steering = steering + negInertiaAccumulator;
+	    if (negInertiaAccumulator > 1) {
+	      negInertiaAccumulator -= 1;
+	    } else if (negInertiaAccumulator < -1) {
+	      negInertiaAccumulator += 1;
+	    } else {
+	      negInertiaAccumulator = 0;
+	    }
+	    linearPower = throttle * driveSpeed;
+
+	    // Quickturn!
+	    if (isQuickTurn) {
+	      if (Math.abs(linearPower) < 0.2) {
+	        double alpha = 0.1;
+	        quickStopAccumulator = (1 - alpha) * quickStopAccumulator + alpha
+	                * steering * 5;
+	      }
+	      overPower = 1.0;
+	     
+	      sensitivity = 1.0;
+	  
+	      angularPower = steering;
+	    } else {
+	      overPower = 0.0;
+	      angularPower = Math.abs(throttle) * steering * sensitivity - quickStopAccumulator;
+	      if (quickStopAccumulator > 1) {
+	        quickStopAccumulator -= 1;
+	      } else if (quickStopAccumulator < -1) {
+	        quickStopAccumulator += 1;
+	      } else {
+	        quickStopAccumulator = 0.0;
+	      }
+	    }
+
+	    rightPwm = leftPwm = linearPower;
+	    leftPwm += angularPower;
+	    rightPwm -= angularPower;
+
+	    if (leftPwm > 1.0) {
+	      rightPwm -= overPower * (leftPwm - 1.0);
+	      leftPwm = 1.0;
+	    } else if (rightPwm > 1.0) {
+	      leftPwm -= overPower * (rightPwm - 1.0);
+	      rightPwm = 1.0;
+	    } else if (leftPwm < -1.0) {
+	      rightPwm += overPower * (-1.0 - leftPwm);
+	      leftPwm = -1.0;
+	    } else if (rightPwm < -1.0) {
+	      leftPwm += overPower * (-1.0 - rightPwm);
+	      rightPwm = -1.0;
+	    }
+	    
+	    setCurrentModeLeft(false);
+	    setCurrentModeRight(false);
+	    
+	    RobotMap.driveTrainLeft.set(leftPwm);
+	    RobotMap.driveTrainRight.set(rightPwm);
+	    
+	}
 
 	/**
 	 * W.A.R. Lord Drive This drive method is based off of Team 254's Ultimate
@@ -176,6 +280,7 @@ public class DriveTrain extends Subsystem {
 		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.01, 1);
 		if (useVelocity) {
 			this.useCurrent = true;
+			hasSteeringCorrection = false;
 			powerScalingMax.disable();
 			velocityPIDLeft.enable();
 			velocityPIDRight.enable();
