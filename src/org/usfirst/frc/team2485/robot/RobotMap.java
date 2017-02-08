@@ -7,6 +7,8 @@ import org.usfirst.frc.team2485.subsystems.IntakeArm;
 import org.usfirst.frc.team2485.subsystems.IntakeRollers;
 import org.usfirst.frc.team2485.subsystems.Shooter;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
+import org.usfirst.frc.team2485.util.MultipleEncoderWrapper;
+import org.usfirst.frc.team2485.util.MultipleEncoderWrapper.MultipleEncoderWrapperMode;
 import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
 
 import com.ctre.CANTalon;
@@ -70,6 +72,7 @@ public class RobotMap {
 	public static Encoder shooterEncoder;	
 	public static Encoder feederEncoder;
 	public static Ultrasonic gearDetector;
+	public static MultipleEncoderWrapper averageEncoderDistance;
 	
 	// subsystems
 	public static GearHolder gearHolder;
@@ -118,6 +121,9 @@ public class RobotMap {
 		feederEncoder = new Encoder(kFeederEncoderPortA, kFeederEncoderPortB);
 		
 		lightSpike = new Relay(0);
+		
+		averageEncoderDistance = new MultipleEncoderWrapper(PIDSourceType.kDisplacement, 
+				MultipleEncoderWrapperMode.AVERAGE, driveEncLeft, driveEncRight);
 		
 //		usbCam = new UsbCamera("cam0", 0);
 				

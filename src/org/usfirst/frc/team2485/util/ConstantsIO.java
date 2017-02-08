@@ -64,6 +64,15 @@ public class ConstantsIO {
 
 	public static double kUpRamp_Drive;
 	public static double kDownRamp_Drive;
+
+	public static double kP_Distance;
+	public static double kI_Distance;
+	public static double kD_Distance;
+
+	public static double kF_Distance;
+
+	public static double kDownRamp_OverallVelocityRamp;
+	public static double kUpRamp_OverallVelocityRamp;
 	
 
 
@@ -102,9 +111,17 @@ public class ConstantsIO {
 		kP_DriveCurrent = Double.parseDouble(data.get("kP_DriveCurrent"));
 		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
 		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
+		
+		kP_Distance = Double.parseDouble(data.get("kP_Distance"));
+		kI_Distance = Double.parseDouble(data.get("kI_Distance"));
+		kD_Distance = Double.parseDouble(data.get("kD_Distance"));
+		kF_Distance = Double.parseDouble(data.get("kF_Distance"));
 
 		kUpRamp_Drive = Double.parseDouble(data.get("kUpRamp_Drive"));
 		kDownRamp_Drive = Double.parseDouble(data.get("kDownRamp_Drive"));
+		
+		kDownRamp_OverallVelocityRamp = Double.parseDouble("kDownRamp_OverallVelocityRamp");
+		kUpRamp_OverallVelocityRamp = Double.parseDouble("kUpRamp_OverallVelocityRamp");
 
 		
 		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));

@@ -41,6 +41,7 @@ public class DriveTrain extends Subsystem {
 	private static final double THROTTLE_DEADBAND = 0.2;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
 	private static final double MAX_CURRENT = 1 / 0.07, MIN_CURRENT = 0.5;
+	
 
 	// private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
 	// private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
@@ -58,8 +59,10 @@ public class DriveTrain extends Subsystem {
 	
 	// private WarlordsPIDController driveToPID, rotateToPID;
 	private WarlordsPIDController velocityPIDRight, velocityPIDLeft;
+	
 
 	private TransferNode throttleTransferNode;
+	private RampRate overallVelocityRampRate;
 	private WarlordsPIDController steeringPIDController;
 	// private int ahrsOnTargetCounter;
 	private TransferNode steeringTransferNode;
@@ -78,6 +81,7 @@ public class DriveTrain extends Subsystem {
 	private RampRate leftRateRamp, rightRateRamp;
 	private PIDSource velocityPreRampLeft, velocityPreRampRight;
 	private WarlordsPIDController distPID, anglePID, lateralOffsetPID;
+	private TransferNode overallVelocityTransferNode;
 	
 	public DriveTrain() {
 
@@ -91,6 +95,8 @@ public class DriveTrain extends Subsystem {
 				RobotMap.driveTrainLeft.set(out);
 			}
 		};
+		overallVelocityTransferNode = new TransferNode(0);
+
 
 		motorModeSwitcherRight = (double out) -> {
 			if (Math.abs(out * MAX_CURRENT) > MIN_CURRENT && useCurrent) {
@@ -150,6 +156,12 @@ public class DriveTrain extends Subsystem {
 				ConstantsIO.kF_DriveVelocity);
 		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
 				ConstantsIO.kF_DriveVelocity);
+		overallVelocityRampRate = new RampRate(new PIDOutput[] {overallVelocityTransferNode}, 
+				ConstantsIO.kDownRamp_OverallVelocityRamp, ConstantsIO.kUpRamp_OverallVelocityRamp);
+		distPID = new WarlordsPIDController(RobotMap.averageEncoderDistance, overallVelocityRampRate);
+		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance, 
+				ConstantsIO.kF_Distance);
+		
 		
 		
 		
