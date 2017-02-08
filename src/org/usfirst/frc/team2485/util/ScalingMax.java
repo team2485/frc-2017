@@ -14,11 +14,12 @@ public class ScalingMax extends WarlordsControlSystem {
 		outVals = new double[outputs.length]; 
 
 	}
-	public double[] getInValues(){
+	
+	public double[] getInValues() {
 		return inVals;
-		
 	}
-	public double[] getOutValues(){
+	
+	public double[] getOutValues() {
 		return outVals;
 	}
 	
@@ -29,7 +30,6 @@ public class ScalingMax extends WarlordsControlSystem {
 			inVals[i] = sources[i].pidGet();
 		}
 		
-		
 		double maxRatio = 1;
 		for (double x : inVals) {
 			double curRatio = Math.abs(x / setpoint);
@@ -39,11 +39,7 @@ public class ScalingMax extends WarlordsControlSystem {
 		for (int i = 0; i < outVals.length; i++) {
 			outVals[i] = inVals[i] / maxRatio;
 			outputs[i].pidWrite(outVals[i]);
-			
-//			System.out.println("inVal" + i + "=" + inVals[i]);
-//			System.out.println("outVal" + i + "=" + outVals[i]);
 		}
-		
 
 	}
 

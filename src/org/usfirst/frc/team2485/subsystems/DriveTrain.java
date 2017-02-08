@@ -52,6 +52,7 @@ public class DriveTrain extends Subsystem {
 	private boolean isQuickTurn;
 	private boolean isCurrentLeft, isCurrentRight;
 	private boolean useCurrent;
+	private boolean isAuto;
 
 	private double oldSteering, negInertiaAccumulator, quickStopAccumulator;
 	
@@ -72,6 +73,11 @@ public class DriveTrain extends Subsystem {
 
 	private static final double MIN_SPEED = 10;
 	private static final double MAX_SPEED = 150;
+	
+	//AUTO
+	private RampRate leftRateRamp, rightRateRamp;
+	private PIDSource velocityPreRampLeft, velocityPreRampRight;
+	private WarlordsPIDController distPID, anglePID, lateralOffsetPID;
 	
 	public DriveTrain() {
 
@@ -144,12 +150,24 @@ public class DriveTrain extends Subsystem {
 				ConstantsIO.kF_DriveVelocity);
 		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
 				ConstantsIO.kF_DriveVelocity);
-		velocityPIDLeft.setSetpointSource(new PIDSourceWrapper(() -> {
-			return prescaledPowerLeft.pidGet() * MAX_SPEED;
-		}));
-		velocityPIDRight.setSetpointSource(new PIDSourceWrapper(() -> {
-			return prescaledPowerRight.pidGet() * MAX_SPEED;
-		}));
+		
+		
+		
+	}
+	
+	public void setAuto(boolean isAuto) {
+		this.isAuto = isAuto;
+		if (isAuto) {
+			velocityPIDLeft.setSetpointSource(null);
+			velocityPIDRight.setSetpointSource(null);
+		} else {
+			velocityPIDLeft.setSetpointSource(new PIDSourceWrapper(() -> {
+				return prescaledPowerLeft.pidGet() * MAX_SPEED;
+			}));
+			velocityPIDRight.setSetpointSource(new PIDSourceWrapper(() -> {
+				return prescaledPowerRight.pidGet() * MAX_SPEED;
+			}));
+		}
 	}
 
 	public void setDriveSpeed(DriveSpeed speed) {
