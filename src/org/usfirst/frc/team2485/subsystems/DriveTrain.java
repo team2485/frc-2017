@@ -140,7 +140,7 @@ public class DriveTrain extends Subsystem {
 			} else {
 				return throttleTransferNode.getOutput() * (1 + steeringTransferNode.getOutput());
 			}
-		});
+		}); 
 
 		powerScalingMax = new ScalingMax(new PIDOutput[] { motorModeSwitcherLeft, motorModeSwitcherRight },
 				new PIDSource[] { prescaledPowerLeft, prescaledPowerRight });
