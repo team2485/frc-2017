@@ -66,8 +66,10 @@ public class DriveTrain extends Subsystem {
 	private WarlordsPIDController steeringPIDController;
 	// private int ahrsOnTargetCounter;
 	private TransferNode steeringTransferNode;
-	private PIDSource curvatureSource;
+	private PIDSource curvatureSource, autoSteeringSource;
+	private PIDSource prescaledVelocityLeft, prescaledVelocityRight;
 	private ScalingMax powerScalingMax;
+	private ScalingMax velocityScalingMax;
 	private RampRate throttleRamp;
 	private PIDOutput motorModeSwitcherLeft, motorModeSwitcherRight;
 	// excuse the variable name, this represents the thing that switches between
@@ -78,10 +80,10 @@ public class DriveTrain extends Subsystem {
 	private static final double MAX_SPEED = 150;
 	
 	//AUTO
-	private RampRate leftRateRamp, rightRateRamp;
+	private RampRate velocityRampLeft, velocityRampRight;
 	private PIDSource velocityPreRampLeft, velocityPreRampRight;
 	private WarlordsPIDController distPID, anglePID, lateralOffsetPID;
-	private TransferNode overallVelocityTransferNode;
+	private TransferNode overallVelocityTransferNode, angleSteeringTransferNode;
 	
 	public DriveTrain() {
 
@@ -96,6 +98,10 @@ public class DriveTrain extends Subsystem {
 			}
 		};
 		overallVelocityTransferNode = new TransferNode(0);
+		angleSteeringTransferNode = new TransferNode(0);
+		autoSteeringSource = new PIDSourceWrapper(() -> {
+			return angleSteeringTransferNode.getOutput();
+		});
 
 
 		motorModeSwitcherRight = (double out) -> {
@@ -141,10 +147,23 @@ public class DriveTrain extends Subsystem {
 				return throttleTransferNode.getOutput() * (1 + steeringTransferNode.getOutput());
 			}
 		}); 
+		
+		prescaledVelocityLeft = new PIDSourceWrapper(() -> {
+			return overallVelocityTransferNode.getOutput() * (1 + autoSteeringSource.pidGet());
+		});
+		
+		prescaledVelocityRight = new PIDSourceWrapper(() -> {
+			return overallVelocityTransferNode.getOutput() * (1 - autoSteeringSource.pidGet());
+		});
 
 		powerScalingMax = new ScalingMax(new PIDOutput[] { motorModeSwitcherLeft, motorModeSwitcherRight },
 				new PIDSource[] { prescaledPowerLeft, prescaledPowerRight });
 		powerScalingMax.setSetpoint(1);
+		
+		
+		velocityScalingMax = new ScalingMax(new PIDOutput[] {velocityRampLeft, velocityRampRight}, 
+				new PIDSource[] {prescaledVelocityLeft, prescaledVelocityRight});
+		velocityScalingMax.setSetpoint(MAX_SPEED);
 
 		steeringPIDController = new WarlordsPIDController(curvatureSource, steeringTransferNode);
 		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
@@ -161,6 +180,12 @@ public class DriveTrain extends Subsystem {
 		distPID = new WarlordsPIDController(RobotMap.averageEncoderDistance, overallVelocityRampRate);
 		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance, 
 				ConstantsIO.kF_Distance);
+		
+		velocityRampLeft = new RampRate(new PIDOutput[] {velocityPIDLeft}, 
+				ConstantsIO.kDownRamp_IndividualVelocityRamp, ConstantsIO.kUpRamp_IndividualVelocityRamp);
+		velocityRampRight = new RampRate(new PIDOutput[]{velocityPIDRight}, 
+				ConstantsIO.kDownRamp_IndividualVelocityRamp, ConstantsIO.kUpRamp_IndividualVelocityRamp);
+				
 		
 		
 		

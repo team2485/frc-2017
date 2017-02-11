@@ -74,6 +74,9 @@ public class ConstantsIO {
 	public static double kDownRamp_OverallVelocityRamp;
 	public static double kUpRamp_OverallVelocityRamp;
 	
+	public static double kDownRamp_IndividualVelocityRamp;
+	public static double kUpRamp_IndividualVelocityRamp;
+	
 
 
 	public static void init() {
@@ -122,6 +125,9 @@ public class ConstantsIO {
 		
 		kDownRamp_OverallVelocityRamp = Double.parseDouble("kDownRamp_OverallVelocityRamp");
 		kUpRamp_OverallVelocityRamp = Double.parseDouble("kUpRamp_OverallVelocityRamp");
+		
+		kDownRamp_IndividualVelocityRamp = Double.parseDouble("kDownRamp_IndividualVelocityRamp");
+		kUpRamp_IndividualVelocityRamp = Double.parseDouble("kUpRamp_IndividualVelocityRamp");
 
 		
 		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));
