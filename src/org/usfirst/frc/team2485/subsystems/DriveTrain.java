@@ -185,6 +185,10 @@ public class DriveTrain extends Subsystem {
 	public void setDriveSpeed(DriveSpeed speed) {
 		driveSpeed = speed.getSpeedFactor();
 	}
+	
+	public double getDriveSpeed() {
+		return driveSpeed;
+	}
 
 	public void setQuickTurn(boolean quickTurn) {
 		this.isQuickTurn = quickTurn;
