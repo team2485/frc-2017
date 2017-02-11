@@ -4,7 +4,6 @@ import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveWithControllers extends Command {
@@ -39,7 +38,7 @@ public class DriveWithControllers extends Command {
 		}
 		
 		if (TRIGGER_DRIVE) {
-			foward = OI.xBox.getRawAxis(OI.XBOX_RTRIGGER) - OI.xBox.getRawAxis(OI.XBOX_LTRIGGER);
+			foward = OI.xBox.getRawAxis(OI.XBOX_RTRIGGER) + OI.xBox.getRawAxis(OI.XBOX_LTRIGGER);
 		}
 		
 		RobotMap.driveTrain.warlordDrive(foward, right, (mode & useCurrentFlag) != 0, (mode & hasCheeseFlag) != 0, 
