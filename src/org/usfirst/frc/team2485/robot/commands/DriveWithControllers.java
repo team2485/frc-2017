@@ -39,10 +39,6 @@ public class DriveWithControllers extends Command {
 		
 		if (TRIGGER_DRIVE) {
 			
-			if (RobotMap.driveTrain.getDriveSpeed() != DriveSpeed.FAST_SPEED_RATING.getSpeedFactor()) {
-				RobotMap.driveTrain.setDriveSpeed(DriveSpeed.FAST_SPEED_RATING);
-			}
-			
 			foward = OI.xBox.getRawAxis(OI.XBOX_RTRIGGER) - OI.xBox.getRawAxis(OI.XBOX_LTRIGGER);
 		}
 		
