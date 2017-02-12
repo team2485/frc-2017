@@ -42,8 +42,8 @@ public class RobotMap {
 	public static int driveLeftPort2 = 6;
 	public static int driveLeftPort3 = 5;
 	public static int kShooterEncoderPortA = 4, kShooterEncoderPortB = 5;
-	public static int kLeftDriveEnc1 = 1, kLeftDriveEnc2 = 0;
-	public static int kRightDriveEnc1 = 2, kRightDriveEnc2 = 3;
+	public static int kLeftDriveEnc1 = 3, kLeftDriveEnc2 = 2;
+	public static int kRightDriveEnc1 = 0, kRightDriveEnc2 = 1;
 	public static int kShooterMotorPort = 0;
 	public static int kIntakeMotorPort = 1;
 	public static int kFeederEncoderPortA = 6, kFeederEncoderPortB = 7;
@@ -155,15 +155,14 @@ public class RobotMap {
 		driveEncLeft = new Encoder(kLeftDriveEnc1, kLeftDriveEnc2);
 		driveEncRight = new Encoder(kRightDriveEnc1, kRightDriveEnc2);
 		
-		driveEncLeft.setReverseDirection(true);
-		driveEncRight.setReverseDirection(false);
-		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
-		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+		
+		driveEncLeft.setDistancePerPulse((double)1/500 * (Math.PI * wheelRadius * 2));
+		driveEncRight.setDistancePerPulse((double)1/500 * (Math.PI * wheelRadius * 2));
 		
 		driveEncRateLeft = new EncoderWrapperRateAndDistance(driveEncLeft, PIDSourceType.kRate);
 		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
 		
-		//construct subsytems
+		//construct subsystems
 		driveTrain = new DriveTrain();
 		gearHolder = new GearHolder();
 		

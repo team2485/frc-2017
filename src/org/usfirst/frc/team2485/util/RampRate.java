@@ -49,7 +49,7 @@ public class RampRate extends WarlordsControlSystem {
 				if (lastValue > 0) {
 					lastValue -= downRampRate;
 				} else {
-					lastValue += upRampRate;
+					lastValue += downRampRate;
 				}
 			} else {
 				lastValue = desired;
@@ -70,8 +70,9 @@ public class RampRate extends WarlordsControlSystem {
 
 	@Override
 	protected void calculate() {
+		double val = getNextValue(setpoint);
 		for (PIDOutput out : outputs) {
-			out.pidWrite(getNextValue(setpoint));
+			out.pidWrite(val);
 		}
 		
 	}

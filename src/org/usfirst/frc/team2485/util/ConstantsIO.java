@@ -34,6 +34,7 @@ public class ConstantsIO {
 	public static double kP_DriveCurrent;
 	public static double kI_DriveCurrent;
 	public static double kD_DriveCurrent;
+	public static double kF_DriveCurrent;
 	
 	public static double kP_Shooter;
 
@@ -76,6 +77,8 @@ public class ConstantsIO {
 	
 	public static double kDownRamp_IndividualVelocityRamp;
 	public static double kUpRamp_IndividualVelocityRamp;
+
+	
 	
 
 
@@ -114,6 +117,8 @@ public class ConstantsIO {
 		kP_DriveCurrent = Double.parseDouble(data.get("kP_DriveCurrent"));
 		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
 		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
+		kF_DriveCurrent = Double.parseDouble(data.get("kF_DriveCurrent"));
+		
 		
 		kP_Distance = Double.parseDouble(data.get("kP_Distance"));
 		kI_Distance = Double.parseDouble(data.get("kI_Distance"));
@@ -123,11 +128,11 @@ public class ConstantsIO {
 		kUpRamp_Drive = Double.parseDouble(data.get("kUpRamp_Drive"));
 		kDownRamp_Drive = Double.parseDouble(data.get("kDownRamp_Drive"));
 		
-		kDownRamp_OverallVelocityRamp = Double.parseDouble("kDownRamp_OverallVelocityRamp");
-		kUpRamp_OverallVelocityRamp = Double.parseDouble("kUpRamp_OverallVelocityRamp");
+		kDownRamp_OverallVelocityRamp = Double.parseDouble(data.get("kDownRamp_OverallVelocityRamp"));
+		kUpRamp_OverallVelocityRamp = Double.parseDouble(data.get("kUpRamp_OverallVelocityRamp"));
 		
-		kDownRamp_IndividualVelocityRamp = Double.parseDouble("kDownRamp_IndividualVelocityRamp");
-		kUpRamp_IndividualVelocityRamp = Double.parseDouble("kUpRamp_IndividualVelocityRamp");
+		kDownRamp_IndividualVelocityRamp = Double.parseDouble(data.get("kDownRamp_IndividualVelocityRamp"));
+		kUpRamp_IndividualVelocityRamp = Double.parseDouble(data.get("kUpRamp_IndividualVelocityRamp"));
 
 		
 		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));
