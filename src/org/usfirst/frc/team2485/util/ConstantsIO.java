@@ -22,7 +22,7 @@ public class ConstantsIO {
 	public static final String ROBO_RIO_CONSTANTS_FILE_PATH = "/home/lvuser/constants.txt";
 
 	public static HashMap<String, String> data;
-	
+
 	public static double kIntakeRollerSpeed;
 	public static double kClimberSpeed;
 
@@ -30,12 +30,12 @@ public class ConstantsIO {
 	public static double kI_DriveVelocity;
 	public static double kD_DriveVelocity;
 	public static double kF_DriveVelocity;
-	
+
 	public static double kP_DriveCurrent;
 	public static double kI_DriveCurrent;
 	public static double kD_DriveCurrent;
 	public static double kF_DriveCurrent;
-	
+
 	public static double kP_Shooter;
 
 	public static double kI_Shooter;
@@ -43,7 +43,7 @@ public class ConstantsIO {
 	public static double kD_Shooter;
 
 	public static double kF_Shooter;
-	
+
 	public static double kP_Feeder;
 
 	public static double kI_Feeder;
@@ -51,9 +51,9 @@ public class ConstantsIO {
 	public static double kD_Feeder;
 
 	public static double kF_Feeder;
-	
+
 	public static double kShotRPS;
-		
+
 	public static double kFeederRPS;
 
 	public static double kRollersPower;
@@ -74,17 +74,24 @@ public class ConstantsIO {
 
 	public static double kDownRamp_OverallVelocityRamp;
 	public static double kUpRamp_OverallVelocityRamp;
-	
+
 	public static double kDownRamp_IndividualVelocityRamp;
 	public static double kUpRamp_IndividualVelocityRamp;
+	
+	public static double kP_DriveAngle;
+	public static double kI_DriveAngle;
+	public static double kD_DriveAngle;
 
-	
-	
+	public static double kUpRamp_DriveSteering;
+	public static double kDownRamp_DriveSteering;
+
+
+
 
 
 	public static void init() {
-		
-		
+
+
 		System.out.println("ConstantsIO .class file loc: " + ConstantsIO.class.getResource("").getPath());
 
 		if (Robot.isSimulation()) {
@@ -103,9 +110,9 @@ public class ConstantsIO {
 				e1.printStackTrace();
 			}
 		}
-		
-//		createUnMatchedConstants();
-		
+
+		//		createUnMatchedConstants();
+
 		kIntakeRollerSpeed = Double.parseDouble(data.get("kIntakeRollerSpeed"));
 		kClimberSpeed = Double.parseDouble(data.get("kClimberSpeed"));
 
@@ -118,8 +125,8 @@ public class ConstantsIO {
 		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
 		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
 		kF_DriveCurrent = Double.parseDouble(data.get("kF_DriveCurrent"));
-		
-		
+
+
 		kP_Distance = Double.parseDouble(data.get("kP_Distance"));
 		kI_Distance = Double.parseDouble(data.get("kI_Distance"));
 		kD_Distance = Double.parseDouble(data.get("kD_Distance"));
@@ -127,54 +134,64 @@ public class ConstantsIO {
 
 		kUpRamp_Drive = Double.parseDouble(data.get("kUpRamp_Drive"));
 		kDownRamp_Drive = Double.parseDouble(data.get("kDownRamp_Drive"));
-		
+
 		kDownRamp_OverallVelocityRamp = Double.parseDouble(data.get("kDownRamp_OverallVelocityRamp"));
 		kUpRamp_OverallVelocityRamp = Double.parseDouble(data.get("kUpRamp_OverallVelocityRamp"));
-		
+
 		kDownRamp_IndividualVelocityRamp = Double.parseDouble(data.get("kDownRamp_IndividualVelocityRamp"));
 		kUpRamp_IndividualVelocityRamp = Double.parseDouble(data.get("kUpRamp_IndividualVelocityRamp"));
 
-		
+
 		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));
-		
+
 		kI_Shooter = Double.parseDouble(data.get("kI_Shooter"));
-		
+
 		kD_Shooter = Double.parseDouble(data.get("kD_Shooter"));
-		
+
 		kF_Shooter = Double.parseDouble(data.get("kF_Shooter"));
-		
+
 		kP_Feeder = Double.parseDouble(data.get("kP_Feeder"));
-		
+
 		kI_Feeder = Double.parseDouble(data.get("kI_Feeder"));
-		
+
 		kD_Feeder = Double.parseDouble(data.get("kD_Feeder"));
-		
+
 		kF_Feeder = Double.parseDouble(data.get("kF_Feeder"));
-		
+
 		kShotRPS = Double.parseDouble(data.get("kShotRPS"));
-		
+
 		kFeederRPS = Double.parseDouble(data.get("kFeederRPS"));
-		
+
 		kRollersPower = Double.parseDouble(data.get("kRollersPower"));
-		
+
 		kP_DriveSteering = Double.parseDouble(data.get("kP_DriveSteering"));
-		
+
 		kI_DriveSteering = Double.parseDouble(data.get("kI_DriveSteering"));
-		
+
 		kD_DriveSteering = Double.parseDouble(data.get("kD_DriveSteering"));
-		
+
 		kF_DriveSteering = Double.parseDouble(data.get("kF_DriveSteering"));
+
+		kP_DriveAngle = Double.parseDouble(data.get("kP_DriveAngle"));
+
+		kI_DriveAngle = Double.parseDouble(data.get("kI_DriveAngle"));
+
+		kD_DriveAngle = Double.parseDouble(data.get("kD_DriveAngle"));
+		
+		kUpRamp_DriveSteering = Double.parseDouble(data.get("kUpRamp_DriveSteering"));
+		kDownRamp_DriveSteering = Double.parseDouble(data.get("kDownRamp_DriveSteering"));
+		
 	}
 
 	@SuppressWarnings("unused")
 	private static void createUnMatchedConstants() {
 		Field[] fields = ConstantsIO.class.getDeclaredFields();
-		
+
 		for (int i = 0; i < fields.length; i++) {
 			fields[i].getName().startsWith("k");
-			
+
 			if (!data.containsKey(fields[i].getName())) {
-				
+
 			}
 		}
 	}
@@ -257,8 +274,8 @@ public class ConstantsIO {
 		try {
 			printWriter = new PrintWriter(
 					new FileOutputStream("ftp://roborio-2485-frc.local" + ROBO_RIO_CONSTANTS_FILE_PATH)); // definitely
-																											// won't
-																											// work
+			// won't
+			// work
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

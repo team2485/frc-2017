@@ -93,8 +93,12 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 		setSetpoint(output);
 	}
 	
-	public void setSetpointSource(PIDSource source) {
+	public synchronized void setSetpointSource(PIDSource source) {
 		this.setpointSource = source;
+	}
+	
+	public synchronized void setOutputs(PIDOutput... outputs) {
+		this.outputs = outputs;
 	}
 	
 	public void setSetpoint(double setpoint) {
@@ -115,7 +119,12 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 				if (setpointSource != null) {
 					setpoint = setpointSource.pidGet();
 				}
-				calculate();
+				try {
+					calculate();
+				} catch (Exception e) {
+					e.printStackTrace();
+					// so that we don't have any more failing silently
+				}
 			}
 		}
 	}

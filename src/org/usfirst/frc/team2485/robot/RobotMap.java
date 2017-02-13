@@ -12,11 +12,13 @@ import org.usfirst.frc.team2485.util.MultipleEncoderWrapper.MultipleEncoderWrapp
 import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
 
 import com.ctre.CANTalon;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -73,7 +75,7 @@ public class RobotMap {
 	public static Encoder feederEncoder;
 	public static Ultrasonic gearDetector;
 	public static MultipleEncoderWrapper averageEncoderDistance;
-	
+	public static AHRS ahrs;
 	// subsystems
 	public static GearHolder gearHolder;
 	public static DriveTrain driveTrain;
@@ -122,9 +124,6 @@ public class RobotMap {
 		
 		lightSpike = new Relay(0);
 		
-		averageEncoderDistance = new MultipleEncoderWrapper(PIDSourceType.kDisplacement, 
-				MultipleEncoderWrapperMode.AVERAGE, driveEncLeft, driveEncRight);
-		
 //		usbCam = new UsbCamera("cam0", 0);
 				
 		
@@ -156,12 +155,15 @@ public class RobotMap {
 		driveEncRight = new Encoder(kRightDriveEnc1, kRightDriveEnc2);
 		
 		
-		driveEncLeft.setDistancePerPulse((double)1/500 * (Math.PI * wheelRadius * 2));
-		driveEncRight.setDistancePerPulse((double)1/500 * (Math.PI * wheelRadius * 2));
+		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
 		
 		driveEncRateLeft = new EncoderWrapperRateAndDistance(driveEncLeft, PIDSourceType.kRate);
 		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
 		
+		averageEncoderDistance = new MultipleEncoderWrapper(PIDSourceType.kDisplacement, 
+				MultipleEncoderWrapperMode.AVERAGE, driveEncLeft, driveEncRight);
+		ahrs = new AHRS(Port.kMXP);
 		//construct subsystems
 		driveTrain = new DriveTrain();
 		gearHolder = new GearHolder();

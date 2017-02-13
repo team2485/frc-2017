@@ -28,20 +28,21 @@ public class DriveTrain extends Subsystem {
 
 			switch (this) {
 			case SLOW_SPEED_RATING:
-				return 0.6;
+				return 0.5;
 			case NORMAL_SPEED_RATING:
-				return 0.8;
+				return 1.0;
 			default:
 				return 1.0;
 			}
 		}
 	}
 
-	private static final double STEERING_DEADBAND = 0.1;
-	private static final double THROTTLE_DEADBAND = 0.2;
+	private static final double STEERING_DEADBAND = 0.25;
+	private static final double THROTTLE_DEADBAND = 0.25;
+	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
+	private static final double ROBOT_WIDTH = 27;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
-	private static final double MAX_CURRENT = 1 / 0.07, MIN_CURRENT = 0.5;
-	
+	private static final double MAX_CURRENT = 1 / 0.07, MIN_CURRENT = 0.2;
 
 	// private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
 	// private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
@@ -60,7 +61,6 @@ public class DriveTrain extends Subsystem {
 	
 	// private WarlordsPIDController driveToPID, rotateToPID;
 	private WarlordsPIDController velocityPIDRight, velocityPIDLeft;
-	
 
 	private TransferNode throttleTransferNode;
 	private RampRate overallVelocityRampRate;
@@ -76,45 +76,47 @@ public class DriveTrain extends Subsystem {
 	// excuse the variable name, this represents the thing that switches between
 	// current and voltage mode depending on the power value
 	private PIDSource prescaledPowerRight, prescaledPowerLeft;
+	private RampRate steeringRamp;
 
 	private static final double MIN_SPEED = 1;
-	private static final double MAX_SPEED = 150;
-	
-	//AUTO
+	private static final double MAX_SPEED = 180;
+
+	// AUTO
 	private RampRate velocityRampLeft, velocityRampRight;
-	private PIDSource velocityPreRampLeft, velocityPreRampRight;
 	private WarlordsPIDController distPID, anglePID, lateralOffsetPID;
-	private TransferNode overallVelocityTransferNode, angleSteeringTransferNode;
+	private TransferNode overallVelocityTransferNode, angleSteeringTransferNode, autoCurvatureTransferNode;
 	private static final double LOW_SPEED_DRIVETO = 1;
 	private static final double DRIVETO_TOLERANCE = 2;
-	
+
 	public DriveTrain() {
 
 		motorModeSwitcherLeft = (double out) -> {
 			if (Math.abs(out * MAX_CURRENT) > MIN_CURRENT && useCurrent) {
 				setCurrentModeLeft(true);
-				System.out.println("left current; " + out);
+				// System.out.println("left current; " + out);
 				RobotMap.driveTrainLeft.set(out * MAX_CURRENT);
 			} else {
 				setCurrentModeLeft(false);
-				System.out.println("left voltage; " + out);
+				// System.out.println("left voltage; " + out);
 				RobotMap.driveTrainLeft.set(out);
 			}
 		};
 		overallVelocityTransferNode = new TransferNode(0);
 		angleSteeringTransferNode = new TransferNode(0);
+		autoCurvatureTransferNode = new TransferNode(0);
 		autoSteeringSource = new PIDSourceWrapper(() -> {
-			return angleSteeringTransferNode.getOutput();
+			return angleSteeringTransferNode.getOutput() + autoCurvatureTransferNode.getOutput();
 		});
-
+		anglePID = new WarlordsPIDController(RobotMap.ahrs, angleSteeringTransferNode);
+		anglePID.setPID(ConstantsIO.kP_DriveAngle, ConstantsIO.kI_DriveAngle, ConstantsIO.kD_DriveAngle);
 
 		motorModeSwitcherRight = (double out) -> {
 			if (Math.abs(out * MAX_CURRENT) > MIN_CURRENT && useCurrent) {
 				setCurrentModeRight(true);
-				System.out.println("right current; " + out);
+				// System.out.println("right current; " + out);
 				RobotMap.driveTrainRight.set(out * MAX_CURRENT);
 			} else {
-				System.out.println("right voltage; " + out);
+				// System.out.println("right voltage; " + out);
 				setCurrentModeRight(false);
 				RobotMap.driveTrainRight.set(out);
 			}
@@ -125,6 +127,7 @@ public class DriveTrain extends Subsystem {
 
 		throttleRamp = new RampRate(new PIDOutput[] { throttleTransferNode }, ConstantsIO.kUpRamp_Drive,
 				ConstantsIO.kDownRamp_Drive);
+		steeringRamp = new RampRate(new PIDOutput[] { steeringTransferNode }, ConstantsIO.kUpRamp_DriveSteering, ConstantsIO.kDownRamp_DriveSteering);
 
 		curvatureSource = new PIDSourceWrapper(() -> {
 			double leftVelocity = RobotMap.driveEncLeft.getRate();
@@ -132,9 +135,12 @@ public class DriveTrain extends Subsystem {
 			if (Math.abs(leftVelocity + rightVelocity) / 2 < MIN_SPEED) {
 				steeringPIDController.disable();
 				return 0;
+			} else if (USE_GYRO_STEERING_CORRECTION) {
+				return RobotMap.ahrs.getRate() / ((leftVelocity + rightVelocity) / 2) * ROBOT_WIDTH / 2;
 			} else {
 				return (leftVelocity - rightVelocity) / (leftVelocity + rightVelocity);
 			}
+
 		});
 
 		// now both from -1 -> 1 instead of in amps
@@ -152,12 +158,12 @@ public class DriveTrain extends Subsystem {
 			} else {
 				return throttleTransferNode.getOutput() * (1 + steeringTransferNode.getOutput());
 			}
-		}); 
-		
+		});
+
 		prescaledVelocityLeft = new PIDSourceWrapper(() -> {
 			return overallVelocityTransferNode.getOutput() * (1 + autoSteeringSource.pidGet());
 		});
-		 
+
 		prescaledVelocityRight = new PIDSourceWrapper(() -> {
 			return overallVelocityTransferNode.getOutput() * (1 - autoSteeringSource.pidGet());
 		});
@@ -165,11 +171,6 @@ public class DriveTrain extends Subsystem {
 		powerScalingMax = new ScalingMax(new PIDOutput[] { motorModeSwitcherLeft, motorModeSwitcherRight },
 				new PIDSource[] { prescaledPowerLeft, prescaledPowerRight });
 		powerScalingMax.setSetpoint(1);
-		
-		
-		velocityScalingMax = new ScalingMax(new PIDOutput[] {velocityRampLeft, velocityRampRight}, 
-				new PIDSource[] {prescaledVelocityLeft, prescaledVelocityRight});
-		velocityScalingMax.setSetpoint(MAX_SPEED);
 
 		steeringPIDController = new WarlordsPIDController(curvatureSource, steeringTransferNode);
 		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
@@ -179,26 +180,26 @@ public class DriveTrain extends Subsystem {
 		velocityPIDRight = new WarlordsPIDController(RobotMap.driveEncRateRight, motorModeSwitcherRight);
 		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
 				ConstantsIO.kF_DriveVelocity);
-		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
-				ConstantsIO.kF_DriveVelocity);
-		overallVelocityRampRate = new RampRate(new PIDOutput[] {overallVelocityTransferNode}, 
+		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
+				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
+		overallVelocityRampRate = new RampRate(new PIDOutput[] { overallVelocityTransferNode },
 				ConstantsIO.kUpRamp_OverallVelocityRamp, ConstantsIO.kDownRamp_OverallVelocityRamp);
 		distPID = new WarlordsPIDController(RobotMap.averageEncoderDistance, overallVelocityRampRate);
-		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance, 
+		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance,
 				ConstantsIO.kF_Distance);
 		distPID.setAbsoluteTolerance(DRIVETO_TOLERANCE);
-		
-		velocityRampLeft = new RampRate(new PIDOutput[] {velocityPIDLeft}, 
+
+		velocityRampLeft = new RampRate(new PIDOutput[] { velocityPIDLeft }, ConstantsIO.kUpRamp_IndividualVelocityRamp,
+				ConstantsIO.kDownRamp_IndividualVelocityRamp);
+		velocityRampRight = new RampRate(new PIDOutput[] { velocityPIDRight },
 				ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp);
-		velocityRampRight = new RampRate(new PIDOutput[]{velocityPIDRight}, 
-				ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp);
-				
-		
-		
-		
-		
+
+		velocityScalingMax = new ScalingMax(new PIDOutput[] { velocityRampLeft, velocityRampRight },
+				new PIDSource[] { prescaledVelocityLeft, prescaledVelocityRight });
+		velocityScalingMax.setSetpoint(MAX_SPEED);
+
 	}
-	
+
 	public void setAuto(boolean isAuto) {
 		this.isAuto = isAuto;
 		if (isAuto) {
@@ -217,7 +218,7 @@ public class DriveTrain extends Subsystem {
 	public void setDriveSpeed(DriveSpeed speed) {
 		driveSpeed = speed.getSpeedFactor();
 	}
-	
+
 	public double getDriveSpeed() {
 		return driveSpeed;
 	}
@@ -225,110 +226,105 @@ public class DriveTrain extends Subsystem {
 	public void setQuickTurn(boolean quickTurn) {
 		this.isQuickTurn = quickTurn;
 	}
-	
-	
+
 	public void cheesyDrive(double controllerY, double controllerX) {
 		double steeringNonLinearity;
 
 		double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.01, 1);
 		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.01, 1);
-		
-	    double negInertia = steering - oldSteering; 
-	    oldSteering = steering;
 
-	    
-	   
-	      steeringNonLinearity = 0.5;
-	      // Apply a sin function that's scaled to make it feel better.
-	      steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
-	              / Math.sin(Math.PI / 2.0 * steeringNonLinearity);
-	      steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
-	              / Math.sin(Math.PI / 2.0 * steeringNonLinearity);
-	      steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
-	              / Math.sin(Math.PI / 2.0 * steeringNonLinearity);
-	    
+		double negInertia = steering - oldSteering;
+		oldSteering = steering;
 
-	    double leftPwm, rightPwm, overPower;
-	    double sensitivity;
+		steeringNonLinearity = 0.5;
+		// Apply a sin function that's scaled to make it feel better.
+		steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
+				/ Math.sin(Math.PI / 2.0 * steeringNonLinearity);
+		steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
+				/ Math.sin(Math.PI / 2.0 * steeringNonLinearity);
+		steering = Math.sin(Math.PI / 2.0 * steeringNonLinearity * steering)
+				/ Math.sin(Math.PI / 2.0 * steeringNonLinearity);
 
-	    double angularPower;
-	    double linearPower;
+		double leftPwm, rightPwm, overPower;
+		double sensitivity;
 
-	    // Negative inertia!
-	    double negInertiaScalar;
-	    
-	      if (steering * negInertia > 0) {
-	        negInertiaScalar = 2.5;
-	      } else {
-	        if (Math.abs(steering) > 0.65) {
-	          negInertiaScalar = 5.0;
-	        } else {
-	          negInertiaScalar = 3.0;
-	        }
-	      }
-	      sensitivity = .75;
-	    
-	    double negInertiaPower = negInertia * negInertiaScalar;
-	    negInertiaAccumulator += negInertiaPower;
+		double angularPower;
+		double linearPower;
 
-	    steering = steering + negInertiaAccumulator;
-	    if (negInertiaAccumulator > 1) {
-	      negInertiaAccumulator -= 1;
-	    } else if (negInertiaAccumulator < -1) {
-	      negInertiaAccumulator += 1;
-	    } else {
-	      negInertiaAccumulator = 0;
-	    }
-	    linearPower = throttle * driveSpeed;
+		// Negative inertia!
+		double negInertiaScalar;
 
-	    // Quickturn!
-	    if (isQuickTurn) {
-	      if (Math.abs(linearPower) < 0.2) {
-	        double alpha = 0.1;
-	        quickStopAccumulator = (1 - alpha) * quickStopAccumulator + alpha
-	                * steering * 5;
-	      }
-	      overPower = 1.0;
-	     
-	      sensitivity = 1.0;
-	  
-	      angularPower = steering;
-	    } else {
-	      overPower = 0.0;
-	      angularPower = Math.abs(throttle) * steering * sensitivity - quickStopAccumulator;
-	      if (quickStopAccumulator > 1) {
-	        quickStopAccumulator -= 1;
-	      } else if (quickStopAccumulator < -1) {
-	        quickStopAccumulator += 1;
-	      } else {
-	        quickStopAccumulator = 0.0;
-	      }
-	    }
+		if (steering * negInertia > 0) {
+			negInertiaScalar = 2.5;
+		} else {
+			if (Math.abs(steering) > 0.65) {
+				negInertiaScalar = 5.0;
+			} else {
+				negInertiaScalar = 3.0;
+			}
+		}
+		sensitivity = .75;
 
-	    rightPwm = leftPwm = linearPower;
-	    leftPwm += angularPower;
-	    rightPwm -= angularPower;
+		double negInertiaPower = negInertia * negInertiaScalar;
+		negInertiaAccumulator += negInertiaPower;
 
-	    if (leftPwm > 1.0) {
-	      rightPwm -= overPower * (leftPwm - 1.0);
-	      leftPwm = 1.0;
-	    } else if (rightPwm > 1.0) {
-	      leftPwm -= overPower * (rightPwm - 1.0);
-	      rightPwm = 1.0;
-	    } else if (leftPwm < -1.0) {
-	      rightPwm += overPower * (-1.0 - leftPwm);
-	      leftPwm = -1.0;
-	    } else if (rightPwm < -1.0) {
-	      leftPwm += overPower * (-1.0 - rightPwm);
-	      rightPwm = -1.0;
-	    }
-	    
-	    setCurrentModeLeft(false);
-	    setCurrentModeRight(false);
-	    
-	    RobotMap.driveTrainLeft.set(leftPwm);
-	    RobotMap.driveTrainRight.set(rightPwm);
-	    
+		steering = steering + negInertiaAccumulator;
+		if (negInertiaAccumulator > 1) {
+			negInertiaAccumulator -= 1;
+		} else if (negInertiaAccumulator < -1) {
+			negInertiaAccumulator += 1;
+		} else {
+			negInertiaAccumulator = 0;
+		}
+		linearPower = throttle * driveSpeed;
+
+		// Quickturn!
+		if (isQuickTurn) {
+			if (Math.abs(linearPower) < 0.2) {
+				double alpha = 0.1;
+				quickStopAccumulator = (1 - alpha) * quickStopAccumulator + alpha * steering * 5;
+			}
+			overPower = 1.0;
+
+			sensitivity = 1.0;
+
+			angularPower = steering;
+		} else {
+			overPower = 0.0;
+			angularPower = Math.abs(throttle) * steering * sensitivity - quickStopAccumulator;
+			if (quickStopAccumulator > 1) {
+				quickStopAccumulator -= 1;
+			} else if (quickStopAccumulator < -1) {
+				quickStopAccumulator += 1;
+			} else {
+				quickStopAccumulator = 0.0;
+			}
+		}
+
+		rightPwm = leftPwm = linearPower;
+		leftPwm += angularPower;
+		rightPwm -= angularPower;
+
+		if (leftPwm > 1.0) {
+			rightPwm -= overPower * (leftPwm - 1.0);
+			leftPwm = 1.0;
+		} else if (rightPwm > 1.0) {
+			leftPwm -= overPower * (rightPwm - 1.0);
+			rightPwm = 1.0;
+		} else if (leftPwm < -1.0) {
+			rightPwm += overPower * (-1.0 - leftPwm);
+			leftPwm = -1.0;
+		} else if (rightPwm < -1.0) {
+			leftPwm += overPower * (-1.0 - rightPwm);
+			rightPwm = -1.0;
+		}
+
+		setCurrentModeLeft(false);
+		setCurrentModeRight(false);
+
+		RobotMap.driveTrainLeft.set(leftPwm);
+		RobotMap.driveTrainRight.set(rightPwm);
+
 	}
 
 	/**
@@ -342,44 +338,49 @@ public class DriveTrain extends Subsystem {
 	public void warlordDrive(double controllerY, double controllerX, boolean useCurrent, boolean hasCheese,
 			boolean hasSteeringCorrection, boolean useVelocity) {
 
-		double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.01, 1);
-		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.01, 1);
-		//System.out.println("throttle; " + throttle);
-		if (useVelocity) {
+		double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.0, 1);
+		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.02, 1);
+
+		
+		throttle *= driveSpeed;
+		System.out.println("throttle; " + throttle);
+		if (useVelocity && throttle > 0) {
 			this.useCurrent = true;
 			hasSteeringCorrection = false;
 			powerScalingMax.disable();
 			velocityPIDLeft.enable();
 			velocityPIDRight.enable();
+			setAuto(false);
 		} else {
 			powerScalingMax.enable();
 			velocityPIDLeft.disable();
 			velocityPIDRight.disable();
 			this.useCurrent = useCurrent;
 		}
-		
-		throttleRamp.enable();
+
+		throttleRamp.enable(); 
 		throttleRamp.setSetpoint(throttle);
+		
+		steeringRamp.setSetpoint(steering);
+		steeringRamp.enable();
 		
 		double averageSpeed = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2;
 		if (Math.abs(averageSpeed) > MIN_SPEED && !isQuickTurn && hasSteeringCorrection) {
 			steeringPIDController.enable();
-			steeringPIDController.setSetpoint(steering);
+			steeringRamp.setOutputs(steeringPIDController);
 		} else {
 			steeringPIDController.disable();
-			steeringTransferNode.setOutput(steering);
+			steeringRamp.setOutputs(steeringTransferNode);
 		}
-		
 
 	}
-	
-	public void zeroEncoders(){
+
+	public void zeroEncoders() {
 		RobotMap.driveEncLeft.reset();
 		RobotMap.driveEncRight.reset();
-		
+
 	}
-	
-	
+
 	// /**
 	// * Used to drive in a curve using closed loop control, set startAngle =
 	// * endAngle to drive straight <br>
@@ -570,37 +571,55 @@ public class DriveTrain extends Subsystem {
 
 		return steeringPIDController.getAvgError();
 	}
-	
+
 	public double getLeftVelocityPIDError() {
 		return velocityPIDLeft.getAvgError();
+	}
+	
+	public double getAnglePIDError(){
+		return anglePID.getAvgError();
 	}
 
 	public void updateConstants() {
 		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
-		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, 
+		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
 				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
-		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, 
-				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
+		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
+				ConstantsIO.kF_DriveVelocity);
 		throttleRamp.setRampRates(ConstantsIO.kUpRamp_Drive, ConstantsIO.kDownRamp_Drive);
-		velocityRampLeft.setRampRates(ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp);
-		velocityRampRight.setRampRates(ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp);
-		RobotMap.driveLeft1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveLeft2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveLeft3.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveRight1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveRight2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveRight3.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent, ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		overallVelocityRampRate.setRampRates(ConstantsIO.kUpRamp_OverallVelocityRamp, ConstantsIO.kDownRamp_OverallVelocityRamp);
-		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance, ConstantsIO.kF_Distance);
+		velocityRampLeft.setRampRates(ConstantsIO.kUpRamp_IndividualVelocityRamp,
+				ConstantsIO.kDownRamp_IndividualVelocityRamp);
+		velocityRampRight.setRampRates(ConstantsIO.kUpRamp_IndividualVelocityRamp,
+				ConstantsIO.kDownRamp_IndividualVelocityRamp);
+		RobotMap.driveLeft1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveLeft2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveLeft3.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveRight1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveRight2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveRight3.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		overallVelocityRampRate.setRampRates(ConstantsIO.kUpRamp_OverallVelocityRamp,
+				ConstantsIO.kDownRamp_OverallVelocityRamp);
+		steeringRamp.setRampRates(ConstantsIO.kUpRamp_DriveSteering, ConstantsIO.kDownRamp_DriveSteering);
+		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance,
+				ConstantsIO.kF_Distance);
+		anglePID.setPID(ConstantsIO.kP_DriveAngle, ConstantsIO.kI_DriveAngle, ConstantsIO.kD_DriveAngle);
 	}
 
 	@Override
 	protected void initDefaultCommand() {
 		System.out.println("init default");
+		setDefaultCommand(new DriveWithControllers(DriveWithControllers.useVelocityFlag));
 //		setDefaultCommand(new DriveWithControllers(DriveWithControllers.useCurrentFlag | DriveWithControllers.hasSteeringCorrectionFlag));
 	}
 
+	
 	public void reset() {
 		steeringPIDController.disable();
 		velocityPIDLeft.disable();
@@ -608,8 +627,15 @@ public class DriveTrain extends Subsystem {
 		throttleRamp.disable();
 		velocityRampLeft.disable();
 		velocityRampRight.disable();
+		velocityScalingMax.disable();
+		overallVelocityRampRate.disable();
+		anglePID.disable();
+		distPID.disable();
+		motorModeSwitcherLeft.pidWrite(0);
+		motorModeSwitcherRight.pidWrite(0);
 	}
-	public void setLeftRightVelocity(double r, double l){
+
+	public void setLeftRightVelocity(double r, double l) {
 		useCurrent = false;
 		powerScalingMax.disable();
 		velocityRampLeft.enable();
@@ -619,7 +645,9 @@ public class DriveTrain extends Subsystem {
 		velocityRampLeft.setSetpoint(l);
 		velocityRampRight.setSetpoint(r);
 	}
-	public boolean driveTo(double distance, double maxSpeed){
+
+	public boolean driveTo(double distance, double maxSpeed, double angle, double curvature) {
+		useCurrent = true;
 		powerScalingMax.disable();
 		velocityRampLeft.enable();
 		velocityRampRight.enable();
@@ -630,10 +658,10 @@ public class DriveTrain extends Subsystem {
 		overallVelocityRampRate.enable();
 		distPID.setSetpoint(distance);
 		distPID.setOutputRange(-maxSpeed, maxSpeed);
-		System.out.println("overall;" + overallVelocityTransferNode.getOutput());
+		anglePID.enable();
+		anglePID.setSetpoint(angle);
+		return (distPID.isOnTarget() && Math
+				.abs((RobotMap.driveEncRight.getRate() + RobotMap.driveEncLeft.getRate()) / 2) < LOW_SPEED_DRIVETO);
 
-		return (distPID.isOnTarget() && Math.abs((RobotMap.driveEncRight.getRate() + RobotMap.driveEncLeft.getRate())/2) < LOW_SPEED_DRIVETO);
-		
-		
 	}
 }
