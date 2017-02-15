@@ -46,8 +46,7 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	 * @param period how often PID calculation is done (millis)
 	 * @param bufferLength number of values used to calculate averageError
 	 */
-	public WarlordsPIDController(PIDSource source, PIDOutput... outputs) {
-		super(outputs, new PIDSource[]{source});
+	public WarlordsPIDController() {
 		this.bufferLength = DEFAULT_BUFFER_LENGTH;
 		this.errorBuffer = new LinkedList<Double>();
 	}

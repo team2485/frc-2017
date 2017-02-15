@@ -23,15 +23,24 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 	private PIDSource setpointSource;
 
 
-	public WarlordsControlSystem(PIDOutput[] outputs, PIDSource[] sources) {
-		
-		this.outputs = outputs;
-		this.sources = sources;
-		
+	public WarlordsControlSystem() {
 		pidTimer = new Timer(true);
 		pidTimer.schedule(new PIDTask(), 0, period);
 		
 	}
+	
+	public synchronized void setSources(PIDSource[] sources) {
+		this.sources = sources;
+	}
+	
+	public synchronized void setSetpointSource(PIDSource source) {
+		this.setpointSource = source;
+	}
+	
+	public synchronized void setOutputs(PIDOutput... outputs) {
+		this.outputs = outputs;
+	}
+	
 
 	/**
 	 * @return time between calculations (millis)
@@ -93,13 +102,6 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 		setSetpoint(output);
 	}
 	
-	public synchronized void setSetpointSource(PIDSource source) {
-		this.setpointSource = source;
-	}
-	
-	public synchronized void setOutputs(PIDOutput... outputs) {
-		this.outputs = outputs;
-	}
 	
 	public void setSetpoint(double setpoint) {
 		if (setpointSource != null) {
