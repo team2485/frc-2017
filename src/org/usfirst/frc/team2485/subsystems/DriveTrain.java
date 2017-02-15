@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class DriveTrain extends Subsystem {
 	public enum DriveSpeed {
-		SLOW_SPEED_RATING, NORMAL_SPEED_RATING, FAST_SPEED_RATING;
+		SLOW_SPEED_RATING, NORMAL_SPEED_RATING;
 
 		public double getSpeedFactor() {
 
