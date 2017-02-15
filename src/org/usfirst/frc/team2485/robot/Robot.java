@@ -2,22 +2,36 @@
 package org.usfirst.frc.team2485.robot;
 
 import org.opencv.core.Mat;
+import org.usfirst.frc.team2485.robot.commands.DriveTo;
+import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
+import org.usfirst.frc.team2485.util.AutoPath;
+import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
+	private AutoPath path; 
+	
 	public void robotInit() {
 
 		ConstantsIO.init();
 		RobotMap.init();
 		OI.init();
-
+		path = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
+			t *= Math.PI;
+			return new Pair((Math.cos(t)-1)*27, (Math.sin(t)*27));
+		}, 10000));
+		System.out.println("length: " + path.getPathLength());
+		System.out.println("Angle 0: " + path.getHeadingAtDist(0));
+		System.out.println("Angle 20: " + path.getHeadingAtDist(20));
+		System.out.println("curvature 0: " + path.getCurvatureAtDist(0));
+		System.out.println("curvature 20: " + path.getCurvatureAtDist(20));
+		
 		RobotMap.updateConstants();
 
 	}
@@ -34,15 +48,20 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		ConstantsIO.init();
 		RobotMap.ahrs.zeroYaw();
+		CommandGroup group = new CommandGroup();
+		group.addSequential(new DriveTo(path, 150));
+		group.addSequential(new ResetDriveTrain());
 		
+		Scheduler.getInstance().add(group);
 	
-		RobotMap.updateConstants();
-		UsbCamera usb = CameraServer.getInstance().startAutomaticCapture(0);
-		usb.setExposureManual(0);
-		usb.setBrightness(0);
+//		RobotMap.updateConstants();
+//		UsbCamera usb = CameraServer.getInstance().startAutomaticCapture(0);
+//		usb.setExposureManual(0);
+//		usb.setBrightness(0);
 
 		isFinished = false;
 		RobotMap.driveTrain.zeroEncoders();
+		RobotMap.driveTrain.updateConstants();
 	}
 
 	private boolean isFinished;
@@ -52,8 +71,9 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateSmartDashboard();
+		System.out.println("Angle = " + RobotMap.ahrs.getAngle());
 		if (!isFinished) {
-			isFinished = RobotMap.driveTrain.driveTo(375, 40, 0, 0);
+			
 		} else {
 			RobotMap.driveTrain.reset();
 		}
@@ -146,6 +166,6 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("LeftVelocity", RobotMap.driveEncRateLeft.pidGet());
 		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
 		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
-		SmartDashboard.putNumber("Angle", RobotMap.driveTrain.getAnglePIDError());
+		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
 	}
 }

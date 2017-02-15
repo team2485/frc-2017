@@ -36,7 +36,8 @@ public class RobotMap {
 //	public static DigitalInput pressureSwitch;
 	 
 	//constants
-	public static final double wheelRadius = 2;
+	public static final double ROBOT_WIDTH = 27;
+	public static final double WHEEL_RADIUS = 2;
 	public static int driveRightPort1 = 1;
 	public static int driveRightPort2 = 4;
 	public static int driveRightPort3 = 2;
@@ -155,8 +156,8 @@ public class RobotMap {
 		driveEncRight = new Encoder(kRightDriveEnc1, kRightDriveEnc2);
 		
 		
-		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
-		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * wheelRadius * 2));
+		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * WHEEL_RADIUS * 2));
+		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * WHEEL_RADIUS * 2));
 		
 		driveEncRateLeft = new EncoderWrapperRateAndDistance(driveEncLeft, PIDSourceType.kRate);
 		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);

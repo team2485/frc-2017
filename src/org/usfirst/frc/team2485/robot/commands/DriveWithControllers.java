@@ -11,7 +11,7 @@ public class DriveWithControllers extends Command {
 	private int mode;
 	public static int hasCheeseFlag = 0x1, useCurrentFlag = 0x2, hasSteeringCorrectionFlag = 0x4, useVelocityFlag = 0x8;
 
-	private static final boolean TRIGGER_DRIVE = false;
+	private static final boolean TRIGGER_DRIVE = true;
 
 	public DriveWithControllers(int mode) {
 		requires(RobotMap.driveTrain);
@@ -38,6 +38,7 @@ public class DriveWithControllers extends Command {
 
 			if (TRIGGER_DRIVE) {
 				foward = OI.xBox.getRawAxis(OI.XBOX_RTRIGGER) - OI.xBox.getRawAxis(OI.XBOX_LTRIGGER);
+				right = OI.xBox.getRawAxis(0);
 			}
 
 			RobotMap.driveTrain.warlordDrive(foward, right, (mode & useCurrentFlag) != 0, (mode & hasCheeseFlag) != 0,

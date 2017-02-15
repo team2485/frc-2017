@@ -84,8 +84,11 @@ public class ConstantsIO {
 
 	public static double kUpRamp_DriveSteering;
 	public static double kDownRamp_DriveSteering;
-
-
+	
+	public static double kP_RotateTo;
+	public static double kI_RotateTo;
+	public static double kD_RotateTo;
+	public static double kF_RotateTo;
 
 
 
@@ -177,6 +180,16 @@ public class ConstantsIO {
 		kI_DriveAngle = Double.parseDouble(data.get("kI_DriveAngle"));
 
 		kD_DriveAngle = Double.parseDouble(data.get("kD_DriveAngle"));
+		
+		kP_RotateTo = Double.parseDouble(data.get("kP_RotateTo"));
+		
+		kI_RotateTo = Double.parseDouble(data.get("kI_RotateTo"));
+		
+		kD_RotateTo = Double.parseDouble(data.get("kD_RotateTo"));
+
+		kF_RotateTo = Double.parseDouble(data.get("kF_RotateTo"));
+
+		
 		
 		kUpRamp_DriveSteering = Double.parseDouble(data.get("kUpRamp_DriveSteering"));
 		kDownRamp_DriveSteering = Double.parseDouble(data.get("kDownRamp_DriveSteering"));

@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2485.util;
 
-import javafx.geometry.Point2D;
+import org.usfirst.frc.team2485.robot.RobotMap;
 
 /**
  * @author Ben Dorsey
@@ -11,14 +11,42 @@ public class AutoPath {
 		private double x, y; 
 		private double heading, curvature;
 		private double arcLength;
-		private Point(Point2D p) {
+		private Point(Pair p) {
 			this.x = p.getX();
 			this.y = p.getY();
 		}
 	}
-	private Point[] points;
 	
-	public AutoPath(Point2D[] points) {
+	public static class Pair {
+		private double x;
+		private double y;
+		public Pair (double x, double y) {
+			this.x = x;
+			this.y = y;
+		}
+		
+		public double getX() {
+			return x;
+		}
+		
+		public double getY() {
+			return y;
+		}
+	}
+	
+	public interface ParameterizedCurve {
+		/**
+		 * 
+		 * @author Ben Dorsey
+		 * @param t parameter between 0 and 1
+		 * @return point for that parameter
+		 * 
+		 */
+		public Pair getPointForParameter(double t); 
+	}
+	private Point[] points; 
+	
+	public AutoPath(Pair[] points) {
 		this.points = new Point[points.length];
 		for (int i = 0; i < points.length; i++) {
 			this.points[i] = new Point(points[i]);
@@ -54,14 +82,22 @@ public class AutoPath {
 	}
 
 	public double getCurvatureAtDist(double dist) {
-		return getPointAtDist(dist).curvature;
+		return getPointAtDist(dist).curvature * RobotMap.ROBOT_WIDTH/2;
 	}
 	
 	public double getHeadingAtDist(double dist) {
-		return getPointAtDist(dist).heading;
+		return Math.toDegrees(getPointAtDist(dist).heading);
 	}
 	
 	public double getPathLength() {
 		return points[points.length - 1].arcLength;
+	}
+	
+	public static Pair[] getPointsForFunction(ParameterizedCurve p, int numPoints) {
+		Pair[] points = new Pair[numPoints];
+		for (int i = 0; i < numPoints; i++) {
+			points[i] = p.getPointForParameter((double)i/numPoints);
+		}
+		return points;
 	}
 }
