@@ -41,7 +41,7 @@ public class DriveTrain extends Subsystem {
 	private static final double THROTTLE_DEADBAND = 0.15;
 	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
-	private static double MAX_CURRENT; 
+	private static double MAX_CURRENT;
 	private static double MIN_CURRENT = 0.2;
 
 	private boolean isQuickTurn;
@@ -88,14 +88,14 @@ public class DriveTrain extends Subsystem {
 	private static final double ROTATETO_TOLERANCE = .5;
 
 	public DriveTrain() {
-		
+
 		MAX_CURRENT = 1 / ConstantsIO.kF_DriveCurrent;
-		
+
 		rotateToTransferNode = new TransferNode(0);
-		
+
 		rotateToPID = new WarlordsPIDController(RobotMap.ahrs, rotateToTransferNode);
-		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, 
-				ConstantsIO.kD_RotateTo, ConstantsIO.kF_RotateTo);
+		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, ConstantsIO.kD_RotateTo,
+				ConstantsIO.kF_RotateTo);
 		rotateToPID.setAbsoluteTolerance(ROTATETO_TOLERANCE);
 		rotateToPID.setInputRange(0, 360);
 		rotateToPID.setOutputRange(-10, 10);
@@ -610,8 +610,8 @@ public class DriveTrain extends Subsystem {
 				ConstantsIO.kDownRamp_IndividualVelocityRamp);
 		velocityRampRight.setRampRates(ConstantsIO.kUpRamp_IndividualVelocityRamp,
 				ConstantsIO.kDownRamp_IndividualVelocityRamp);
-		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, 
-				ConstantsIO.kD_RotateTo, ConstantsIO.kF_RotateTo);
+		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, ConstantsIO.kD_RotateTo,
+				ConstantsIO.kF_RotateTo);
 		RobotMap.driveLeft1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveLeft2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,

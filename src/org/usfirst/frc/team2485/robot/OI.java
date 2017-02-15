@@ -3,10 +3,12 @@ package org.usfirst.frc.team2485.robot;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
+import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
@@ -39,6 +41,8 @@ public class OI {
 		xBox = new Joystick(0);
 		joystick = new Joystick(1);
 
+		new BackStartComboButton().whenPressed(new PrepForSelfTest());
+
 		if (DriveWithControllers.TRIGGER_DRIVE) {
 			new JoystickButton(xBox, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
 			new JoystickButton(xBox, XBOX_BTN_X).whenReleased(new SetQuickTurn(false));
@@ -50,6 +54,19 @@ public class OI {
 					.whenPressed(new SetDriveSpeed(DriveSpeed.SLOW_SPEED_RATING));
 			new JoystickAxisButton(xBox, XBOX_AXIS_RTRIGGER, 0.4, 1)
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
+		}
+	}
+
+	/**
+	 * Combines the Start and Back buttons on the XBOX controller into one
+	 * button that requires both pressed to be valid
+	 * 
+	 * @author Nicholas Contreras
+	 */
+	private static class BackStartComboButton extends Button {
+		@Override
+		public boolean get() {
+			return xBox.getRawButton(XBOX_BTN_BACK) && xBox.getRawButton(XBOX_BTN_START);
 		}
 	}
 }
