@@ -59,45 +59,38 @@ public class DriveTrain extends Subsystem {
 
 	private double oldSteering, negInertiaAccumulator, quickStopAccumulator;
 
-	// private WarlordsPIDController driveToPID, rotateToPID;
-	private WarlordsPIDController velocityPIDRight, velocityPIDLeft;
-
-	private WarlordsPIDController rotateToPID;
-
-	private TransferNode rotateToTransferNode;
-
-	private TransferNode throttleTransferNode;
-	private RampRate overallVelocityRampRate;
-	private WarlordsPIDController steeringPIDController;
-	// private int ahrsOnTargetCounter;
-	private TransferNode steeringTransferNode;
-	private PIDSource curvatureSource, autoSteeringSource;
-	private PIDSource prescaledVelocityLeft, prescaledVelocityRight;
-	private ScalingMax powerScalingMax;
-	private ScalingMax velocityScalingMax;
-	private RampRate throttleRamp;
+	private WarlordsPIDController velocityPIDRight = new WarlordsPIDController(), 
+			velocityPIDLeft = new WarlordsPIDController(), rotateToPID = new WarlordsPIDController();
+	private TransferNode rotateToTransferNode = new TransferNode(0), 
+			throttleTransferNode = new TransferNode(0), steeringTransferNode = new TransferNode(0);
+	private WarlordsPIDController steeringPIDController = new WarlordsPIDController();
+	private PIDSource curvatureSource, autoSteeringSource, prescaledVelocityLeft, prescaledVelocityRight,
+		prescaledPowerRight, prescaledPowerLeft;
+	private ScalingMax powerScalingMax = new ScalingMax(), velocityScalingMax = new ScalingMax();
+	private RampRate throttleRamp = new RampRate(ConstantsIO.kUpRamp_Drive, ConstantsIO.kDownRamp_Drive), 
+			steeringRamp = new RampRate(ConstantsIO.kUpRamp_DriveSteering, ConstantsIO.kDownRamp_DriveSteering),
+			overallVelocityRampRate  = new RampRate(ConstantsIO.kUpRamp_OverallVelocityRamp, ConstantsIO.kDownRamp_OverallVelocityRamp);
 	private PIDOutput motorModeSwitcherLeft, motorModeSwitcherRight;
-	// excuse the variable name, this represents the thing that switches between
-	// current and voltage mode depending on the power value
-	private PIDSource prescaledPowerRight, prescaledPowerLeft;
-	private RampRate steeringRamp;
+	
 
 	private static final double MIN_SPEED = 1;
 	private static final double MAX_SPEED = 180;
 
 	// AUTO
-	private RampRate velocityRampLeft, velocityRampRight;
-	private WarlordsPIDController distPID, anglePID;
-	private TransferNode overallVelocityTransferNode, angleSteeringTransferNode, autoCurvatureTransferNode;
+	private RampRate velocityRampLeft = new RampRate(ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp), 
+		velocityRampRight = new RampRate(ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp);;
+	private WarlordsPIDController distPID = new WarlordsPIDController(), anglePID = new WarlordsPIDController();
+	private TransferNode overallVelocityTransferNode = new TransferNode(0), 
+			angleSteeringTransferNode = new TransferNode(0), autoCurvatureTransferNode = new TransferNode(0);
 	private static final double LOW_SPEED_DRIVETO = 1;
 	private static final double LOW_SPEED_ROTATETO = .5;
 	private static final double DRIVETO_TOLERANCE = 2;
 	private static final double ROTATETO_TOLERANCE = .5;
 
 	public DriveTrain() {
-		rotateToTransferNode = new TransferNode(0);
 		
-		rotateToPID = new WarlordsPIDController(RobotMap.ahrs, rotateToTransferNode);
+		rotateToPID.setSources(RobotMap.ahrs);
+		rotateToPID.setOutputs(rotateToTransferNode);
 		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, 
 				ConstantsIO.kD_RotateTo, ConstantsIO.kF_RotateTo);
 		rotateToPID.setAbsoluteTolerance(ROTATETO_TOLERANCE);
@@ -116,13 +109,13 @@ public class DriveTrain extends Subsystem {
 				RobotMap.driveTrainLeft.set(out);
 			}
 		};
-		overallVelocityTransferNode = new TransferNode(0);
-		angleSteeringTransferNode = new TransferNode(0);
-		autoCurvatureTransferNode = new TransferNode(0);
+		
 		autoSteeringSource = new PIDSourceWrapper(() -> {
 			return angleSteeringTransferNode.getOutput() + autoCurvatureTransferNode.getOutput();
 		});
-		anglePID = new WarlordsPIDController(RobotMap.ahrs, angleSteeringTransferNode);
+		
+		anglePID.setSources(RobotMap.ahrs);
+		anglePID.setOutputs(angleSteeringTransferNode);
 		anglePID.setPID(ConstantsIO.kP_DriveAngle, ConstantsIO.kI_DriveAngle, ConstantsIO.kD_DriveAngle);
 
 		motorModeSwitcherRight = (double out) -> {
@@ -137,13 +130,9 @@ public class DriveTrain extends Subsystem {
 			}
 		};
 
-		throttleTransferNode = new TransferNode(0);
-		steeringTransferNode = new TransferNode(0);
-
-		throttleRamp = new RampRate(new PIDOutput[] { throttleTransferNode }, ConstantsIO.kUpRamp_Drive,
-				ConstantsIO.kDownRamp_Drive);
-		steeringRamp = new RampRate(new PIDOutput[] { steeringTransferNode }, ConstantsIO.kUpRamp_DriveSteering,
-				ConstantsIO.kDownRamp_DriveSteering);
+		throttleRamp.setOutputs(throttleTransferNode);
+		
+		steeringRamp.setOutputs(steeringTransferNode);
 
 		curvatureSource = new PIDSourceWrapper(() -> {
 			double leftVelocity = RobotMap.driveEncLeft.getRate();
@@ -192,34 +181,39 @@ public class DriveTrain extends Subsystem {
 			}
 		});
 
-		powerScalingMax = new ScalingMax(new PIDOutput[] { motorModeSwitcherLeft, motorModeSwitcherRight },
-				new PIDSource[] { prescaledPowerLeft, prescaledPowerRight });
+		powerScalingMax.setOutputs(motorModeSwitcherLeft, motorModeSwitcherRight);
+		powerScalingMax.setSources(prescaledPowerLeft, prescaledPowerRight);
 		powerScalingMax.setSetpoint(1);
 
-		steeringPIDController = new WarlordsPIDController(curvatureSource, steeringTransferNode);
+		steeringPIDController.setSources(curvatureSource);
+		steeringPIDController.setOutputs(steeringTransferNode);
 		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
 
-		velocityPIDLeft = new WarlordsPIDController(RobotMap.driveEncRateLeft, motorModeSwitcherLeft);
-		velocityPIDRight = new WarlordsPIDController(RobotMap.driveEncRateRight, motorModeSwitcherRight);
-		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
-				ConstantsIO.kF_DriveVelocity);
+		velocityPIDLeft.setSources(RobotMap.driveEncRateLeft);
+		velocityPIDLeft.setOutputs(motorModeSwitcherLeft);
+		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, 
+				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
+		
+		velocityPIDRight.setSources(RobotMap.driveEncRateRight);
+		velocityPIDRight.setOutputs(motorModeSwitcherRight);
 		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
 				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
-		overallVelocityRampRate = new RampRate(new PIDOutput[] { overallVelocityTransferNode },
-				ConstantsIO.kUpRamp_OverallVelocityRamp, ConstantsIO.kDownRamp_OverallVelocityRamp);
-		distPID = new WarlordsPIDController(RobotMap.averageEncoderDistance, overallVelocityRampRate);
+		
+		overallVelocityRampRate.setOutputs(overallVelocityTransferNode);
+		
+		distPID.setSources(RobotMap.averageEncoderDistance);
+		distPID.setOutputs(overallVelocityRampRate);
 		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance,
 				ConstantsIO.kF_Distance);
 		distPID.setAbsoluteTolerance(DRIVETO_TOLERANCE);
 
-		velocityRampLeft = new RampRate(new PIDOutput[] { velocityPIDLeft }, ConstantsIO.kUpRamp_IndividualVelocityRamp,
-				ConstantsIO.kDownRamp_IndividualVelocityRamp);
-		velocityRampRight = new RampRate(new PIDOutput[] { velocityPIDRight },
-				ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp);
-
-		velocityScalingMax = new ScalingMax(new PIDOutput[] { velocityRampLeft, velocityRampRight },
-				new PIDSource[] { prescaledVelocityLeft, prescaledVelocityRight });
+		velocityRampLeft.setOutputs(velocityPIDLeft);
+		
+		velocityRampRight.setOutputs(velocityPIDRight);
+		
+		velocityScalingMax.setOutputs(velocityRampLeft, velocityRampRight);
+		velocityScalingMax.setSources(prescaledVelocityLeft, prescaledVelocityRight);
 		velocityScalingMax.setSetpoint(MAX_SPEED);
 
 	}

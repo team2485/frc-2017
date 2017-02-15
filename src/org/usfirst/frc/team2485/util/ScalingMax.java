@@ -7,12 +7,18 @@ public class ScalingMax extends WarlordsControlSystem {
 
 	private double[] inVals, outVals;
 
-	public ScalingMax(PIDOutput[] outputs, PIDSource[] sources) {
-		super(outputs, sources);
-		if (outputs.length != sources.length) throw new IllegalArgumentException("not same size arrays");
-		inVals = new double[sources.length]; 
+	
+	@Override
+	public synchronized void setOutputs(PIDOutput... outputs) {
+		super.setOutputs(outputs);
 		outVals = new double[outputs.length]; 
 
+	}
+	
+	@Override
+	public synchronized void setSources(PIDSource... sources) {
+		super.setSources(sources);
+		inVals = new double[sources.length]; 
 	}
 	
 	public double[] getInValues() {
@@ -25,6 +31,9 @@ public class ScalingMax extends WarlordsControlSystem {
 	
 	@Override
 	protected void calculate() {
+		
+		if (inVals.length != outVals.length) 
+			throw new RuntimeException("invals and outvals are different lengths");
 		
 		for (int i = 0; i < inVals.length; i++) {
 			inVals[i] = sources[i].pidGet();

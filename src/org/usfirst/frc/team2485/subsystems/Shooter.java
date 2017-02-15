@@ -18,7 +18,9 @@ public class Shooter extends Subsystem {
 
 		
 
-		ratePID = new WarlordsPIDController(RobotMap.shooterEncoder, RobotMap.shooterMotor);
+		ratePID = new WarlordsPIDController();
+		ratePID.setSources(RobotMap.shooterEncoder);
+		ratePID.setOutputs(RobotMap.shooterMotor);
 		ratePID.setBufferLength(3);
 		ratePID.setOutputRange(0, 1);
 		ratePID.setPID(ConstantsIO.kP_Shooter, ConstantsIO.kI_Shooter, ConstantsIO.kD_Shooter,

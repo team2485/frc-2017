@@ -19,7 +19,9 @@ public class Feeder extends Subsystem {
 
 		
 
-		ratePID = new WarlordsPIDController(RobotMap.feederEncoder, RobotMap.feederMotor);
+		ratePID = new WarlordsPIDController();
+		ratePID.setSources(RobotMap.feederEncoder);
+		ratePID.setOutputs(RobotMap.feederMotor);
 		ratePID.setBufferLength(3);
 		ratePID.setOutputRange(0, 1);
 

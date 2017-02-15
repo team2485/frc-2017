@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.PIDSource;
 
 /**
  * Class that implements a standard PID Control Loop without the abnormalities of WPI's PIDController class

@@ -29,7 +29,7 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 		
 	}
 	
-	public synchronized void setSources(PIDSource[] sources) {
+	public synchronized void setSources(PIDSource... sources) {
 		this.sources = sources;
 	}
 	
