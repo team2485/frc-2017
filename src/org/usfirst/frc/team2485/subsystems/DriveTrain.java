@@ -41,15 +41,8 @@ public class DriveTrain extends Subsystem {
 	private static final double THROTTLE_DEADBAND = 0.15;
 	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
-	private static final double MAX_CURRENT = 1 / 0.07, MIN_CURRENT = 0.2;
-
-	// private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
-	// private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
-	// private static final double ABS_TOLERANCE_DRIVETO_DISTANCE = 0;
-	// private static final double LOW_ENC_RATE = 0;
-	// private static final int MINIMUM_AHRS_ON_TARGET_ITERATIONS = 0;
-	// private int driveToOnTargetIterations;
-	// i is 0.05, f is 0
+	private static double MAX_CURRENT; 
+	private static double MIN_CURRENT = 0.2;
 
 	private boolean isQuickTurn;
 	private boolean isCurrentLeft, isCurrentRight;
@@ -95,6 +88,9 @@ public class DriveTrain extends Subsystem {
 	private static final double ROTATETO_TOLERANCE = .5;
 
 	public DriveTrain() {
+		
+		MAX_CURRENT = 1 / ConstantsIO.kF_DriveCurrent;
+		
 		rotateToTransferNode = new TransferNode(0);
 		
 		rotateToPID = new WarlordsPIDController(RobotMap.ahrs, rotateToTransferNode);
@@ -128,10 +124,8 @@ public class DriveTrain extends Subsystem {
 		motorModeSwitcherRight = (double out) -> {
 			if (Math.abs(out * MAX_CURRENT) > MIN_CURRENT && useCurrent) {
 				setCurrentModeRight(true);
-				// System.out.println("right current; " + out);
 				RobotMap.driveTrainRight.set(out * MAX_CURRENT);
 			} else {
-				// System.out.println("right voltage; " + out);
 				setCurrentModeRight(false);
 				RobotMap.driveTrainRight.set(out);
 			}
@@ -604,6 +598,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void updateConstants() {
+		MAX_CURRENT = 1 / ConstantsIO.kF_DriveCurrent;
 		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
 		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
