@@ -1,12 +1,12 @@
 package org.usfirst.frc.team2485.robot;
 
-import org.usfirst.frc.team2485.robot.commands.FlashLights;
-import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
-import org.usfirst.frc.team2485.robot.commands.SetLights;
+import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
+import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
+import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
+import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
@@ -14,44 +14,42 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-	
-    public static Joystick xBox;
-    public static Joystick joystick;
-    
-    public static final int XBOX_BTN_A = 1;
-    public static final int XBOX_BTN_B = 2;
-    public static final int XBOX_BTN_X = 3;
-    public static final int XBOX_BTN_Y = 4;
-    public static final int XBOX_LBUMPER = 5;
-    public static final int XBOX_RBUMPER = 6;
-    public static final int XBOX_LTRIGGER = 2;
-    public static final int XBOX_RTRIGGER = 3;
-    
-    public static void init(){
-    	xBox = new Joystick(0);
-    	joystick = new Joystick(1);
-    	
-    	new JoystickButton(xBox, XBOX_RBUMPER).whenPressed(new SetQuickTurn(true));
-    	new JoystickButton(xBox, XBOX_RBUMPER).whenReleased(new SetQuickTurn(false));
-    	
-    	new JoystickButton(xBox, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
-    	new JoystickButton(xBox, XBOX_BTN_B).whenPressed(new SetGearHolderPosition(false));
-    	
-    	FlashLights flashLights = new FlashLights();
-    	new JoystickButton(xBox, XBOX_BTN_X).whenPressed(flashLights);
-    	new JoystickButton(xBox, XBOX_BTN_Y).cancelWhenPressed(flashLights);
-    	
-    	
-    	new JoystickButton (xBox, XBOX_LBUMPER).whenPressed(new SetLights(Relay.Value.kForward));
-    	new JoystickButton (xBox, XBOX_LBUMPER).whenReleased(new SetLights(Relay.Value.kOff));
-    }
-    
-    public static boolean getLeftTrigger() {
-    	return xBox.getRawAxis(XBOX_LTRIGGER) > 0.4;
-    }
-    
-    public static boolean getRightTrigger() {
-    	return xBox.getRawAxis(XBOX_RTRIGGER) > 0.4;
-    }
-}
 
+	public static Joystick xBox;
+	public static Joystick joystick;
+
+	public static final int XBOX_BTN_A = 1;
+	public static final int XBOX_BTN_B = 2;
+	public static final int XBOX_BTN_X = 3;
+	public static final int XBOX_BTN_Y = 4;
+	public static final int XBOX_BTN_LBUMPER = 5;
+	public static final int XBOX_BTN_RBUMPER = 6;
+	public static final int XBOX_BTN_BACK = 7;
+	public static final int XBOX_BTN_START = 8;
+	public static final int XBOX_BTN_L_AXIS = 9;
+
+	public static final int XBOX_AXIS_LX = 0;
+	public static final int XBOX_AXIS_LY = 1;
+	public static final int XBOX_AXIS_LTRIGGER = 2;
+	public static final int XBOX_AXIS_RTRIGGER = 3;
+	public static final int XBOX_AXIS_RX = 4;
+	public static final int XBOX_AXIS_RY = 5;
+
+	public static void init() {
+		xBox = new Joystick(0);
+		joystick = new Joystick(1);
+
+		if (DriveWithControllers.TRIGGER_DRIVE) {
+			new JoystickButton(xBox, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
+			new JoystickButton(xBox, XBOX_BTN_X).whenReleased(new SetQuickTurn(false));
+		} else {
+			new JoystickButton(xBox, XBOX_BTN_RBUMPER).whenPressed(new SetQuickTurn(true));
+			new JoystickButton(xBox, XBOX_BTN_RBUMPER).whenReleased(new SetQuickTurn(false));
+
+			new JoystickAxisButton(xBox, XBOX_AXIS_RTRIGGER, 0.4, 1)
+					.whenPressed(new SetDriveSpeed(DriveSpeed.SLOW_SPEED_RATING));
+			new JoystickAxisButton(xBox, XBOX_AXIS_RTRIGGER, 0.4, 1)
+					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
+		}
+	}
+}

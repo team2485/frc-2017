@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class DriveTrain extends Subsystem {
 	public enum DriveSpeed {
-		SLOW_SPEED_RATING, NORMAL_SPEED_RATING, FAST_SPEED_RATING;
+		SLOW_SPEED_RATING, NORMAL_SPEED_RATING;
 
 		public double getSpeedFactor() {
 
@@ -41,15 +41,8 @@ public class DriveTrain extends Subsystem {
 	private static final double THROTTLE_DEADBAND = 0.15;
 	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
-	private static final double MAX_CURRENT = 1 / 0.07, MIN_CURRENT = 0.2;
-
-	// private static final int MINIMUM_DRIVETO_ON_TARGET_ITERATIONS = 10;
-	// private static final double ABS_TOLERANCE_DRIVETO_ANGLE = 0;
-	// private static final double ABS_TOLERANCE_DRIVETO_DISTANCE = 0;
-	// private static final double LOW_ENC_RATE = 0;
-	// private static final int MINIMUM_AHRS_ON_TARGET_ITERATIONS = 0;
-	// private int driveToOnTargetIterations;
-	// i is 0.05, f is 0
+	private static double MAX_CURRENT; 
+	private static double MIN_CURRENT = 0.2;
 
 	private boolean isQuickTurn;
 	private boolean isCurrentLeft, isCurrentRight;
@@ -64,7 +57,7 @@ public class DriveTrain extends Subsystem {
 	private TransferNode rotateToTransferNode = new TransferNode(0), 
 			throttleTransferNode = new TransferNode(0), steeringTransferNode = new TransferNode(0);
 	private WarlordsPIDController steeringPIDController = new WarlordsPIDController();
-	private PIDSource curvatureSource, autoSteeringSource, prescaledVelocityLeft, prescaledVelocityRight,
+	private PIDSourceWrapper curvatureSource, autoSteeringSource, prescaledVelocityLeft, prescaledVelocityRight,
 		prescaledPowerRight, prescaledPowerLeft;
 	private ScalingMax powerScalingMax = new ScalingMax(), velocityScalingMax = new ScalingMax();
 	private RampRate throttleRamp = new RampRate(ConstantsIO.kUpRamp_Drive, ConstantsIO.kDownRamp_Drive), 
@@ -88,6 +81,9 @@ public class DriveTrain extends Subsystem {
 	private static final double ROTATETO_TOLERANCE = .5;
 
 	public DriveTrain() {
+
+		
+		MAX_CURRENT = 1 / ConstantsIO.kF_DriveCurrent;
 		
 		rotateToPID.setSources(RobotMap.ahrs);
 		rotateToPID.setOutputs(rotateToTransferNode);
@@ -101,12 +97,20 @@ public class DriveTrain extends Subsystem {
 		motorModeSwitcherLeft = (double out) -> {
 			if (Math.abs(out * MAX_CURRENT) > MIN_CURRENT && useCurrent) {
 				setCurrentModeLeft(true);
-				// System.out.println("left current; " + out);
 				RobotMap.driveTrainLeft.set(out * MAX_CURRENT);
 			} else {
 				setCurrentModeLeft(false);
-				// System.out.println("left voltage; " + out);
 				RobotMap.driveTrainLeft.set(out);
+			}
+		};
+		
+		motorModeSwitcherRight = (double out) -> {
+			if (Math.abs(out * MAX_CURRENT) > MIN_CURRENT && useCurrent) {
+				setCurrentModeRight(true);
+				RobotMap.driveTrainRight.set(out * MAX_CURRENT);
+			} else {
+				setCurrentModeRight(false);
+				RobotMap.driveTrainRight.set(out);
 			}
 		};
 		
@@ -114,21 +118,10 @@ public class DriveTrain extends Subsystem {
 			return angleSteeringTransferNode.getOutput() + autoCurvatureTransferNode.getOutput();
 		});
 		
+		
 		anglePID.setSources(RobotMap.ahrs);
 		anglePID.setOutputs(angleSteeringTransferNode);
 		anglePID.setPID(ConstantsIO.kP_DriveAngle, ConstantsIO.kI_DriveAngle, ConstantsIO.kD_DriveAngle);
-
-		motorModeSwitcherRight = (double out) -> {
-			if (Math.abs(out * MAX_CURRENT) > MIN_CURRENT && useCurrent) {
-				setCurrentModeRight(true);
-				// System.out.println("right current; " + out);
-				RobotMap.driveTrainRight.set(out * MAX_CURRENT);
-			} else {
-				// System.out.println("right voltage; " + out);
-				setCurrentModeRight(false);
-				RobotMap.driveTrainRight.set(out);
-			}
-		};
 
 		throttleRamp.setOutputs(throttleTransferNode);
 		
@@ -598,6 +591,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void updateConstants() {
+		MAX_CURRENT = 1 / ConstantsIO.kF_DriveCurrent;
 		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
 		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
