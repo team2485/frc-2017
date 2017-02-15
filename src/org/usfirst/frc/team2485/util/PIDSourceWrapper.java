@@ -6,7 +6,13 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 public class PIDSourceWrapper implements PIDSource {
 	
 	private WARLordsPIDSource pidSource;
-
+	
+	public PIDSourceWrapper() {	}
+	
+	public PIDSourceWrapper(WARLordsPIDSource pidSource) {
+		setPidSource(pidSource);
+	}
+	
 	public void setPidSource(WARLordsPIDSource pidSource) {
 		this.pidSource = pidSource;
 	}
