@@ -32,7 +32,7 @@ public class DriveTo extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return false;
+		return finished;
 	}
 
 }
