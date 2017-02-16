@@ -38,12 +38,12 @@ public class RobotMap {
 	//constants
 	public static final double ROBOT_WIDTH = 27;
 	public static final double WHEEL_RADIUS = 2;
-	public static int driveRightPort1 = 1;
-	public static int driveRightPort2 = 4;
-	public static int driveRightPort3 = 2;
-	public static int driveLeftPort1 = 3;
-	public static int driveLeftPort2 = 6;
-	public static int driveLeftPort3 = 5;
+	public static int driveRightPortCIM1 = 1;
+	public static int driveRightPortCIM2 = 3;
+	public static int driveRightPortMiniCIM = 2;
+	public static int driveLeftPortCIM1 = 4;
+	public static int driveLeftPortCIM2 = 6;
+	public static int driveLeftPortMiniCIM = 5;
 	public static int kShooterEncoderPortA = 4, kShooterEncoderPortB = 5;
 	public static int kLeftDriveEnc1 = 3, kLeftDriveEnc2 = 2;
 	public static int kRightDriveEnc1 = 0, kRightDriveEnc2 = 1;
@@ -99,13 +99,13 @@ public class RobotMap {
 //		compressorSpike = new Relay(0);
 //		pressureSwitch = new DigitalInput(10);
 		
-		driveLeft1 = new CANTalon(driveLeftPort1);
-		driveLeft2 = new CANTalon(driveLeftPort2);
-		driveLeft3 = new CANTalon(driveLeftPort3);
+		driveLeft1 = new CANTalon(driveLeftPortCIM1);
+		driveLeft2 = new CANTalon(driveLeftPortCIM2);
+		driveLeft3 = new CANTalon(driveLeftPortMiniCIM);
 		
-		driveRight1 = new CANTalon(driveRightPort1);
-		driveRight2 = new CANTalon(driveRightPort2);
-		driveRight3 = new CANTalon(driveRightPort3);
+		driveRight1 = new CANTalon(driveRightPortCIM1);
+		driveRight2 = new CANTalon(driveRightPortCIM2);
+		driveRight3 = new CANTalon(driveRightPortMiniCIM);
 		
 		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2, driveLeft3);
 		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRight3);

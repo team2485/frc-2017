@@ -630,7 +630,7 @@ public class DriveTrain extends Subsystem {
 	@Override
 	protected void initDefaultCommand() {
 		System.out.println("init default");
-		setDefaultCommand(new DriveWithControllers(DriveWithControllers.useVelocityFlag));
+		setDefaultCommand(new DriveWithControllers(0));
 		// setDefaultCommand(new
 		// DriveWithControllers(DriveWithControllers.useCurrentFlag |
 		// DriveWithControllers.hasSteeringCorrectionFlag));
