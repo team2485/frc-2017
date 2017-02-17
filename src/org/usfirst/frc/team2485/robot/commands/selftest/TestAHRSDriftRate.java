@@ -23,13 +23,23 @@ public class TestAHRSDriftRate extends Command {
 	@Override
 	protected void execute() {
 		if (timeSinceInitialized() > 1) {
-			
+
 			double driftRate = RobotMap.ahrs.getAngle() - startAngle;
-			
+
 			ITable table = NetworkTable.getTable("SmartDashboard").getSubTable("SelfTest");
-			
-			table.putNumber("AHRSDrift", driftRate);
-			
+
+			String report;
+
+			if (driftRate == 0) {
+				report = "WARNING:DRIFT RATE IS EXACTLY 0";
+			} else if (Math.abs(driftRate) < 0.1) {
+				report = "OK";
+			} else {
+				report = "FAILED:[" + driftRate + "]";
+			}
+
+			table.putString("AHRSDrift", report);
+
 			done = true;
 		}
 	}
