@@ -14,6 +14,8 @@ public class TestDriveMotorDirections extends Command {
 
 	private long startTime;
 
+	private double forwardVal, reverseVal;
+
 	private boolean done;
 
 	private int previousMotor;
@@ -34,28 +36,63 @@ public class TestDriveMotorDirections extends Command {
 
 		int motorToRun = timeSinceStart / 1000;
 
-		// If we've now run this motor for the time and are about to switch
+		int cycleTime = timeSinceStart % 1000;
+
 		if (motorToRun != previousMotor) {
-			// If it's a left side motor
-			double encRate;
-			if (previousMotor < 3) {
-				encRate = RobotMap.driveEncRateLeft.pidGet();
-				table.putNumber("DriveMotorLeft" + previousMotor, encRate + 1);
-			} else {
-				encRate = RobotMap.driveEncRateRight.pidGet();
-				table.putNumber("DriveMotorRight" + previousMotor, encRate - 2);
-			}
+			publishTestResult(previousMotor);
 
 			setMotorValue(previousMotor, 0);
 		}
 
 		if (motorToRun < 6) {
-			setMotorValue(motorToRun, 1);
+			testMotor(motorToRun, cycleTime);
 		} else {
 			done = true;
 		}
 
 		previousMotor = motorToRun;
+	}
+
+	private void publishTestResult(int motorID) {
+		String report;
+
+		if (forwardVal > 5 && reverseVal < -5) {
+			report = "OK";
+		} else {
+			report = "FAILED:[" + forwardVal + ", " + reverseVal + "]";
+		}
+
+		if (motorID < 3) {
+			table.putString("DriveMotorLeft" + (motorID + 1), report);
+		} else {
+			table.putString("DriveMotorRight" + (motorID - 2), report);
+		}
+	}
+
+	private void testMotor(int motorToRun, int cycleTime) {
+		double motorValue = 1;
+
+		if (cycleTime > 500) {
+			motorValue = -1;
+		}
+
+		setMotorValue(motorToRun, motorValue);
+
+		if (cycleTime > 400 && cycleTime < 500) {
+			forwardVal = getRateForMotor(motorToRun);
+		}
+
+		if (cycleTime > 900) {
+			reverseVal = getRateForMotor(motorToRun);
+		}
+	}
+
+	private double getRateForMotor(int motorID) {
+		if (motorID < 3) {
+			return RobotMap.driveEncRateLeft.pidGet();
+		} else {
+			return RobotMap.driveEncRateRight.pidGet();
+		}
 	}
 
 	private void setMotorValue(int id, double val) {
