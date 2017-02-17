@@ -5,9 +5,9 @@ import org.usfirst.frc.team2485.util.ConstantsIO;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-public class Climber extends Subsystem{
+public class Climber extends Subsystem {
 
-	public Climber(){
+	public Climber() {
 		
 	}
 	
@@ -17,11 +17,11 @@ public class Climber extends Subsystem{
 		
 	}
 	
-	public void climb(){
+	public void climb() {
 		RobotMap.climberMotor.set(ConstantsIO.kClimberSpeed);
 	}
 	
-	public void stopClimbing(){
+	public void stopClimbing() {
 		RobotMap.climberMotor.set(0.0);
 	}
 
