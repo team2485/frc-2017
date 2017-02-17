@@ -115,6 +115,8 @@ public class SpeedControllerWrapper implements SpeedController {
 			controller.disable();
 		}
 	}
+	
+
 
 	@Override
 	public void stopMotor() {

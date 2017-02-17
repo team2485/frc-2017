@@ -35,6 +35,17 @@ public class DriveTrain extends Subsystem {
 			}
 		}
 	}
+	
+	public enum ControlMode {
+		OFF, TELEOP_VOLTAGE, TELEOP_CURRENT, TELEOP_VELOCITY, AUTO_CURVE_FOLLOW, AUTO_ROTATE_TO, TEST_VELOCITY_DIRECT, TEST_CURRENT_DIRECT;
+		
+		public boolean isTeleop() {
+			return (this == TELEOP_VOLTAGE || this == TELEOP_CURRENT || this == TELEOP_VELOCITY);
+		}
+		public boolean isAuto() {
+			return (this == AUTO_CURVE_FOLLOW || this == AUTO_ROTATE_TO);
+		}
+	}
 
 	private static final double STEERING_DEADBAND = 0.15;
 	private static final double THROTTLE_DEADBAND = 0.15;
@@ -339,6 +350,24 @@ public class DriveTrain extends Subsystem {
 		RobotMap.driveTrainRight.set(rightPwm);
 
 	}
+	
+	public void switchControlMode (ControlMode mode) {
+		useCurrent = (mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_CURRENT_DIRECT || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		powerScalingMax.setEnabled(mode != ControlMode.OFF);
+		steeringPIDController.setEnabled(mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VOLTAGE);
+		steeringRamp.setEnabled(mode.isTeleop());
+		throttleRamp.setEnabled(mode.isTeleop());
+		velocityPIDLeft.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityPIDRight.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityRampLeft.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityRampRight.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityScalingMax.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		anglePID.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
+		overallVelocityRampRate.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
+		distPID.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
+		rotateToPID.setEnabled(mode == ControlMode.AUTO_ROTATE_TO);
+		isRotateTo = (mode == ControlMode.AUTO_ROTATE_TO);
+	}
 
 	/**
 	 * W.A.R. Lord Drive This drive method is based off of Team 254's Ultimate
@@ -348,39 +377,22 @@ public class DriveTrain extends Subsystem {
 	 *            controllerY should be positive for forward motion
 	 * @param controllerX
 	 */
-	public void warlordDrive(double controllerY, double controllerX, boolean useCurrent, boolean hasCheese,
-			boolean hasSteeringCorrection, boolean useVelocity) {
+	public void warlordDrive(double controllerY, double controllerX, ControlMode mode) {
 
 		double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.0, 1);
 		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.02, 1);
 
 		throttle *= driveSpeed;
-		if (useVelocity && throttle > 0) {
-			this.useCurrent = true;
-			hasSteeringCorrection = false;
-			powerScalingMax.disable();
-			velocityPIDLeft.enable();
-			velocityPIDRight.enable();
-			setAuto(false);
-		} else {
-			powerScalingMax.enable();
-			velocityPIDLeft.disable();
-			velocityPIDRight.disable();
-			this.useCurrent = useCurrent;
-		}
+		
+		setAuto(false);
 
-		throttleRamp.enable();
 		throttleRamp.setSetpoint(throttle);
-
 		steeringRamp.setSetpoint(steering);
-		steeringRamp.enable();
-
+		
 		double averageSpeed = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2;
-		if (Math.abs(averageSpeed) > MIN_SPEED && !isQuickTurn && hasSteeringCorrection) {
-			steeringPIDController.enable();
+		if (Math.abs(averageSpeed) > MIN_SPEED && !isQuickTurn && (mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VOLTAGE)) {
 			steeringRamp.setOutputs(steeringPIDController);
 		} else {
-			steeringPIDController.disable();
 			steeringRamp.setOutputs(steeringTransferNode);
 		}
 
@@ -662,19 +674,10 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public boolean driveTo(double distance, double maxSpeed, double angle, double curvature) {
-		useCurrent = true;
-		powerScalingMax.disable();
-		velocityRampLeft.enable();
-		velocityRampRight.enable();
-		velocityPIDLeft.enable();
-		velocityPIDRight.enable();
-		distPID.enable();
-		isRotateTo = false;
-		velocityScalingMax.enable();
-		overallVelocityRampRate.enable();
+		switchControlMode(ControlMode.AUTO_CURVE_FOLLOW);
+		setAuto(true);
 		distPID.setSetpoint(distance);
 		distPID.setOutputRange(-maxSpeed, maxSpeed);
-		anglePID.enable();
 		anglePID.setSetpoint(angle);
 		return (distPID.isOnTarget() && Math
 				.abs((RobotMap.driveEncRight.getRate() + RobotMap.driveEncLeft.getRate()) / 2) < LOW_SPEED_DRIVETO);
@@ -682,18 +685,9 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public boolean rotateTo(double angle) {
-		rotateToPID.enable();
+		switchControlMode(ControlMode.AUTO_ROTATE_TO);
 		rotateToPID.setSetpoint(angle);
-		isRotateTo = true;
 		setAuto(true);
-		useCurrent = true;
-		powerScalingMax.disable();
-		velocityRampLeft.enable();
-		velocityRampRight.enable();
-		velocityPIDLeft.enable();
-		velocityPIDRight.enable();
-		velocityScalingMax.enable();
-		anglePID.enable();
 		anglePID.setSetpoint(angle);
 		return (rotateToPID.isOnTarget() && Math.abs(RobotMap.ahrs.getRate()) < LOW_SPEED_ROTATETO);
 	}
