@@ -355,7 +355,6 @@ public class DriveTrain extends Subsystem {
 		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.02, 1);
 
 		throttle *= driveSpeed;
-		System.out.println("throttle; " + throttle);
 		if (useVelocity && throttle > 0) {
 			this.useCurrent = true;
 			hasSteeringCorrection = false;

@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.tables.ITable;
  */
 
 public class TestAHRSDriftRate extends Command {
+	
+	private long startTime;
 
 	private double startAngle;
 	private boolean done;
@@ -18,11 +20,13 @@ public class TestAHRSDriftRate extends Command {
 	@Override
 	protected void initialize() {
 		startAngle = RobotMap.ahrs.getAngle();
+		startTime = System.currentTimeMillis();
+		done = false;
 	}
 
 	@Override
 	protected void execute() {
-		if (timeSinceInitialized() > 1) {
+		if (System.currentTimeMillis() - startTime > 1000) {
 
 			double driftRate = RobotMap.ahrs.getAngle() - startAngle;
 

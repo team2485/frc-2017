@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	private AutoPath path; 
-	
+	private AutoPath path;
+
 	public void robotInit() {
 
 		ConstantsIO.init();
@@ -24,19 +24,15 @@ public class Robot extends IterativeRobot {
 		OI.init();
 		path = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
 			t *= Math.PI;
-			return new Pair((Math.cos(t)-1)*27, (Math.sin(t)*27));
+			return new Pair((Math.cos(t) - 1) * 27, (Math.sin(t) * 27));
 		}, 10000));
-		System.out.println("length: " + path.getPathLength());
-		System.out.println("Angle 0: " + path.getHeadingAtDist(0));
-		System.out.println("Angle 20: " + path.getHeadingAtDist(20));
-		System.out.println("curvature 0: " + path.getCurvatureAtDist(0));
-		System.out.println("curvature 20: " + path.getCurvatureAtDist(20));
-		
+
 		RobotMap.updateConstants();
 
 	}
 
 	public void disabledInit() {
+		Scheduler.getInstance().removeAll();
 		RobotMap.driveTrain.reset();
 	}
 
@@ -51,13 +47,13 @@ public class Robot extends IterativeRobot {
 		CommandGroup group = new CommandGroup();
 		group.addSequential(new DriveTo(path, 150));
 		group.addSequential(new ResetDriveTrain());
-		
+
 		Scheduler.getInstance().add(group);
-	
-//		RobotMap.updateConstants();
-//		UsbCamera usb = CameraServer.getInstance().startAutomaticCapture(0);
-//		usb.setExposureManual(0);
-//		usb.setBrightness(0);
+
+		// RobotMap.updateConstants();
+		// UsbCamera usb = CameraServer.getInstance().startAutomaticCapture(0);
+		// usb.setExposureManual(0);
+		// usb.setBrightness(0);
 
 		isFinished = false;
 		RobotMap.driveTrain.zeroEncoders();
@@ -65,26 +61,25 @@ public class Robot extends IterativeRobot {
 	}
 
 	private boolean isFinished;
-	
+
 	Mat newMat = new Mat();
 
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateSmartDashboard();
-		System.out.println("Angle = " + RobotMap.ahrs.getAngle());
 		if (!isFinished) {
-			
+
 		} else {
 			RobotMap.driveTrain.reset();
 		}
-		
-//		RobotMap.driveTrain.setLeftRightVelocity(40, 40);
-		
-//		RobotMap.driveTrain.setCurrentModeLeft(false);
-//		RobotMap.driveTrain.setCurrentModeRight(false);
-//		
-//		RobotMap.driveTrainLeft.set(1);
-//		RobotMap.driveTrainRight.set(1);
+
+		// RobotMap.driveTrain.setLeftRightVelocity(40, 40);
+
+		// RobotMap.driveTrain.setCurrentModeLeft(false);
+		// RobotMap.driveTrain.setCurrentModeRight(false);
+		//
+		// RobotMap.driveTrainLeft.set(1);
+		// RobotMap.driveTrainRight.set(1);
 
 	}
 
@@ -99,40 +94,34 @@ public class Robot extends IterativeRobot {
 
 	double temp = 0;
 	double lastTime = 0;
+
 	public void teleopPeriodic() {
-		
+
 		Scheduler.getInstance().run();
-		
+
 		updateSmartDashboard();
 
-		//		RobotMap.driveTrain.setCurrentModeLeft(true);
-		//		RobotMap.driveTrain.setCurrentModeRight(true);
+		// RobotMap.driveTrain.setCurrentModeLeft(true);
+		// RobotMap.driveTrain.setCurrentModeRight(true);
 		// RobotMap.driveTrain.enableCurrentMode(true);
 
-		//		if (System.currentTimeMillis() % 10000 < 5000) {
-		//		RobotMap.driveTrainRight.set(4);
-		//	RobotMap.driveTrainLeft.set(4);
-		//		} else {
-		//			RobotMap.driveTrainRight.set(8);
-		//			RobotMap.driveTrainLeft.set(8);
+		// if (System.currentTimeMillis() % 10000 < 5000) {
+		// RobotMap.driveTrainRight.set(4);
+		// RobotMap.driveTrainLeft.set(4);
+		// } else {
+		// RobotMap.driveTrainRight.set(8);
+		// RobotMap.driveTrainLeft.set(8);
 
-		//		}
-		
+		// }
 
 		// int curRent =
 		// (int)(edu.wpi.first.wpilibj.Timer.getFPGATimestamp()%2)+1;
 		// RobotMap.driveTrainLeft.set(curRent);
 		// RobotMap.driveTrainRight.set(curRent);
-//		RobotMap.driveTrain.setLeftRightVelocity(10, 10);
+		// RobotMap.driveTrain.setLeftRightVelocity(10, 10);
 		double thisTime = System.currentTimeMillis() / 1000.0;
 		temp += (thisTime - lastTime) * RobotMap.driveEncRight.getRate();
-		
-		System.out.println("Left Rate: " + RobotMap.driveEncLeft.getRate());
-		System.out.println("Right Rate: " +
-				RobotMap.driveEncRight.getRate());
-		System.out.println("right encoder value: " + RobotMap.driveEncRight.getDistance() + ":" + temp);
 	}
-
 
 	public void testInit() {
 		ConstantsIO.init();
@@ -148,8 +137,6 @@ public class Robot extends IterativeRobot {
 		// }
 
 		updateSmartDashboard();
-		System.out.println("Left Rate: " + RobotMap.driveEncLeft.getRate());
-		System.out.println("Right Rate: " + RobotMap.driveEncRight.getRate());
 
 	}
 
