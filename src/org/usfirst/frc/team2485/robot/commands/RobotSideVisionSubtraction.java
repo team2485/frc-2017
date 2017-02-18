@@ -20,19 +20,19 @@ public class RobotSideVisionSubtraction extends Command {
 	private static final int SLEEP_TIME = 5;
 	private Thread subtraction;
 	private boolean stop;
-	
+
 	public RobotSideVisionSubtraction() {
 		setInterruptible(true);
 		subtraction = new Thread(() -> processImages());
 		subtraction.setDaemon(true);
 		stop = false;
 	}
-	
+
 	@Override
 	protected void initialize() {
 		subtraction.start();
 	}
-	
+
 	private void processImages() {
 		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
 		camera.setResolution(640, 480);
@@ -46,8 +46,8 @@ public class RobotSideVisionSubtraction extends Command {
 		RobotMap.lightSpike.set(Value.kForward);
 		try {
 			Thread.sleep(SLEEP_TIME);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
 		while (!stop) {
@@ -69,11 +69,12 @@ public class RobotSideVisionSubtraction extends Command {
 			outputStream.putFrame(output);
 		}
 	}
+
 	@Override
 	protected boolean isFinished() {
 		return false;
 	}
-	
+
 	@Override
 	protected void end() {
 		stop = true;

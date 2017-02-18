@@ -35,13 +35,15 @@ public class DriveTrain extends Subsystem {
 			}
 		}
 	}
-	
+
 	public enum ControlMode {
-		OFF, TELEOP_VOLTAGE, TELEOP_CURRENT, TELEOP_VELOCITY, AUTO_CURVE_FOLLOW, AUTO_ROTATE_TO, TEST_VELOCITY_DIRECT, TEST_CURRENT_DIRECT;
-		
+		OFF, TELEOP_CHEESY, TELEOP_VOLTAGE, TELEOP_CURRENT, TELEOP_VELOCITY, AUTO_CURVE_FOLLOW, AUTO_ROTATE_TO, TEST_VELOCITY_DIRECT, TEST_CURRENT_DIRECT;
+
 		public boolean isTeleop() {
-			return (this == TELEOP_VOLTAGE || this == TELEOP_CURRENT || this == TELEOP_VELOCITY);
+			return (this == TELEOP_CHEESY || this == TELEOP_VOLTAGE || this == TELEOP_CURRENT
+					|| this == TELEOP_VELOCITY);
 		}
+
 		public boolean isAuto() {
 			return (this == AUTO_CURVE_FOLLOW || this == AUTO_ROTATE_TO);
 		}
@@ -62,38 +64,30 @@ public class DriveTrain extends Subsystem {
 
 	private double oldSteering, negInertiaAccumulator, quickStopAccumulator;
 
-	private WarlordsPIDController velocityPIDRight = new WarlordsPIDController(), 
-			velocityPIDLeft = new WarlordsPIDController(), 
-			rotateToPID = new WarlordsPIDController(),
-			distPID = new WarlordsPIDController(), 
-			anglePID = new WarlordsPIDController(),
+	private WarlordsPIDController velocityPIDRight = new WarlordsPIDController(),
+			velocityPIDLeft = new WarlordsPIDController(), rotateToPID = new WarlordsPIDController(),
+			distPID = new WarlordsPIDController(), anglePID = new WarlordsPIDController(),
 			steeringPIDController = new WarlordsPIDController();
-	private TransferNode rotateToTransferNode = new TransferNode(0), 
-			throttleTransferNode = new TransferNode(0), 
-			steeringTransferNode = new TransferNode(0),
-			overallVelocityTransferNode = new TransferNode(0), 
-			angleSteeringTransferNode = new TransferNode(0), 
-			autoCurvatureTransferNode = new TransferNode(0);
-	private PIDSourceWrapper curvatureSource = new PIDSourceWrapper(), 
-			autoSteeringSource = new PIDSourceWrapper(),
-			prescaledVelocityLeft = new PIDSourceWrapper(), 
-			prescaledVelocityRight = new PIDSourceWrapper(),
-			prescaledPowerRight = new PIDSourceWrapper(), 
-			prescaledPowerLeft = new PIDSourceWrapper();
-	private ScalingMax powerScalingMax = new ScalingMax(), 
-			velocityScalingMax = new ScalingMax();
-	private RampRate throttleRamp = new RampRate(ConstantsIO.kUpRamp_Drive, ConstantsIO.kDownRamp_Drive), 
-			velocityRampLeft = new RampRate(ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp), 
-			velocityRampRight = new RampRate(ConstantsIO.kUpRamp_IndividualVelocityRamp, ConstantsIO.kDownRamp_IndividualVelocityRamp),
+	private TransferNode rotateToTransferNode = new TransferNode(0), throttleTransferNode = new TransferNode(0),
+			steeringTransferNode = new TransferNode(0), overallVelocityTransferNode = new TransferNode(0),
+			angleSteeringTransferNode = new TransferNode(0), autoCurvatureTransferNode = new TransferNode(0);
+	private PIDSourceWrapper curvatureSource = new PIDSourceWrapper(), autoSteeringSource = new PIDSourceWrapper(),
+			prescaledVelocityLeft = new PIDSourceWrapper(), prescaledVelocityRight = new PIDSourceWrapper(),
+			prescaledPowerRight = new PIDSourceWrapper(), prescaledPowerLeft = new PIDSourceWrapper();
+	private ScalingMax powerScalingMax = new ScalingMax(), velocityScalingMax = new ScalingMax();
+	private RampRate throttleRamp = new RampRate(ConstantsIO.kUpRamp_Drive, ConstantsIO.kDownRamp_Drive),
+			velocityRampLeft = new RampRate(ConstantsIO.kUpRamp_IndividualVelocityRamp,
+					ConstantsIO.kDownRamp_IndividualVelocityRamp),
+			velocityRampRight = new RampRate(ConstantsIO.kUpRamp_IndividualVelocityRamp,
+					ConstantsIO.kDownRamp_IndividualVelocityRamp),
 			steeringRamp = new RampRate(ConstantsIO.kUpRamp_DriveSteering, ConstantsIO.kDownRamp_DriveSteering),
-			overallVelocityRampRate  = new RampRate(ConstantsIO.kUpRamp_OverallVelocityRamp, ConstantsIO.kDownRamp_OverallVelocityRamp);
-	private PIDOutputWrapper motorModeSwitcherLeft = new PIDOutputWrapper(), 
+			overallVelocityRampRate = new RampRate(ConstantsIO.kUpRamp_OverallVelocityRamp,
+					ConstantsIO.kDownRamp_OverallVelocityRamp);
+	private PIDOutputWrapper motorModeSwitcherLeft = new PIDOutputWrapper(),
 			motorModeSwitcherRight = new PIDOutputWrapper();
-	
 
 	private static final double MIN_SPEED = 1;
 	private static final double MAX_SPEED = 180;
-
 
 	private static final double LOW_SPEED_DRIVETO = 1;
 	private static final double LOW_SPEED_ROTATETO = .5;
@@ -113,6 +107,7 @@ public class DriveTrain extends Subsystem {
 				RobotMap.driveTrainLeft.set(out);
 			}
 		});
+
 		motorModeSwitcherRight.setPidOutput((double out) -> {
 			if (Math.abs(out * MAX_CURRENT) > MIN_CURRENT && useCurrent) {
 				setCurrentModeRight(true);
@@ -126,7 +121,7 @@ public class DriveTrain extends Subsystem {
 		powerScalingMax.setOutputs(motorModeSwitcherLeft, motorModeSwitcherRight);
 		powerScalingMax.setSources(prescaledPowerLeft, prescaledPowerRight);
 		powerScalingMax.setSetpoint(1);
-		
+
 		prescaledPowerRight.setPidSource(() -> {
 			if (isQuickTurn) {
 				return -steeringTransferNode.pidGet();
@@ -134,19 +129,19 @@ public class DriveTrain extends Subsystem {
 				return throttleTransferNode.getOutput() * (1 - steeringTransferNode.getOutput());
 			}
 		});
-		prescaledPowerLeft.setPidSource(()->{
+		prescaledPowerLeft.setPidSource(() -> {
 			if (isQuickTurn) {
 				return steeringTransferNode.pidGet();
 			} else {
 				return throttleTransferNode.getOutput() * (1 + steeringTransferNode.getOutput());
 			}
 		});
-		
+
 		steeringPIDController.setSources(curvatureSource);
 		steeringPIDController.setOutputs(steeringTransferNode);
 		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
-		
+
 		curvatureSource.setPidSource(() -> {
 			double leftVelocity = RobotMap.driveEncLeft.getRate();
 			double rightVelocity = RobotMap.driveEncRight.getRate();
@@ -160,27 +155,27 @@ public class DriveTrain extends Subsystem {
 			}
 
 		});
-		
+
 		throttleRamp.setOutputs(throttleTransferNode);
 		steeringRamp.setOutputs(steeringTransferNode);
-		
-		//AUTO
+
+		// AUTO
 		velocityPIDLeft.setSources(RobotMap.driveEncRateLeft);
 		velocityPIDLeft.setOutputs(motorModeSwitcherLeft);
-		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, 
-				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
+		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
+				ConstantsIO.kF_DriveVelocity);
 		velocityPIDRight.setSources(RobotMap.driveEncRateRight);
 		velocityPIDRight.setOutputs(motorModeSwitcherRight);
 		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
 				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
-		
+
 		velocityRampLeft.setOutputs(velocityPIDLeft);
 		velocityRampRight.setOutputs(velocityPIDRight);
-		
+
 		velocityScalingMax.setOutputs(velocityRampLeft, velocityRampRight);
 		velocityScalingMax.setSources(prescaledVelocityLeft, prescaledVelocityRight);
 		velocityScalingMax.setSetpoint(MAX_SPEED);
-		
+
 		prescaledVelocityLeft.setPidSource(() -> {
 			if (isRotateTo) {
 				return rotateToTransferNode.getOutput();
@@ -196,32 +191,32 @@ public class DriveTrain extends Subsystem {
 				return overallVelocityTransferNode.getOutput() * (1 - autoSteeringSource.pidGet());
 			}
 		});
-		
+
 		autoSteeringSource.setPidSource(() -> {
 			return angleSteeringTransferNode.getOutput() + autoCurvatureTransferNode.getOutput();
 		});
-		
+
 		anglePID.setSources(RobotMap.ahrs);
 		anglePID.setOutputs(angleSteeringTransferNode);
 		anglePID.setPID(ConstantsIO.kP_DriveAngle, ConstantsIO.kI_DriveAngle, ConstantsIO.kD_DriveAngle);
-		
+
 		overallVelocityRampRate.setOutputs(overallVelocityTransferNode);
-		
+
 		distPID.setSources(RobotMap.averageEncoderDistance);
 		distPID.setOutputs(overallVelocityRampRate);
 		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance,
 				ConstantsIO.kF_Distance);
 		distPID.setAbsoluteTolerance(DRIVETO_TOLERANCE);
-		
+
 		rotateToPID.setSources(RobotMap.ahrs);
 		rotateToPID.setOutputs(rotateToTransferNode);
-		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, 
-				ConstantsIO.kD_RotateTo, ConstantsIO.kF_RotateTo);
+		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, ConstantsIO.kD_RotateTo,
+				ConstantsIO.kF_RotateTo);
 		rotateToPID.setAbsoluteTolerance(ROTATETO_TOLERANCE);
 		rotateToPID.setInputRange(0, 360);
 		rotateToPID.setOutputRange(-10, 10);
 		rotateToPID.setContinuous(true);
-				
+
 	}
 
 	public void setAuto(boolean isAuto) {
@@ -350,18 +345,24 @@ public class DriveTrain extends Subsystem {
 		RobotMap.driveTrainRight.set(rightPwm);
 
 	}
-	
-	public void switchControlMode (ControlMode mode) {
-		useCurrent = (mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_CURRENT_DIRECT || mode == ControlMode.TEST_VELOCITY_DIRECT);
+
+	public void switchControlMode(ControlMode mode) {
+		useCurrent = (mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VELOCITY
+				|| mode == ControlMode.TEST_CURRENT_DIRECT || mode == ControlMode.TEST_VELOCITY_DIRECT);
 		powerScalingMax.setEnabled(mode != ControlMode.OFF);
 		steeringPIDController.setEnabled(mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VOLTAGE);
 		steeringRamp.setEnabled(mode.isTeleop());
 		throttleRamp.setEnabled(mode.isTeleop());
-		velocityPIDLeft.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
-		velocityPIDRight.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
-		velocityRampLeft.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
-		velocityRampRight.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
-		velocityScalingMax.setEnabled(mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityPIDLeft.setEnabled(
+				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityPIDRight.setEnabled(
+				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityRampLeft.setEnabled(
+				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityRampRight.setEnabled(
+				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityScalingMax.setEnabled(
+				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
 		anglePID.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
 		overallVelocityRampRate.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
 		distPID.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
@@ -383,19 +384,26 @@ public class DriveTrain extends Subsystem {
 		double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.02, 1);
 
 		throttle *= driveSpeed;
-		
+
+		switchControlMode(mode);
 		setAuto(false);
 
-		throttleRamp.setSetpoint(throttle);
-		steeringRamp.setSetpoint(steering);
-		
-		double averageSpeed = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2;
-		if (Math.abs(averageSpeed) > MIN_SPEED && !isQuickTurn && (mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VOLTAGE)) {
-			steeringRamp.setOutputs(steeringPIDController);
+		if (mode == ControlMode.TELEOP_CHEESY) {
+			cheesyDrive(throttle, steering);
 		} else {
-			steeringRamp.setOutputs(steeringTransferNode);
-		}
 
+			throttleRamp.setSetpoint(throttle);
+			steeringRamp.setSetpoint(steering);
+
+			double averageSpeed = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2;
+			
+			if (Math.abs(averageSpeed) > MIN_SPEED && !isQuickTurn
+					&& (mode == ControlMode.TELEOP_VOLTAGE || mode == ControlMode.TELEOP_CURRENT)) {
+				steeringRamp.setOutputs(steeringPIDController);
+			} else {
+				steeringRamp.setOutputs(steeringTransferNode);
+			}
+		}
 	}
 
 	public void zeroEncoders() {
@@ -640,11 +648,7 @@ public class DriveTrain extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		System.out.println("init default");
-		setDefaultCommand(new DriveWithControllers(0));
-		// setDefaultCommand(new
-		// DriveWithControllers(DriveWithControllers.useCurrentFlag |
-		// DriveWithControllers.hasSteeringCorrectionFlag));
+		setDefaultCommand(new DriveWithControllers(ControlMode.TELEOP_VELOCITY));
 	}
 
 	public void reset() {

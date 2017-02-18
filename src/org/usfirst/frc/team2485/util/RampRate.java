@@ -72,7 +72,6 @@ public class RampRate extends WarlordsControlSystem {
 		for (PIDOutput out : outputs) {
 			out.pidWrite(val);
 		}
-		
 	}
 	
 	@Override

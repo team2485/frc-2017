@@ -17,6 +17,11 @@ public class Climb extends InstantCommand {
 	}
 	
 	@Override
+	protected void interrupted() {
+		end();
+	}
+	
+	@Override
 	protected void end() {
 		RobotMap.climber.stopClimbing();
 	}
