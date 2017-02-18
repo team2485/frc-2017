@@ -8,10 +8,16 @@ public class Climb extends InstantCommand {
 	
 	public Climb() {
 		requires(RobotMap.climber);
+		setInterruptible(true);
 	}
 	
+	@Override
 	public void initialize() {
 		RobotMap.climber.climb();
 	}
-
+	
+	@Override
+	protected void end() {
+		RobotMap.climber.stopClimbing();
+	}
 }

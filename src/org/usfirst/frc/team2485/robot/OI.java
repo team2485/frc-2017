@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
@@ -42,6 +43,8 @@ public class OI {
 		joystick = new Joystick(1);
 
 		new BackStartComboButton().whenPressed(new PrepForSelfTest());
+
+		new JoystickButton(xBox, XBOX_BTN_LBUMPER).whileHeld(new Climb());
 
 		if (DriveWithControllers.TRIGGER_DRIVE) {
 			new JoystickButton(xBox, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
