@@ -6,6 +6,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GearHolder extends Subsystem {
 	
+	public GearHolder() {
+		
+	}
 	public void setBottomOpen(boolean open) {
 		
 		RobotMap.gearSolenoidBottom1.set(open);

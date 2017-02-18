@@ -13,7 +13,7 @@ public class Climber extends Subsystem {
 	@Override
 	protected void initDefaultCommand() {
 	}
-
+	
 	public void climb() {
 		RobotMap.climberMotor.set(ConstantsIO.kClimberSpeed);
 	}

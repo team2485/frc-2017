@@ -21,12 +21,17 @@ public class TestDriveMotorDirections extends Command {
 	private int previousMotor;
 
 	private ITable table;
+	
+	public TestDriveMotorDirections() {
+		requires(RobotMap.driveTrain);
+	}
 
 	@Override
 	protected void initialize() {
 		RobotMap.driveTrain.reset();
 		startTime = System.currentTimeMillis();
 		table = NetworkTable.getTable("SmartDashboard").getSubTable("SelfTest");
+		done = false;
 	}
 
 	@Override
@@ -34,9 +39,9 @@ public class TestDriveMotorDirections extends Command {
 
 		int timeSinceStart = (int) (System.currentTimeMillis() - startTime);
 
-		int motorToRun = timeSinceStart / 1000;
+		int motorToRun = timeSinceStart / 2000;
 
-		int cycleTime = timeSinceStart % 1000;
+		int cycleTime = timeSinceStart % 2000;
 
 		if (motorToRun != previousMotor) {
 			publishTestResult(previousMotor);
@@ -56,7 +61,7 @@ public class TestDriveMotorDirections extends Command {
 	private void publishTestResult(int motorID) {
 		String report;
 
-		if (forwardVal > 5 && reverseVal < -5) {
+		if (forwardVal > 0.5 && reverseVal < -0.5) {
 			report = "OK";
 		} else {
 			report = "FAILED:[" + forwardVal + ", " + reverseVal + "]";
@@ -72,17 +77,17 @@ public class TestDriveMotorDirections extends Command {
 	private void testMotor(int motorToRun, int cycleTime) {
 		double motorValue = 1;
 
-		if (cycleTime > 500) {
+		if (cycleTime > 1000) {
 			motorValue = -1;
 		}
 
 		setMotorValue(motorToRun, motorValue);
 
-		if (cycleTime > 400 && cycleTime < 500) {
+		if (cycleTime > 900 && cycleTime < 1000) {
 			forwardVal = getRateForMotor(motorToRun);
 		}
 
-		if (cycleTime > 900) {
+		if (cycleTime > 1900) {
 			reverseVal = getRateForMotor(motorToRun);
 		}
 	}
