@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2485.subsystems;
+package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
 
@@ -39,5 +39,10 @@ public class RunWheelOfDeath extends Command {
 	@Override
 	protected void end() {
 		RobotMap.wheelOfDeath.setSpeed(0);
+	}
+	
+	@Override
+	protected void interrupted() {
+		end();
 	}
 }
