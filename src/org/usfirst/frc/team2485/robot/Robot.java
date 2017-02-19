@@ -1,7 +1,6 @@
 
 package org.usfirst.frc.team2485.robot;
 
-import org.opencv.core.Mat;
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.util.AutoPath;
