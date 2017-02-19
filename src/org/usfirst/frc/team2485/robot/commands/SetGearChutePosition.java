@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class SetGearChutePosition extends InstantCommand {
 	private boolean open;
-	public SetGearChutePosition(boolean open){
+	public SetGearChutePosition(boolean open) {
 		this.open = open;
 	}
 	
 	@Override
-	protected void initialize(){
+	protected void initialize() {
 		RobotMap.gearHolder.setChuteOpen(open);
 	}
 	

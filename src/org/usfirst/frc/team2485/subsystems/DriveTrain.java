@@ -49,18 +49,18 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 
+	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
 	private static final double STEERING_DEADBAND = 0.15;
 	private static final double THROTTLE_DEADBAND = 0.15;
-	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
-	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
+	private static final double MIN_CURRENT = 0.2;
 	private static double MAX_CURRENT;
-	private static double MIN_CURRENT = 0.2;
 
 	private boolean isQuickTurn;
 	private boolean isCurrentLeft, isCurrentRight;
 	private boolean useCurrent;
-	private boolean isAuto;
 	private boolean isRotateTo;
+
+	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
 
 	private double oldSteering, negInertiaAccumulator, quickStopAccumulator;
 
@@ -129,6 +129,7 @@ public class DriveTrain extends Subsystem {
 				return throttleTransferNode.getOutput() * (1 - steeringTransferNode.getOutput());
 			}
 		});
+
 		prescaledPowerLeft.setPidSource(() -> {
 			if (isQuickTurn) {
 				return steeringTransferNode.pidGet();
@@ -216,11 +217,9 @@ public class DriveTrain extends Subsystem {
 		rotateToPID.setInputRange(0, 360);
 		rotateToPID.setOutputRange(-10, 10);
 		rotateToPID.setContinuous(true);
-
 	}
 
 	public void setAuto(boolean isAuto) {
-		this.isAuto = isAuto;
 		if (isAuto) {
 			velocityPIDLeft.setSetpointSource(null);
 			velocityPIDRight.setSetpointSource(null);
@@ -396,7 +395,7 @@ public class DriveTrain extends Subsystem {
 			steeringRamp.setSetpoint(steering);
 
 			double averageSpeed = (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2;
-			
+
 			if (Math.abs(averageSpeed) > MIN_SPEED && !isQuickTurn
 					&& (mode == ControlMode.TELEOP_VOLTAGE || mode == ControlMode.TELEOP_CURRENT)) {
 				steeringRamp.setOutputs(steeringPIDController);
@@ -412,159 +411,16 @@ public class DriveTrain extends Subsystem {
 
 	}
 
-	// /**
-	// * Used to drive in a curve using closed loop control, set startAngle =
-	// * endAngle to drive straight <br>
-	// * Uses cascaded PIDControllers to achieve optimal performance
-	// *
-	// * @param inches
-	// * distance to drive (inside tread if curving)
-	// * @param startAngle
-	// * heading at beginning of turn
-	// * @param endAngle
-	// * desired heading at end of turn
-	// * @param maxSpeed
-	// * maximum speed of center of robot in inches / second
-	// * @return true if target has been reached
-	// */
-	// public boolean driveToAndRotateTo(double inches, double startAngle,
-	// double endAngle, double maxSpeed) {
-	//
-	// if (!driveToPID.isEnabled()) {
-	// driveToPID.enable();
-	// rotateToPID.enable();
-	// rotateToPID.setSetpoint(startAngle);
-	// }
-	// driveToPID.setSetpoint(inches);
-	//
-	// driveToPID.setOutputRange(-maxSpeed, maxSpeed);
-	// rotateToPID.setOutputRange(-maxSpeed, maxSpeed);
-	//
-	// // uses % of distance to calculate where to turn to
-	// double percentDone = (RobotMap.driveEncLeft.getDistance() +
-	// RobotMap.driveEncRight
-	// .getDistance()) / 2 / (inches != 0 ? inches : 0.00000001);// don't
-	// // divide
-	// // by
-	// // 0
-	// if (percentDone > 1) {
-	// percentDone = 1;
-	// } else if (percentDone < 0) {
-	// percentDone = 0;
-	// }
-	// rotateToPID.setSetpoint(startAngle + (endAngle - startAngle)
-	// * percentDone);
-	//
-	// double encoderOutput = dummyDriveToEncoderOutput.get();
-	// double rotateToOutput = dummyRotateToOutput.get();
-	//
-	// // use output from PIDControllers to calculate target velocities
-	// double leftVelocity = encoderOutput + rotateToOutput;
-	// double rightVelocity = encoderOutput - rotateToOutput;
-	//
-	// // ramp output from PIDControllers to prevent saturating velocity
-	// // control loop
-	// leftVelocity = leftVelocityRamp.getNextValue(leftVelocity);
-	// rightVelocity = rightVelocityRamp.getNextValue(rightVelocity);
-	//
-	// setLeftRightVelocity(leftVelocity, rightVelocity);
-	//
-	// if (Math.abs(rotateToPID.getError()) < ABS_TOLERANCE_DRIVETO_ANGLE) {
-	// ahrsOnTargetCounter++;
-	// } else {
-	// ahrsOnTargetCounter = 0;
-	// }
-	//
-	// double avgVelocity = (RobotMap.driveEncLeft.getRate() +
-	// RobotMap.driveEncRight
-	// .getRate()) / 2;
-	//
-	// if (Math.abs(driveToPID.getError()) < ABS_TOLERANCE_DRIVETO_DISTANCE
-	// && Math.abs(avgVelocity) < LOW_ENC_RATE
-	// && ahrsOnTargetCounter >= MINIMUM_AHRS_ON_TARGET_ITERATIONS) {
-	//
-	// setLeftRightVelocity(0.0, 0.0); // actively stops driveTrain
-	// driveToPID.disable();
-	// rotateToPID.disable();
-	// return true;
-	//
-	// }
-	//
-	// return false;
-	//
-	// }
-
-	// /**
-	// * Sends outputs values to the left and right side of the drive base after
-	// * scaling based on virtual gear. <br>
-	// * The parameters should both be positive to move forward. One side has
-	// * inverted motors...do not send a negative to one side and a positive to
-	// * the other for forward or backwards motion.
-	// *
-	// * @param leftOutput
-	// * @param rightOutput
-	// */
-	// public void setLeftRight(double leftOutput, double rightOutput) {
-	//
-	//// driveToPID.disable();
-	//
-	// ratePIDLeft.disable();
-	// ratePIDRight.disable();
-	//
-	// RobotMap.driveTrainLeft.set(leftOutput);
-	// RobotMap.driveTrainRight.set(rightOutput);
-	// }
-	//
-	// /**
-	// * Sets target velocity of each tread in inches / sec
-	// *
-	// * @param leftOutput
-	// * left target velocity
-	// * @param rightOutput
-	// * right target velocity
-	// */
-	// public void setLeftRightVelocity(double leftOutput, double rightOutput) {
-	//
-	// ratePIDLeft.setPID(ConstantsIO.kP_DriveVelocity,
-	// ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
-	// ConstantsIO.kF_DriveVelocity);
-	// ratePIDRight.setPID(ConstantsIO.kP_DriveVelocity,
-	// ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
-	// ConstantsIO.kF_DriveVelocity);
-	//
-	// if (leftOutput != 0) {
-	// ratePIDLeft.enable();
-	// leftVoltageRamp.enable();
-	// ratePIDLeft.setSetpoint(leftOutput);
-	// } else {
-	// ratePIDLeft.disable();
-	// leftVoltageRamp.disable();
-	// RobotMap.driveTrainLeft.set(0);
-	// }
-	//
-	// if (rightOutput != 0) {
-	// ratePIDRight.enable();
-	// rightVoltageRamp.enable();
-	// ratePIDRight.setSetpoint(rightOutput);
-	// } else {
-	// ratePIDRight.disable();
-	// rightVoltageRamp.disable();
-	// RobotMap.driveTrainRight.set(0);
-	// }
-	//
-	//
-	//
-	// }
 	public void setCurrentModeLeft(boolean isCurrent) {
 		isCurrentLeft = isCurrent;
 		if (isCurrent) {
 			RobotMap.driveLeft1.changeControlMode(TalonControlMode.Current);
 			RobotMap.driveLeft2.changeControlMode(TalonControlMode.Current);
-			RobotMap.driveLeft3.changeControlMode(TalonControlMode.Current);
+			RobotMap.driveLeftMini.changeControlMode(TalonControlMode.Current);
 		} else {
 			RobotMap.driveLeft1.changeControlMode(TalonControlMode.PercentVbus);
 			RobotMap.driveLeft2.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveLeft3.changeControlMode(TalonControlMode.PercentVbus);
+			RobotMap.driveLeftMini.changeControlMode(TalonControlMode.PercentVbus);
 		}
 	}
 
@@ -573,11 +429,11 @@ public class DriveTrain extends Subsystem {
 		if (isCurrent) {
 			RobotMap.driveRight1.changeControlMode(TalonControlMode.Current);
 			RobotMap.driveRight2.changeControlMode(TalonControlMode.Current);
-			RobotMap.driveRight3.changeControlMode(TalonControlMode.Current);
+			RobotMap.driveRightMini.changeControlMode(TalonControlMode.Current);
 		} else {
 			RobotMap.driveRight1.changeControlMode(TalonControlMode.PercentVbus);
 			RobotMap.driveRight2.changeControlMode(TalonControlMode.PercentVbus);
-			RobotMap.driveRight3.changeControlMode(TalonControlMode.PercentVbus);
+			RobotMap.driveRightMini.changeControlMode(TalonControlMode.PercentVbus);
 		}
 	}
 
@@ -630,13 +486,13 @@ public class DriveTrain extends Subsystem {
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveLeft2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveLeft3.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+		RobotMap.driveLeftMini.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveRight1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveRight2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveRight3.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+		RobotMap.driveRightMini.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		overallVelocityRampRate.setRampRates(ConstantsIO.kUpRamp_OverallVelocityRamp,
 				ConstantsIO.kDownRamp_OverallVelocityRamp);
@@ -666,7 +522,7 @@ public class DriveTrain extends Subsystem {
 		motorModeSwitcherRight.pidWrite(0);
 	}
 
-	public void setLeftRightVelocity(double r, double l) {
+	public void setLeftRightVelocity(double l, double r) {
 		useCurrent = false;
 		powerScalingMax.disable();
 		velocityRampLeft.enable();

@@ -248,7 +248,6 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 		
 		for (PIDOutput out : super.outputs) {
 			out.pidWrite(result);
-//			System.out.println("right");
 		}
 	}
 	

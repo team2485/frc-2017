@@ -10,8 +10,6 @@ public class WheelOfDeath extends Subsystem {
 	}
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public void setSpeed(double speed) {

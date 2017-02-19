@@ -9,15 +9,12 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Feeder extends Subsystem {
 	
-
 	//Adjusted by ConstantsIO
 	public static double RPS_FEEDER = 95; 
 	public WarlordsPIDController ratePID;
 
 
 	public Feeder() {
-
-		
 
 		ratePID = new WarlordsPIDController();
 		ratePID.setSources(RobotMap.feederEncoder);
@@ -27,11 +24,8 @@ public class Feeder extends Subsystem {
 
 		ratePID.setPID(ConstantsIO.kP_Feeder, ConstantsIO.kI_Feeder, ConstantsIO.kD_Feeder,
 		ConstantsIO.kF_Feeder);
-
-		
+	
 		RPS_FEEDER = ConstantsIO.kFeederRPS;
-
-		
 
 		disableFeeder();
 
@@ -90,8 +84,6 @@ public class Feeder extends Subsystem {
 	}
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void updateConstants() {
