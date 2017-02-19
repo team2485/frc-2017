@@ -15,6 +15,7 @@ public class TestDriveMotorDirections extends Command {
 	private long startTime;
 
 	private double forwardVal, reverseVal;
+	
 
 	private boolean done;
 
@@ -85,6 +86,7 @@ public class TestDriveMotorDirections extends Command {
 
 		if (cycleTime > 900 && cycleTime < 1000) {
 			forwardVal = getRateForMotor(motorToRun);
+			
 		}
 
 		if (cycleTime > 1900) {
@@ -99,6 +101,7 @@ public class TestDriveMotorDirections extends Command {
 			return RobotMap.driveEncRateRight.pidGet();
 		}
 	}
+	
 
 	private void setMotorValue(int id, double val) {
 		switch (id) {
