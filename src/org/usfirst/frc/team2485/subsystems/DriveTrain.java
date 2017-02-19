@@ -368,6 +368,9 @@ public class DriveTrain extends Subsystem {
 		rotateToPID.setEnabled(mode == ControlMode.AUTO_ROTATE_TO);
 		isRotateTo = (mode == ControlMode.AUTO_ROTATE_TO);
 		setAuto(mode.isAuto());
+		RobotMap.driveTrainLeft.setScaleFactors(new double[] {1, 1, useCurrent ? 89.0/131 : 1});
+		RobotMap.driveTrainRight.setScaleFactors(new double[] {1, 1, useCurrent ? 89.0/131 : 1});
+
 	}
 
 	/**
@@ -488,14 +491,14 @@ public class DriveTrain extends Subsystem {
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveLeft2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveLeftMini.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
-				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveLeftMini.setPID(((131.0/89)*ConstantsIO.kP_DriveCurrent), ((131.0/89)*ConstantsIO.kI_DriveCurrent),
+				((131.0/89)*ConstantsIO.kD_DriveCurrent), ((131.0/89)*ConstantsIO.kF_DriveCurrent), 0, 0, 0);
 		RobotMap.driveRight1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveRight2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
-		RobotMap.driveRightMini.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
-				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveRightMini.setPID(((131.0/89)*ConstantsIO.kP_DriveCurrent), ((131.0/89)*ConstantsIO.kI_DriveCurrent),
+				((131.0/89)*ConstantsIO.kD_DriveCurrent), ((131.0/89)*ConstantsIO.kF_DriveCurrent), 0, 0, 0);
 		overallVelocityRampRate.setRampRates(ConstantsIO.kUpRamp_OverallVelocityRamp,
 				ConstantsIO.kDownRamp_OverallVelocityRamp);
 		steeringRamp.setRampRates(ConstantsIO.kUpRamp_DriveSteering, ConstantsIO.kDownRamp_DriveSteering);
