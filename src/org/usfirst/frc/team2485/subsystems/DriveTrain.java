@@ -140,9 +140,7 @@ public class DriveTrain extends Subsystem {
 
 		steeringPIDController.setSources(curvatureSource);
 		steeringPIDController.setOutputs(steeringTransferNode);
-		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
-				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
-
+		
 		curvatureSource.setPidSource(() -> {
 			double leftVelocity = RobotMap.driveEncLeft.getRate();
 			double rightVelocity = RobotMap.driveEncRight.getRate();
@@ -163,13 +161,9 @@ public class DriveTrain extends Subsystem {
 		// AUTO
 		velocityPIDLeft.setSources(RobotMap.driveEncRateLeft);
 		velocityPIDLeft.setOutputs(motorModeSwitcherLeft);
-		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
-				ConstantsIO.kF_DriveVelocity);
 		velocityPIDRight.setSources(RobotMap.driveEncRateRight);
 		velocityPIDRight.setOutputs(motorModeSwitcherRight);
-		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
-				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
-
+		
 		velocityRampLeft.setOutputs(velocityPIDLeft);
 		velocityRampRight.setOutputs(velocityPIDRight);
 
@@ -199,20 +193,15 @@ public class DriveTrain extends Subsystem {
 
 		anglePID.setSources(RobotMap.ahrs);
 		anglePID.setOutputs(angleSteeringTransferNode);
-		anglePID.setPID(ConstantsIO.kP_DriveAngle, ConstantsIO.kI_DriveAngle, ConstantsIO.kD_DriveAngle);
 
 		overallVelocityRampRate.setOutputs(overallVelocityTransferNode);
 
 		distPID.setSources(RobotMap.averageEncoderDistance);
 		distPID.setOutputs(overallVelocityRampRate);
-		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance,
-				ConstantsIO.kF_Distance);
 		distPID.setAbsoluteTolerance(DRIVETO_TOLERANCE);
 
 		rotateToPID.setSources(RobotMap.ahrs);
 		rotateToPID.setOutputs(rotateToTransferNode);
-		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, ConstantsIO.kD_RotateTo,
-				ConstantsIO.kF_RotateTo);
 		rotateToPID.setAbsoluteTolerance(ROTATETO_TOLERANCE);
 		rotateToPID.setInputRange(0, 360);
 		rotateToPID.setOutputRange(-10, 10);
