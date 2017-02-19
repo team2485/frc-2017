@@ -367,6 +367,7 @@ public class DriveTrain extends Subsystem {
 		distPID.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
 		rotateToPID.setEnabled(mode == ControlMode.AUTO_ROTATE_TO);
 		isRotateTo = (mode == ControlMode.AUTO_ROTATE_TO);
+		setAuto(mode.isAuto());
 	}
 
 	/**
@@ -390,7 +391,7 @@ public class DriveTrain extends Subsystem {
 		if (mode == ControlMode.TELEOP_CHEESY) {
 			cheesyDrive(throttle, steering);
 		} else {
-
+			
 			throttleRamp.setSetpoint(throttle);
 			steeringRamp.setSetpoint(steering);
 
@@ -399,8 +400,10 @@ public class DriveTrain extends Subsystem {
 			if (Math.abs(averageSpeed) > MIN_SPEED && !isQuickTurn
 					&& (mode == ControlMode.TELEOP_VOLTAGE || mode == ControlMode.TELEOP_CURRENT)) {
 				steeringRamp.setOutputs(steeringPIDController);
+				steeringPIDController.enable();
 			} else {
 				steeringRamp.setOutputs(steeringTransferNode);
+				steeringPIDController.disable();
 			}
 		}
 	}
@@ -446,8 +449,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public double getCurvature() {
-		return Math.abs(RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2 > MIN_SPEED
-				? curvatureSource.pidGet() : 0;
+		return curvatureSource.pidGet();
 	}
 
 	public double getSteering() {
@@ -508,46 +510,36 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void reset() {
-		steeringPIDController.disable();
-		velocityPIDLeft.disable();
-		velocityPIDRight.disable();
-		throttleRamp.disable();
-		velocityRampLeft.disable();
-		velocityRampRight.disable();
-		velocityScalingMax.disable();
-		overallVelocityRampRate.disable();
-		anglePID.disable();
-		distPID.disable();
+		switchControlMode(ControlMode.OFF);
 		motorModeSwitcherLeft.pidWrite(0);
 		motorModeSwitcherRight.pidWrite(0);
 	}
 
 	public void setLeftRightVelocity(double l, double r) {
-		useCurrent = false;
-		powerScalingMax.disable();
-		velocityRampLeft.enable();
-		velocityRampRight.enable();
-		velocityPIDLeft.enable();
-		velocityPIDRight.enable();
+		switchControlMode(ControlMode.TEST_VELOCITY_DIRECT);
+
 		velocityRampLeft.setSetpoint(l);
 		velocityRampRight.setSetpoint(r);
+	}
+	
+	public void setLeftRightCurrent(double l, double r) {
+		switchControlMode(ControlMode.TEST_CURRENT_DIRECT);
+		motorModeSwitcherLeft.pidWrite(l / MAX_CURRENT);
+		motorModeSwitcherLeft.pidWrite(r / MAX_CURRENT);
 	}
 
 	public boolean driveTo(double distance, double maxSpeed, double angle, double curvature) {
 		switchControlMode(ControlMode.AUTO_CURVE_FOLLOW);
-		setAuto(true);
 		distPID.setSetpoint(distance);
 		distPID.setOutputRange(-maxSpeed, maxSpeed);
 		anglePID.setSetpoint(angle);
 		return (distPID.isOnTarget() && Math
 				.abs((RobotMap.driveEncRight.getRate() + RobotMap.driveEncLeft.getRate()) / 2) < LOW_SPEED_DRIVETO);
-
 	}
 
 	public boolean rotateTo(double angle) {
 		switchControlMode(ControlMode.AUTO_ROTATE_TO);
 		rotateToPID.setSetpoint(angle);
-		setAuto(true);
 		anglePID.setSetpoint(angle);
 		return (rotateToPID.isOnTarget() && Math.abs(RobotMap.ahrs.getRate()) < LOW_SPEED_ROTATETO);
 	}
