@@ -89,6 +89,11 @@ public class ConstantsIO {
 	public static double kI_RotateTo;
 	public static double kD_RotateTo;
 	public static double kF_RotateTo;
+	
+	public static double kP_SWODCurrent;
+	public static double kI_SWODCurrent;
+	public static double kD_SWODCurrent;
+	public static double kF_SWODCurrent;
 
 	public static double kSWODCurrent;
 	public static double kSWODMaxVolts;
@@ -191,6 +196,14 @@ public class ConstantsIO {
 		kD_RotateTo = Double.parseDouble(data.get("kD_RotateTo"));
 
 		kF_RotateTo = Double.parseDouble(data.get("kF_RotateTo"));
+		
+		kP_SWODCurrent = Double.parseDouble(data.get("kP_SWODCurrent"));
+		
+		kI_SWODCurrent = Double.parseDouble(data.get("kI_SWODCurrent"));
+
+		kD_SWODCurrent = Double.parseDouble(data.get("kD_SWODCurrent"));
+
+		kF_SWODCurrent = Double.parseDouble(data.get("kF_SWODCurrent"));
 
 		
 		

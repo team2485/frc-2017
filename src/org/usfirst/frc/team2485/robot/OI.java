@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -52,6 +51,10 @@ public class OI {
 		new JoystickButton(xBox, XBOX_BTN_LBUMPER).whileHeld(new Climb());
 
 		new JoystickButton(xBox, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
+		
+		new JoystickButton(xBox, XBOX_BTN_Y).whenPressed(new RunWheelOfDeath(true));
+		new JoystickButton(xBox, XBOX_BTN_B).whenPressed(new RunWheelOfDeath(false));
+
 
 		if (DriveWithControllers.TRIGGER_DRIVE) {
 			new JoystickButton(xBox, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
@@ -66,13 +69,13 @@ public class OI {
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
 		}
 
-//		new JoystickButton(joystick, 7).whenPressed(new SetGearChutePosition(true));
-//		new JoystickButton(joystick, 8).whenPressed(new SetGearChutePosition(false));
-//		new JoystickButton(joystick, 10).whenPressed(new SetGearHolderPosition(false));
+		new JoystickButton(joystick, 7).whenPressed(new SetGearChutePosition(true));
+		new JoystickButton(joystick, 8).whenPressed(new SetGearChutePosition(false));
+		new JoystickButton(joystick, 10).whenPressed(new SetGearHolderPosition(false));
 		
-		new LogitechKeypadButton('1').whenPressed(new SetGearChutePosition(true));
-		new LogitechKeypadButton('2').whenPressed(new SetGearChutePosition(false));
-		new LogitechKeypadButton('8').whenPressed(new SetGearHolderPosition(false));
+//		new LogitechKeypadButton('1').whenPressed(new SetGearChutePosition(true));
+//		new LogitechKeypadButton('2').whenPressed(new SetGearChutePosition(false));
+//		new LogitechKeypadButton('8').whenPressed(new SetGearHolderPosition(false));
 	}
 
 	/**

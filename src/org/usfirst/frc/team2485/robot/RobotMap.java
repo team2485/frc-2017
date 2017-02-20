@@ -164,7 +164,7 @@ public class RobotMap {
 	}
 
 	public static void updateConstants() {
-		
+		wheelOfDeath.updateConstants();
 		driveTrain.updateConstants();
 		
 	}

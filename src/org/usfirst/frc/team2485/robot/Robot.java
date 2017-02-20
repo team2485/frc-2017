@@ -106,5 +106,6 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
 		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
 		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
+		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
 	}
 }
