@@ -2,47 +2,23 @@ package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
 
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 /**
  * 
  * @author Vicky
  *
  */
 
-public class RunWheelOfDeath extends Command {
-	private static final double MAX_CURRENT = 5;
-	private double speed;
-	private boolean done;
+public class RunWheelOfDeath extends InstantCommand {
+	private double current;
 
-	public RunWheelOfDeath(double speed) {
-		this.speed = speed;
+	public RunWheelOfDeath(double current) {
+		this.current = current;
 	}
 	
 	@Override
 	protected void initialize() {
-		RobotMap.wheelOfDeath.setSpeed(speed);
-		done = false;
+		RobotMap.wheelOfDeath.setCurrent(current);
 	}
 	
-	@Override
-	protected void execute() {
-		double current = RobotMap.wheelOfDeath.getCurrent();
-		if(current > MAX_CURRENT) {
-			done = true;
-		}
-	}
-	@Override
-	protected boolean isFinished() {
-		return done;
-	}
-	
-	@Override
-	protected void end() {
-		RobotMap.wheelOfDeath.setSpeed(0);
-	}
-	
-	@Override
-	protected void interrupted() {
-		end();
-	}
 }

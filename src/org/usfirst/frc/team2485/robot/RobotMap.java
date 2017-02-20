@@ -13,7 +13,6 @@ import org.usfirst.frc.team2485.util.MultipleEncoderWrapper.MultipleEncoderWrapp
 import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
 
 import com.ctre.CANTalon;
-import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -114,7 +113,7 @@ public class RobotMap {
 		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRight3);
 		
 		deathMotor = new CANTalon(wheelOfDeathMotorPort);
-		deathMotor.changeControlMode(TalonControlMode.Speed);
+		deathMotor.changeControlMode(TalonControlMode.Current);
 		
 		shooterMotor = new SpeedControllerWrapper(new VictorSP(kShooterMotorPort));
 		intakeMotor = new SpeedControllerWrapper(new VictorSP(kIntakeMotorPort));
@@ -150,9 +149,6 @@ public class RobotMap {
 		
 		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * WHEEL_RADIUS * 2));
 		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * WHEEL_RADIUS * 2));
-		
-		deathMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		deathMotor.configEncoderCodesPerRev(500);
 		
 		// CONSTRUCT SUBSYSTEMS
 		

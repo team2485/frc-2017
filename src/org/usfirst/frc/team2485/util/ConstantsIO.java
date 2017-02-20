@@ -90,6 +90,9 @@ public class ConstantsIO {
 	public static double kD_RotateTo;
 	public static double kF_RotateTo;
 
+	public static double kSWODCurrent;
+	public static double kSWODMaxVolts;
+
 
 
 	public static void init() {
@@ -193,6 +196,9 @@ public class ConstantsIO {
 		
 		kUpRamp_DriveSteering = Double.parseDouble(data.get("kUpRamp_DriveSteering"));
 		kDownRamp_DriveSteering = Double.parseDouble(data.get("kDownRamp_DriveSteering"));
+		
+		kSWODCurrent = Double.parseDouble(data.get("kSWODCurrent"));
+		kSWODMaxVolts = Double.parseDouble(data.get("kSWODMaxVolts"));
 		
 	}
 
