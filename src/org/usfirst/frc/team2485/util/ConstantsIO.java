@@ -93,6 +93,11 @@ public class ConstantsIO {
 	public static double kSWODCurrent;
 	public static double kSWODMaxVolts;
 
+	public static double kP_DriveAngVel;
+	public static double kI_DriveAngVel;
+	public static double kD_DriveAngVel;
+	public static double kF_DriveAngVel;
+
 
 
 	public static void init() {
@@ -193,6 +198,11 @@ public class ConstantsIO {
 		kF_RotateTo = Double.parseDouble(data.get("kF_RotateTo"));
 
 		
+		kP_DriveAngVel = Double.parseDouble(data.get("kP_DriveAngVel"));
+		kI_DriveAngVel = Double.parseDouble(data.get("kI_DriveAngVel"));
+		kD_DriveAngVel = Double.parseDouble(data.get("kD_DriveAngVel"));
+		kF_DriveAngVel = Double.parseDouble(data.get("kF_DriveAngVel"));
+
 		
 		kUpRamp_DriveSteering = Double.parseDouble(data.get("kUpRamp_DriveSteering"));
 		kDownRamp_DriveSteering = Double.parseDouble(data.get("kDownRamp_DriveSteering"));

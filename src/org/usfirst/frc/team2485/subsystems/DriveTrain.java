@@ -49,7 +49,7 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 
-	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
+//	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
 	private static final double STEERING_DEADBAND = 0.15;
 	private static final double THROTTLE_DEADBAND = 0.15;
 	private static final double MIN_CURRENT = 0.2;
@@ -67,13 +67,15 @@ public class DriveTrain extends Subsystem {
 	private WarlordsPIDController velocityPIDRight = new WarlordsPIDController(),
 			velocityPIDLeft = new WarlordsPIDController(), rotateToPID = new WarlordsPIDController(),
 			distPID = new WarlordsPIDController(), anglePID = new WarlordsPIDController(),
-			steeringPIDController = new WarlordsPIDController();
+			steeringPIDController = new WarlordsPIDController(), angVelPIDController = new WarlordsPIDController();
 	private TransferNode rotateToTransferNode = new TransferNode(0), throttleTransferNode = new TransferNode(0),
 			steeringTransferNode = new TransferNode(0), overallVelocityTransferNode = new TransferNode(0),
-			angleSteeringTransferNode = new TransferNode(0), autoCurvatureTransferNode = new TransferNode(0);
+			angleSteeringTransferNode = new TransferNode(0), autoCurvatureTransferNode = new TransferNode(0),
+			angVelCorrectionTransferNode = new TransferNode(0);
 	private PIDSourceWrapper curvatureSource = new PIDSourceWrapper(), autoSteeringSource = new PIDSourceWrapper(),
 			prescaledVelocityLeft = new PIDSourceWrapper(), prescaledVelocityRight = new PIDSourceWrapper(),
-			prescaledPowerRight = new PIDSourceWrapper(), prescaledPowerLeft = new PIDSourceWrapper();
+			prescaledPowerRight = new PIDSourceWrapper(), prescaledPowerLeft = new PIDSourceWrapper(),
+			targetAngVelSource = new PIDSourceWrapper();
 	private ScalingMax powerScalingMax = new ScalingMax(), velocityScalingMax = new ScalingMax();
 	private RampRate throttleRamp = new RampRate(ConstantsIO.kUpRamp_Drive, ConstantsIO.kDownRamp_Drive),
 			velocityRampLeft = new RampRate(ConstantsIO.kUpRamp_IndividualVelocityRamp,
@@ -126,7 +128,7 @@ public class DriveTrain extends Subsystem {
 			if (isQuickTurn) {
 				return -steeringTransferNode.pidGet();
 			} else {
-				return throttleTransferNode.getOutput() * (1 - steeringTransferNode.getOutput());
+				return throttleTransferNode.getOutput() * (1 - steeringTransferNode.getOutput()) - angVelCorrectionTransferNode.getOutput();
 			}
 		});
 
@@ -134,26 +136,34 @@ public class DriveTrain extends Subsystem {
 			if (isQuickTurn) {
 				return steeringTransferNode.pidGet();
 			} else {
-				return throttleTransferNode.getOutput() * (1 + steeringTransferNode.getOutput());
+				return throttleTransferNode.getOutput() * (1 + steeringTransferNode.getOutput()) + angVelCorrectionTransferNode.getOutput();
 			}
 		});
-
-		steeringPIDController.setSources(curvatureSource);
-		steeringPIDController.setOutputs(steeringTransferNode);
 		
-		curvatureSource.setPidSource(() -> {
-			double leftVelocity = RobotMap.driveEncLeft.getRate();
-			double rightVelocity = RobotMap.driveEncRight.getRate();
-			if (Math.abs(leftVelocity + rightVelocity) / 2 < MIN_SPEED) {
-				steeringPIDController.disable();
-				return 0;
-			} else if (USE_GYRO_STEERING_CORRECTION) {
-				return RobotMap.ahrs.getRate() / ((leftVelocity + rightVelocity) / 2) * RobotMap.ROBOT_WIDTH / 2;
-			} else {
-				return (leftVelocity - rightVelocity) / (leftVelocity + rightVelocity);
-			}
-
+		angVelPIDController.setOutputs(angVelCorrectionTransferNode);
+		angVelPIDController.setSources(RobotMap.ahrsRateRads);
+		angVelPIDController.setSetpointSource(targetAngVelSource);
+		
+		targetAngVelSource.setPidSource(() -> {
+			return steeringTransferNode.getOutput()  * 2 / RobotMap.ROBOT_WIDTH * RobotMap.averageEncoderRate.pidGet();
 		});
+		
+//		steeringPIDController.setSources(curvatureSource);
+//		steeringPIDController.setOutputs(steeringTransferNode);
+		
+//		curvatureSource.setPidSource(() -> {
+//			double leftVelocity = RobotMap.driveEncLeft.getRate();
+//			double rightVelocity = RobotMap.driveEncRight.getRate();
+//			if (Math.abs(leftVelocity + rightVelocity) / 2 < MIN_SPEED) {
+//				steeringPIDController.disable();
+//				return 0;
+//			} else if (USE_GYRO_STEERING_CORRECTION) {
+//				return RobotMap.ahrs.getRate() / ((leftVelocity + rightVelocity) / 2) * RobotMap.ROBOT_WIDTH / 2;
+//			} else {
+//				return (leftVelocity - rightVelocity) / (leftVelocity + rightVelocity);
+//			}
+//
+//		});
 
 		throttleRamp.setOutputs(throttleTransferNode);
 		steeringRamp.setOutputs(steeringTransferNode);
@@ -338,7 +348,8 @@ public class DriveTrain extends Subsystem {
 		useCurrent = (mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VELOCITY
 				|| mode == ControlMode.TEST_CURRENT_DIRECT || mode == ControlMode.TEST_VELOCITY_DIRECT);
 		powerScalingMax.setEnabled(mode != ControlMode.OFF);
-		steeringPIDController.setEnabled(mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VOLTAGE);
+		angVelPIDController.setEnabled(mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VOLTAGE);
+//		steeringPIDController.setEnabled(mode == ControlMode.TELEOP_CURRENT || mode == ControlMode.TELEOP_VOLTAGE);
 		steeringRamp.setEnabled(mode.isTeleop());
 		throttleRamp.setEnabled(mode.isTeleop());
 		velocityPIDLeft.setEnabled(
@@ -391,11 +402,12 @@ public class DriveTrain extends Subsystem {
 
 			if (Math.abs(averageSpeed) > MIN_SPEED && !isQuickTurn
 					&& (mode == ControlMode.TELEOP_VOLTAGE || mode == ControlMode.TELEOP_CURRENT)) {
-				steeringRamp.setOutputs(steeringPIDController);
-				steeringPIDController.enable();
+//				steeringRamp.setOutputs(steeringPIDController);
+				angVelPIDController.enable();
 			} else {
-				steeringRamp.setOutputs(steeringTransferNode);
-				steeringPIDController.disable();
+//				steeringRamp.setOutputs(steeringTransferNode);
+				angVelPIDController.disable();
+				angVelCorrectionTransferNode.setOutput(0);
 			}
 		}
 	}

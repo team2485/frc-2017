@@ -7,10 +7,12 @@ import org.usfirst.frc.team2485.subsystems.IntakeArm;
 import org.usfirst.frc.team2485.subsystems.IntakeRollers;
 import org.usfirst.frc.team2485.subsystems.Shooter;
 import org.usfirst.frc.team2485.subsystems.WheelOfDeath;
+import org.usfirst.frc.team2485.util.AHRSWrapperRateAndAngle;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
 import org.usfirst.frc.team2485.util.MultipleEncoderWrapper;
 import org.usfirst.frc.team2485.util.MultipleEncoderWrapper.MultipleEncoderWrapperMode;
 import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
+import org.usfirst.frc.team2485.util.AHRSWrapperRateAndAngle.Units;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
@@ -79,9 +81,10 @@ public class RobotMap {
 	public static Encoder shooterEncoder;	
 	public static Encoder feederEncoder;
 	public static Ultrasonic gearDetector;
-	public static MultipleEncoderWrapper averageEncoderDistance;
-	public static AHRS ahrs;
+	public static MultipleEncoderWrapper averageEncoderDistance, averageEncoderRate;
 
+	public static AHRS ahrs;
+	public static AHRSWrapperRateAndAngle ahrsRateRads;
 	public static UsbCamera usbCam;
 
 	// subsystems
@@ -141,7 +144,11 @@ public class RobotMap {
 		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
 		
 		averageEncoderDistance = new MultipleEncoderWrapper(PIDSourceType.kDisplacement, 
-				MultipleEncoderWrapperMode.AVERAGE, driveEncLeft, driveEncRight);					
+				MultipleEncoderWrapperMode.AVERAGE, driveEncLeft, driveEncRight);
+		
+		averageEncoderRate = new MultipleEncoderWrapper(PIDSourceType.kRate, MultipleEncoderWrapperMode.AVERAGE,
+				driveEncLeft, driveEncRight);
+		ahrsRateRads = new AHRSWrapperRateAndAngle(PIDSourceType.kRate, Units.RADS);
 		
 		// CONFIGURE HARDWARE
 

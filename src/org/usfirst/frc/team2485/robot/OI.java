@@ -2,7 +2,6 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
-import org.usfirst.frc.team2485.robot.commands.RunWheelOfDeath;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetGearChutePosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 
 /**
  * This class is the glue that binds the controls on the physical operator
