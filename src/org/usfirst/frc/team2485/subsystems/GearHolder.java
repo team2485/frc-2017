@@ -16,7 +16,7 @@ public class GearHolder extends Subsystem {
 		
 	}
 	
-	public void setChuteOpen (boolean open) {
+	public void setChuteOpen(boolean open) {
 		
 		RobotMap.gearSolenoidTop1.set(open);
 		RobotMap.gearSolenoidTop2.set(!open);

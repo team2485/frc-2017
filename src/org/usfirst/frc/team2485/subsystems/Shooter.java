@@ -6,50 +6,45 @@ import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-
 public class Shooter extends Subsystem {
-	
 
-	//Adjusted by ConstantsIO
-	public static double RPS_SHOT = 95; 
+	// Adjusted by ConstantsIO
+	public static double RPS_SHOT = 95;
 	public WarlordsPIDController ratePID;
 
 	public Shooter() {
-
-		
 
 		ratePID = new WarlordsPIDController();
 		ratePID.setSources(RobotMap.shooterEncoder);
 		ratePID.setOutputs(RobotMap.shooterMotor);
 		ratePID.setBufferLength(3);
 		ratePID.setOutputRange(0, 1);
-		ratePID.setPID(ConstantsIO.kP_Shooter, ConstantsIO.kI_Shooter, ConstantsIO.kD_Shooter,
-				ConstantsIO.kF_Shooter);
-		
-		RPS_SHOT = ConstantsIO.kShotRPS;		
+		ratePID.setPID(ConstantsIO.kP_Shooter, ConstantsIO.kI_Shooter, ConstantsIO.kD_Shooter, ConstantsIO.kF_Shooter);
+
+		RPS_SHOT = ConstantsIO.kShotRPS;
 
 		disableShooter();
 
 	}
-	
+
 	public boolean isPIDEnabled() {
 		return (ratePID.isEnabled());
 	}
-	
+
 	public void setTargetSpeed(double rpm) {
-		if (!isPIDEnabled()){
+		if (!isPIDEnabled()) {
 			ratePID.enable();
 		}
 		ratePID.setSetpoint(rpm);
 	}
-	
+
 	public void setManual(double pwm) {
 		if (isPIDEnabled()) {
 			ratePID.disable();
 		}
 		RobotMap.shooterMotor.set(pwm);
 	}
-	
+
 	public void disableShooter() {
 
 		if (ratePID.isEnabled()) {
@@ -66,7 +61,7 @@ public class Shooter extends Subsystem {
 	public double getRate() {
 		return RobotMap.shooterEncoder.getRate();
 	}
-	
+
 	public double getCurrentPower() {
 		return RobotMap.shooterMotor.get();
 	}
@@ -82,19 +77,18 @@ public class Shooter extends Subsystem {
 		return ratePID.getAvgError();
 
 	}
+
 	@Override
 	protected void initDefaultCommand() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void updateConstants() {
-		ratePID.setPID(ConstantsIO.kP_Shooter, ConstantsIO.kI_Shooter, ConstantsIO.kD_Shooter,
-				ConstantsIO.kF_Shooter);
-		
-				RPS_SHOT = ConstantsIO.kShotRPS;
+		ratePID.setPID(ConstantsIO.kP_Shooter, ConstantsIO.kI_Shooter, ConstantsIO.kD_Shooter, ConstantsIO.kF_Shooter);
+
+		RPS_SHOT = ConstantsIO.kShotRPS;
 	}
-	
+
 	public void reset() {
 		disableShooter();
 	}

@@ -3,6 +3,8 @@ package org.usfirst.frc.team2485.robot;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
+import org.usfirst.frc.team2485.robot.commands.SetGearChutePosition;
+import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
@@ -46,6 +48,8 @@ public class OI {
 
 		new JoystickButton(xBox, XBOX_BTN_LBUMPER).whileHeld(new Climb());
 
+		new JoystickButton(xBox, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
+
 		if (DriveWithControllers.TRIGGER_DRIVE) {
 			new JoystickButton(xBox, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
 			new JoystickButton(xBox, XBOX_BTN_X).whenReleased(new SetQuickTurn(false));
@@ -58,6 +62,10 @@ public class OI {
 			new JoystickAxisButton(xBox, XBOX_AXIS_RTRIGGER, 0.4, 1)
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
 		}
+
+		new JoystickButton(joystick, 7).whenPressed(new SetGearHolderPosition(false));
+		new JoystickButton(joystick, 8).whenPressed(new SetGearChutePosition(false));
+		new JoystickButton(joystick, 9).whenPressed(new SetGearChutePosition(false));
 	}
 
 	/**

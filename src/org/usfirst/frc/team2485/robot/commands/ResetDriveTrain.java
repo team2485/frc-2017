@@ -14,5 +14,4 @@ public class ResetDriveTrain extends InstantCommand {
 	protected void initialize() {
 		RobotMap.driveTrain.reset();
 	}
-
 }

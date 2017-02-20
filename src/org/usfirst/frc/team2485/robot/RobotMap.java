@@ -58,7 +58,7 @@ public class RobotMap {
 	
 	// speed controllers
 	public static SpeedControllerWrapper driveTrainRight, driveTrainLeft;
-	public static CANTalon driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3;
+	public static CANTalon driveLeft1, driveLeft2, driveLeftMini, driveRight1, driveRight2, driveRightMini;
 	public static CANTalon deathMotor;
 	public static SpeedControllerWrapper shooterMotor;		
 	public static SpeedControllerWrapper intakeMotor;
@@ -81,6 +81,7 @@ public class RobotMap {
 	public static Ultrasonic gearDetector;
 	public static MultipleEncoderWrapper averageEncoderDistance;
 	public static AHRS ahrs;
+
 	public static UsbCamera usbCam;
 
 	// subsystems
@@ -103,14 +104,14 @@ public class RobotMap {
 		// ACTUATORS
 		driveLeft1 = new CANTalon(driveLeftPortCIM1);
 		driveLeft2 = new CANTalon(driveLeftPortCIM2);
-		driveLeft3 = new CANTalon(driveLeftPortMiniCIM);
+		driveLeftMini = new CANTalon(driveLeftPortMiniCIM);
 		
 		driveRight1 = new CANTalon(driveRightPortCIM1);
 		driveRight2 = new CANTalon(driveRightPortCIM2);
-		driveRight3 = new CANTalon(driveRightPortMiniCIM);
+		driveRightMini = new CANTalon(driveRightPortMiniCIM);
 		
-		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2, driveLeft3);
-		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRight3);
+		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2, driveLeftMini);
+		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRightMini);
 		
 		deathMotor = new CANTalon(wheelOfDeathMotorPort);
 		deathMotor.changeControlMode(TalonControlMode.Current);

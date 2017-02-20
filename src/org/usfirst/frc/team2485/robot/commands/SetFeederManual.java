@@ -8,7 +8,7 @@ public class SetFeederManual extends InstantCommand {
 	
 	private double pwm;
 	
-	public SetFeederManual (double pwm){
+	public SetFeederManual (double pwm) {
 		this.pwm = pwm;
 	}
 	

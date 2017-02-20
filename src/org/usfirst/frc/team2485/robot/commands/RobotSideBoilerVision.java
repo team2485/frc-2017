@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj.command.Command;
  * @author Sahana Kumar
  */
 
-public class RobotSideVisionSubtraction extends Command {
+public class RobotSideBoilerVision extends Command {
 	private static final int SLEEP_TIME = 5;
 	private Thread subtraction;
 	private boolean stop;
 
-	public RobotSideVisionSubtraction() {
+	public RobotSideBoilerVision() {
 		setInterruptible(true);
 		subtraction = new Thread(() -> processImages());
 		subtraction.setDaemon(true);
@@ -34,11 +34,11 @@ public class RobotSideVisionSubtraction extends Command {
 	}
 
 	private void processImages() {
-		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(1);
 		camera.setResolution(640, 480);
 
 		CvSink cvSink = CameraServer.getInstance().getVideo();
-		CvSource outputStream = CameraServer.getInstance().putVideo("Subtracted Image", 640, 480);
+		CvSource outputStream = CameraServer.getInstance().putVideo("Subtracted Boiler Image", 640, 480);
 
 		Mat light = new Mat();
 		Mat dark = new Mat();
