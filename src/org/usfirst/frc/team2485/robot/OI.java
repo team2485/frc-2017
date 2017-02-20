@@ -2,6 +2,7 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
+import org.usfirst.frc.team2485.robot.commands.RunWheelOfDeath;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetGearChutePosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
@@ -13,6 +14,8 @@ import org.usfirst.frc.team2485.util.JoystickAxisButton;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.networktables.NetworkTablesJNI;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -63,21 +66,35 @@ public class OI {
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
 		}
 
-		new JoystickButton(joystick, 7).whenPressed(new SetGearHolderPosition(false));
-		new JoystickButton(joystick, 8).whenPressed(new SetGearChutePosition(false));
-		new JoystickButton(joystick, 9).whenPressed(new SetGearChutePosition(false));
+//		new JoystickButton(joystick, 7).whenPressed(new SetGearChutePosition(true));
+//		new JoystickButton(joystick, 8).whenPressed(new SetGearChutePosition(false));
+//		new JoystickButton(joystick, 10).whenPressed(new SetGearHolderPosition(false));
+		
+		new LogitechKeypadButton('1').whenPressed(new SetGearChutePosition(true));
+		new LogitechKeypadButton('2').whenPressed(new SetGearChutePosition(false));
+		new LogitechKeypadButton('8').whenPressed(new SetGearHolderPosition(false));
 	}
 
 	/**
 	 * Combines the Start and Back buttons on the XBOX controller into one
 	 * button that requires both pressed to be valid
-	 * 
-	 * @author Nicholas Contreras
 	 */
 	private static class BackStartComboButton extends Button {
 		@Override
 		public boolean get() {
 			return xBox.getRawButton(XBOX_BTN_BACK) && xBox.getRawButton(XBOX_BTN_START);
 		}
+	}
+	private static class LogitechKeypadButton extends Button {
+		private char key; 
+		
+		public LogitechKeypadButton(char key) {
+			this.key = key;
+		}
+		@Override
+		public boolean get() {
+			return NetworkTable.getTable("LogitechController").getBoolean(key + "", false);
+		}
+		
 	}
 }

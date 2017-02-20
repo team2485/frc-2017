@@ -15,5 +15,6 @@ public class SetGearHolderPosition extends InstantCommand {
 	@Override
 	protected void initialize() {
 		RobotMap.gearHolder.setBottomOpen(open);
+		System.out.println("open gear");
 	}
 }

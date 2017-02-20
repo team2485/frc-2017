@@ -46,7 +46,7 @@ public class RobotMap {
 	public static int driveLeftPortCIM1 = 4;
 	public static int driveLeftPortCIM2 = 6;
 	public static int driveLeftPortMiniCIM = 5;
-	public static int wheelOfDeathMotorPort=7;
+	public static int wheelOfDeathMotorPort = 7;
 	public static int kShooterEncoderPortA = 4, kShooterEncoderPortB = 5;
 	public static int kLeftDriveEnc1 = 3, kLeftDriveEnc2 = 2;
 	public static int kRightDriveEnc1 = 0, kRightDriveEnc2 = 1;
@@ -69,8 +69,8 @@ public class RobotMap {
 	public static Relay lightSpike;
 	
 	//solenoids
-	public static Solenoid gearSolenoidBottom1, gearSolenoidBottom2;
-	public static Solenoid gearSolenoidTop1, gearSolenoidTop2;
+	public static Solenoid gearSolenoidBottom;
+	public static Solenoid gearSolenoidTop;
 	public static Solenoid intakeArmSolenoid;
 
 	//sensors
@@ -114,6 +114,7 @@ public class RobotMap {
 		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRightMini);
 		
 		deathMotor = new CANTalon(wheelOfDeathMotorPort);
+		deathMotor.setInverted(true);
 		deathMotor.changeControlMode(TalonControlMode.Current);
 		
 		shooterMotor = new SpeedControllerWrapper(new VictorSP(kShooterMotorPort));
@@ -123,10 +124,8 @@ public class RobotMap {
 		
 		lightSpike = new Relay(0);
 		
-		gearSolenoidBottom1 = new Solenoid(0);
-		gearSolenoidBottom2 = new Solenoid(1);
-		gearSolenoidTop1 = new Solenoid(3);
-		gearSolenoidTop2 = new Solenoid(4); 
+		gearSolenoidBottom = new Solenoid(0);
+		gearSolenoidTop = new Solenoid(1);
 		intakeArmSolenoid = new Solenoid(2);
 		
 		// SENSORS

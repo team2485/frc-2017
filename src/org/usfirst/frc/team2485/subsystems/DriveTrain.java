@@ -346,9 +346,9 @@ public class DriveTrain extends Subsystem {
 		velocityPIDRight.setEnabled(
 				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
 		velocityRampLeft.setEnabled(
-				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+				mode.isAuto() || mode == ControlMode.TEST_VELOCITY_DIRECT);
 		velocityRampRight.setEnabled(
-				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
+				mode.isAuto() || mode == ControlMode.TEST_VELOCITY_DIRECT);
 		velocityScalingMax.setEnabled(
 				mode.isAuto() || mode == ControlMode.TELEOP_VELOCITY || mode == ControlMode.TEST_VELOCITY_DIRECT);
 		anglePID.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
@@ -498,7 +498,7 @@ public class DriveTrain extends Subsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new DriveWithControllers(ControlMode.TELEOP_VELOCITY));
+		setDefaultCommand(new DriveWithControllers(ControlMode.TELEOP_CURRENT));
 	}
 
 	public void reset() {

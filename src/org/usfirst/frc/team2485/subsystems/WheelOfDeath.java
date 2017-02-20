@@ -7,20 +7,22 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class WheelOfDeath extends Subsystem {
 	public WheelOfDeath() {
-		
+
 	}
+
 	@Override
 	protected void initDefaultCommand() {
 	}
-	
+
 	public void setCurrent(double current) {
 		RobotMap.deathMotor.set(current);
+		System.out.println("Set current: " + current);
 	}
-	
+
 	public double getCurrent() {
 		return RobotMap.deathMotor.getOutputCurrent();
 	}
-	
+
 	public void updateConstants() {
 		RobotMap.deathMotor.configPeakOutputVoltage(ConstantsIO.kSWODMaxVolts, -ConstantsIO.kSWODMaxVolts);
 	}
