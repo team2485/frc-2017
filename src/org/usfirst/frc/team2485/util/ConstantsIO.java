@@ -23,7 +23,27 @@ public class ConstantsIO {
 
 	public static HashMap<String, String> data;
 
+	public static double kP_Shooter;
+	public static double kI_Shooter;
+	public static double kD_Shooter;
+	public static double kF_Shooter;
+	public static double kShotRPS;
+	
+	public static double kP_Feeder;
+	public static double kI_Feeder;
+	public static double kD_Feeder;
+	public static double kF_Feeder;
+	public static double kFeederRPS;
+	
+	public static double kP_SWODCurrent;
+	public static double kI_SWODCurrent;
+	public static double kD_SWODCurrent;
+	public static double kF_SWODCurrent;
+	public static double kSWODCurrent;
+	public static double kSWODMaxVolts;
+
 	public static double kIntakeRollerSpeed;
+	
 	public static double kClimberSpeed;
 
 	public static double kP_DriveVelocity;
@@ -35,28 +55,16 @@ public class ConstantsIO {
 	public static double kI_DriveCurrent;
 	public static double kD_DriveCurrent;
 	public static double kF_DriveCurrent;
-
-	public static double kP_Shooter;
-
-	public static double kI_Shooter;
-
-	public static double kD_Shooter;
-
-	public static double kF_Shooter;
-
-	public static double kP_Feeder;
-
-	public static double kI_Feeder;
-
-	public static double kD_Feeder;
-
-	public static double kF_Feeder;
-
-	public static double kShotRPS;
-
-	public static double kFeederRPS;
-
-	public static double kRollersPower;
+	
+	public static double kP_Distance;
+	public static double kI_Distance;
+	public static double kD_Distance;
+	public static double kF_Distance;
+	
+	public static double kDownRamp_OverallVelocityRamp;
+	public static double kUpRamp_OverallVelocityRamp;
+	public static double kDownRamp_IndividualVelocityRamp;
+	public static double kUpRamp_IndividualVelocityRamp;
 
 	public static double kP_DriveSteering;
 	public static double kI_DriveSteering;
@@ -65,41 +73,19 @@ public class ConstantsIO {
 
 	public static double kUpRamp_Drive;
 	public static double kDownRamp_Drive;
-
-	public static double kP_Distance;
-	public static double kI_Distance;
-	public static double kD_Distance;
-
-	public static double kF_Distance;
-
-	public static double kDownRamp_OverallVelocityRamp;
-	public static double kUpRamp_OverallVelocityRamp;
-
-	public static double kDownRamp_IndividualVelocityRamp;
-	public static double kUpRamp_IndividualVelocityRamp;
 	
 	public static double kP_DriveAngle;
 	public static double kI_DriveAngle;
 	public static double kD_DriveAngle;
-
-	public static double kUpRamp_DriveSteering;
-	public static double kDownRamp_DriveSteering;
 	
 	public static double kP_RotateTo;
 	public static double kI_RotateTo;
 	public static double kD_RotateTo;
 	public static double kF_RotateTo;
+
+	public static double kUpRamp_DriveSteering;
+	public static double kDownRamp_DriveSteering;
 	
-	public static double kP_SWODCurrent;
-	public static double kI_SWODCurrent;
-	public static double kD_SWODCurrent;
-	public static double kF_SWODCurrent;
-
-	public static double kSWODCurrent;
-	public static double kSWODMaxVolts;
-
-
-
 	public static void init() {
 
 
@@ -172,8 +158,6 @@ public class ConstantsIO {
 		kShotRPS = Double.parseDouble(data.get("kShotRPS"));
 
 		kFeederRPS = Double.parseDouble(data.get("kFeederRPS"));
-
-		kRollersPower = Double.parseDouble(data.get("kRollersPower"));
 
 		kP_DriveSteering = Double.parseDouble(data.get("kP_DriveSteering"));
 
