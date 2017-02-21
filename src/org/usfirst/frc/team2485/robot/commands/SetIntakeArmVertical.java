@@ -4,22 +4,18 @@ import org.usfirst.frc.team2485.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
-public class ExtendIntakeArm extends InstantCommand {
+public class SetIntakeArmVertical extends InstantCommand {
 
 	private boolean extended;
 
-	public ExtendIntakeArm(boolean extended) {
+	public SetIntakeArmVertical(boolean extended) {
 		requires(RobotMap.intakeArm);
 		this.extended = extended;
 
 	}
 
 	public void initialize() {
-		if (extended) {
-			RobotMap.intakeArm.extend();
-		} else {
-			RobotMap.intakeArm.reset();
-		}
+		RobotMap.intakeArm.setVertical(extended);
 	}
 
 }

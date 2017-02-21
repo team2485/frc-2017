@@ -10,16 +10,14 @@ public class IntakeArm extends Subsystem {
 	protected void initDefaultCommand() {
 	}
 	
-	public void extend() {
-		RobotMap.intakeArmSolenoid.set(true);
+	public void setHorizontal(boolean isExtended) {
+		RobotMap.intakeArmSolenoidHorizontal.set(isExtended);
 	}
 	
-	public void reset() {
-		RobotMap.intakeArmSolenoid.set(false);
-	}
 	
-	public boolean isExtended() {
-		return RobotMap.intakeArmSolenoid.get();
+	public void setVertical(boolean isExtended) {
+		RobotMap.intakeArmSolenoidVertical1.set(isExtended);
+		RobotMap.intakeArmSolenoidVertical2.set(isExtended);
 	}
 
 }

@@ -60,7 +60,7 @@ public class RobotMap {
 	
 	// speed controllers
 	public static SpeedControllerWrapper driveTrainRight, driveTrainLeft;
-	public static CANTalon driveLeft1, driveLeft2, driveLeftMini, driveRight1, driveRight2, driveRightMini;
+	public static CANTalon driveLeft1, driveLeft2, driveLeft775, driveRight1, driveRight2, driveRight775;
 	public static CANTalon deathMotor;
 	public static SpeedControllerWrapper shooterMotor;		
 	public static SpeedControllerWrapper intakeMotor;
@@ -73,7 +73,9 @@ public class RobotMap {
 	//solenoids
 	public static Solenoid gearSolenoidBottom;
 	public static Solenoid gearSolenoidTop;
-	public static Solenoid intakeArmSolenoid;
+	public static Solenoid intakeArmSolenoidHorizontal;
+	public static Solenoid intakeArmSolenoidVertical1;
+	public static Solenoid intakeArmSolenoidVertical2;
 
 	//sensors
 	public static Encoder driveEncLeft, driveEncRight;
@@ -107,14 +109,14 @@ public class RobotMap {
 		// ACTUATORS
 		driveLeft1 = new CANTalon(driveLeftPortCIM1);
 		driveLeft2 = new CANTalon(driveLeftPortCIM2);
-		driveLeftMini = new CANTalon(driveLeftPortMiniCIM);
+		driveLeft775 = new CANTalon(driveLeftPortMiniCIM);
 		
 		driveRight1 = new CANTalon(driveRightPortCIM1);
 		driveRight2 = new CANTalon(driveRightPortCIM2);
-		driveRightMini = new CANTalon(driveRightPortMiniCIM);
+		driveRight775 = new CANTalon(driveRightPortMiniCIM);
 		
-		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2, driveLeftMini);
-		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRightMini);
+		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2, driveLeft775);
+		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRight775);
 		
 		deathMotor = new CANTalon(wheelOfDeathMotorPort);
 		deathMotor.setInverted(true);
@@ -129,7 +131,9 @@ public class RobotMap {
 		
 		gearSolenoidBottom = new Solenoid(0);
 		gearSolenoidTop = new Solenoid(1);
-		intakeArmSolenoid = new Solenoid(2);
+		intakeArmSolenoidHorizontal = new Solenoid(2); //possibly made up port (?)
+		intakeArmSolenoidVertical1 = new Solenoid(3); //made up port
+		intakeArmSolenoidVertical2 = new Solenoid(4); //made up port
 		
 		// SENSORS
 		ahrs = new AHRS(Port.kMXP);
@@ -152,7 +156,9 @@ public class RobotMap {
 		
 		// CONFIGURE HARDWARE
 
-		driveTrainLeft.setInverted(true);
+		driveLeft1.setInverted(true);
+		driveLeft2.setInverted(true);
+		driveRight775.setInverted(true);
 		
 		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * WHEEL_RADIUS * 2));
 		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * WHEEL_RADIUS * 2));

@@ -10,13 +10,10 @@ public class AHRSWrapperRateAndAngle implements PIDSource {
 		DEGS, RADS
 	}
 	private PIDSourceType pidSource;
-	private double rate;
-	private boolean run = true;
 	private Units units;
 	public AHRSWrapperRateAndAngle(PIDSourceType pidSource, Units units) {
 		this.pidSource = pidSource;
 		this.units = units;
-		new RateThread().start();
 	}
 	
 	@Override
@@ -34,35 +31,13 @@ public class AHRSWrapperRateAndAngle implements PIDSource {
 		if (pidSource == PIDSourceType.kDisplacement) {
 			return (units == Units.RADS) ? Math.PI / 180 * RobotMap.ahrs.getAngle() : RobotMap.ahrs.getAngle();
 		} else {
+			double rate = RobotMap.ahrs.getRate() * 60; // multiply by 60 because kauai labs can't math
+			if (Math.abs(rate) > 360) {
+				rate = 0;
+			}
 			return (units == Units.RADS) ? Math.PI / 180 * rate : rate;
 		}
 	}
 	
-	@Override
-	protected void finalize() throws Throwable {
-		run = false;
-	}
 	
-	private class RateThread extends Thread {
-		@Override
-		public void run() {
-			double last = RobotMap.ahrs.getAngle();
-			while (run) {
-				double cur = RobotMap.ahrs.getAngle();
-				double diff = cur - last;
-				if (diff < -180) {
-					diff += 360;
-				} else if (diff > 180) {
-					diff -= 360;
-				}
-				last = cur;
-				rate = diff * 100;
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
 }

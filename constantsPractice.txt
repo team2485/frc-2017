@@ -27,29 +27,34 @@ kI_DriveVelocity = 0.01
 kD_DriveVelocity = 0
 kF_DriveVelocity = 0
 
-kP_DriveCurrent = 0.2
-kI_DriveCurrent = 0.002
-kD_DriveCurrent = 0
-kF_DriveCurrent = 0.07
+kP_DriveCurrentCIM = 0.2
+kI_DriveCurrentCIM = 0.002
+kD_DriveCurrentCIM = 0
+kF_DriveCurrentCIM = 0.07
+
+kP_DriveCurrent775 = 0
+kI_DriveCurrent775 = 0
+kD_DriveCurrent775 = 0
+kF_DriveCurrent775 = 0
 
 kP_Distance = 1
 kI_Distance = 0
 kD_Distance = 0
 kF_Distance = 0
 
-kUpRamp_OverallVelocityRamp = 0.15
-kDownRamp_OverallVelocityRamp = 1
+kUpRamp_OverallVelocity = 0.15
+kDownRamp_OverallVelocity = 1
 
-kUpRamp_IndividualVelocityRamp = 0.15
-kDownRamp_IndividualVelocityRamp = 1
+kUpRamp_IndividualVelocity = 0.15
+kDownRamp_IndividualVelocity = 1
 
 kP_DriveSteering = .5
 kI_DriveSteering = .05
 kD_DriveSteering = 0
 kF_DriveSteering = 1
 
-kUpRamp_Drive = 0.2
-kDownRamp_Drive = 0.2
+kUpRamp_DriveThrottle = 0.2
+kDownRamp_DriveThrottle = 0.2
 
 kP_DriveAngle = 0
 kI_DriveAngle = 0
@@ -62,4 +67,9 @@ kF_RotateTo = 0
 
 kUpRamp_DriveSteering = 100
 kDownRamp_DriveSteering = 100
+
+kP_DriveAngVel = 0
+kI_DriveAngVel = 0
+kD_DriveAngVel = 0
+kF_DriveAngVel = 0
 

@@ -26,12 +26,12 @@ public class DriveWithControllers extends Command {
 	@Override
 	protected void execute() {
 		if (DriverStation.getInstance().isOperatorControl()) {
-			double foward = -OI.xBox.getRawAxis(OI.XBOX_AXIS_LY);
-			double right = OI.xBox.getRawAxis(OI.XBOX_AXIS_RX);
+			double foward = -OI.ben.getRawAxis(OI.XBOX_AXIS_LY);
+			double right = OI.ben.getRawAxis(OI.XBOX_AXIS_RX);
 
 			if (TRIGGER_DRIVE) {
-				foward = OI.xBox.getRawAxis(OI.XBOX_AXIS_RTRIGGER) - OI.xBox.getRawAxis(OI.XBOX_AXIS_LTRIGGER);
-				right = OI.xBox.getRawAxis(OI.XBOX_AXIS_LX);
+				foward = OI.ben.getRawAxis(OI.XBOX_AXIS_RTRIGGER) - OI.ben.getRawAxis(OI.XBOX_AXIS_LTRIGGER);
+				right = OI.ben.getRawAxis(OI.XBOX_AXIS_LX);
 			}
 
 			RobotMap.driveTrain.warlordDrive(foward, right, mode);

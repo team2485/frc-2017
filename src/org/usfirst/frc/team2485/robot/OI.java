@@ -1,7 +1,9 @@
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.robot.commandGroups.ResetGear;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
+import org.usfirst.frc.team2485.robot.commands.SetRollers;
 import org.usfirst.frc.team2485.robot.commands.RunWheelOfDeath;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetGearChutePosition;
@@ -22,8 +24,8 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
  */
 public class OI {
 
-	public static Joystick xBox;
-	public static Joystick joystick;
+	public static Joystick ben;
+	public static Joystick elliot;
 
 	public static final int XBOX_BTN_A = 1;
 	public static final int XBOX_BTN_B = 2;
@@ -43,35 +45,36 @@ public class OI {
 	public static final int XBOX_AXIS_RY = 5;
 
 	public static void init() {
-		xBox = new Joystick(0);
-		joystick = new Joystick(1);
+		ben = new Joystick(0);
+		elliot = new Joystick(1);
 
 		new BackStartComboButton().whenPressed(new PrepForSelfTest());
 
-		new JoystickButton(xBox, XBOX_BTN_LBUMPER).whileHeld(new Climb());
+		new JoystickButton(ben, XBOX_BTN_LBUMPER).whileHeld(new Climb());
 
-		new JoystickButton(xBox, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
+		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
 		
-		new JoystickButton(xBox, XBOX_BTN_Y).whenPressed(new RunWheelOfDeath(true));
-		new JoystickButton(xBox, XBOX_BTN_B).whenPressed(new RunWheelOfDeath(false));
+		new JoystickButton(ben, XBOX_BTN_Y).whenPressed(new RunWheelOfDeath(true));
+		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new RunWheelOfDeath(false));
 
 
 		if (DriveWithControllers.TRIGGER_DRIVE) {
-			new JoystickButton(xBox, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
-			new JoystickButton(xBox, XBOX_BTN_X).whenReleased(new SetQuickTurn(false));
+			new JoystickButton(ben, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
+			new JoystickButton(ben, XBOX_BTN_X).whenReleased(new SetQuickTurn(false));
 		} else {
-			new JoystickButton(xBox, XBOX_BTN_RBUMPER).whenPressed(new SetQuickTurn(true));
-			new JoystickButton(xBox, XBOX_BTN_RBUMPER).whenReleased(new SetQuickTurn(false));
+			new JoystickButton(ben, XBOX_BTN_RBUMPER).whenPressed(new SetQuickTurn(true));
+			new JoystickButton(ben, XBOX_BTN_RBUMPER).whenReleased(new SetQuickTurn(false));
 
-			new JoystickAxisButton(xBox, XBOX_AXIS_RTRIGGER, 0.4, 1)
+			new JoystickAxisButton(ben, XBOX_AXIS_RTRIGGER, 0.4, 1)
 					.whenPressed(new SetDriveSpeed(DriveSpeed.SLOW_SPEED_RATING));
-			new JoystickAxisButton(xBox, XBOX_AXIS_RTRIGGER, 0.4, 1)
+			new JoystickAxisButton(ben, XBOX_AXIS_RTRIGGER, 0.4, 1)
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
 		}
 
-		new JoystickButton(joystick, 7).whenPressed(new SetGearChutePosition(true));
-		new JoystickButton(joystick, 8).whenPressed(new SetGearChutePosition(false));
-		new JoystickButton(joystick, 10).whenPressed(new SetGearHolderPosition(false));
+		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearChutePosition(true));
+		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
+		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenPressed(new SetRollers(true));
+		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetRollers(false));
 		
 //		new LogitechKeypadButton('1').whenPressed(new SetGearChutePosition(true));
 //		new LogitechKeypadButton('2').whenPressed(new SetGearChutePosition(false));
@@ -85,7 +88,7 @@ public class OI {
 	private static class BackStartComboButton extends Button {
 		@Override
 		public boolean get() {
-			return xBox.getRawButton(XBOX_BTN_BACK) && xBox.getRawButton(XBOX_BTN_START);
+			return ben.getRawButton(XBOX_BTN_BACK) && ben.getRawButton(XBOX_BTN_START);
 		}
 	}
 	private static class LogitechKeypadButton extends Button {

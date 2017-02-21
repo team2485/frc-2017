@@ -51,28 +51,33 @@ public class ConstantsIO {
 	public static double kD_DriveVelocity;
 	public static double kF_DriveVelocity;
 
-	public static double kP_DriveCurrent;
-	public static double kI_DriveCurrent;
-	public static double kD_DriveCurrent;
-	public static double kF_DriveCurrent;
+	public static double kP_DriveCurrentCIM;
+	public static double kI_DriveCurrentCIM;
+	public static double kD_DriveCurrentCIM;
+	public static double kF_DriveCurrentCIM;
+	
+	public static double kP_DriveCurrent775;
+	public static double kI_DriveCurrent775;
+	public static double kD_DriveCurrent775;
+	public static double kF_DriveCurrent775;
 	
 	public static double kP_Distance;
 	public static double kI_Distance;
 	public static double kD_Distance;
 	public static double kF_Distance;
 	
-	public static double kDownRamp_OverallVelocityRamp;
-	public static double kUpRamp_OverallVelocityRamp;
-	public static double kDownRamp_IndividualVelocityRamp;
-	public static double kUpRamp_IndividualVelocityRamp;
+	public static double kDownRamp_OverallVelocity;
+	public static double kUpRamp_OverallVelocity;
+	public static double kDownRamp_IndividualVelocity;
+	public static double kUpRamp_IndividualVelocity;
 
 	public static double kP_DriveSteering;
 	public static double kI_DriveSteering;
 	public static double kD_DriveSteering;
 	public static double kF_DriveSteering;
 
-	public static double kUpRamp_Drive;
-	public static double kDownRamp_Drive;
+	public static double kUpRamp_DriveThrottle;
+	public static double kDownRamp_DriveThrottle;
 	
 	public static double kP_DriveAngle;
 	public static double kI_DriveAngle;
@@ -116,8 +121,27 @@ public class ConstantsIO {
 		}
 
 		//		createUnMatchedConstants();
+		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));
+		kI_Shooter = Double.parseDouble(data.get("kI_Shooter"));
+		kD_Shooter = Double.parseDouble(data.get("kD_Shooter"));
+		kF_Shooter = Double.parseDouble(data.get("kF_Shooter"));
+		kShotRPS = Double.parseDouble(data.get("kShotRPS"));
+		
+		kP_Feeder = Double.parseDouble(data.get("kP_Feeder"));
+		kI_Feeder = Double.parseDouble(data.get("kI_Feeder"));
+		kD_Feeder = Double.parseDouble(data.get("kD_Feeder"));
+		kF_Feeder = Double.parseDouble(data.get("kF_Feeder"));
+		kFeederRPS = Double.parseDouble(data.get("kFeederRPS"));
 
+		kP_SWODCurrent = Double.parseDouble(data.get("kP_SWODCurrent"));
+		kI_SWODCurrent = Double.parseDouble(data.get("kI_SWODCurrent"));
+		kD_SWODCurrent = Double.parseDouble(data.get("kD_SWODCurrent"));
+		kF_SWODCurrent = Double.parseDouble(data.get("kF_SWODCurrent"));
+		kSWODCurrent = Double.parseDouble(data.get("kSWODCurrent"));
+		kSWODMaxVolts = Double.parseDouble(data.get("kSWODMaxVolts"));
+		
 		kIntakeRollerSpeed = Double.parseDouble(data.get("kIntakeRollerSpeed"));
+	
 		kClimberSpeed = Double.parseDouble(data.get("kClimberSpeed"));
 
 		kP_DriveVelocity = Double.parseDouble(data.get("kP_DriveVelocity"));
@@ -125,10 +149,15 @@ public class ConstantsIO {
 		kD_DriveVelocity = Double.parseDouble(data.get("kD_DriveVelocity"));
 		kF_DriveVelocity = Double.parseDouble(data.get("kF_DriveVelocity"));
 
-		kP_DriveCurrent = Double.parseDouble(data.get("kP_DriveCurrent"));
-		kI_DriveCurrent = Double.parseDouble(data.get("kI_DriveCurrent"));
-		kD_DriveCurrent = Double.parseDouble(data.get("kD_DriveCurrent"));
-		kF_DriveCurrent = Double.parseDouble(data.get("kF_DriveCurrent"));
+		kP_DriveCurrentCIM = Double.parseDouble(data.get("kP_DriveCurrentCIM"));
+		kI_DriveCurrentCIM = Double.parseDouble(data.get("kI_DriveCurrentCIM"));
+		kD_DriveCurrentCIM = Double.parseDouble(data.get("kD_DriveCurrentCIM"));
+		kF_DriveCurrentCIM = Double.parseDouble(data.get("kF_DriveCurrentCIM"));
+		
+		kP_DriveCurrent775 = Double.parseDouble(data.get("kP_DriveCurrent775"));
+		kI_DriveCurrent775 = Double.parseDouble(data.get("kI_DriveCurrent775"));
+		kD_DriveCurrent775 = Double.parseDouble(data.get("kD_DriveCurrent775"));
+		kF_DriveCurrent775 = Double.parseDouble(data.get("kF_DriveCurrent775"));
 
 
 		kP_Distance = Double.parseDouble(data.get("kP_Distance"));
@@ -136,35 +165,14 @@ public class ConstantsIO {
 		kD_Distance = Double.parseDouble(data.get("kD_Distance"));
 		kF_Distance = Double.parseDouble(data.get("kF_Distance"));
 
-		kUpRamp_Drive = Double.parseDouble(data.get("kUpRamp_Drive"));
-		kDownRamp_Drive = Double.parseDouble(data.get("kDownRamp_Drive"));
+		kUpRamp_DriveThrottle = Double.parseDouble(data.get("kUpRamp_DriveThrottle"));
+		kDownRamp_DriveThrottle = Double.parseDouble(data.get("kDownRamp_DriveThrottle"));
 
-		kDownRamp_OverallVelocityRamp = Double.parseDouble(data.get("kDownRamp_OverallVelocityRamp"));
-		kUpRamp_OverallVelocityRamp = Double.parseDouble(data.get("kUpRamp_OverallVelocityRamp"));
+		kDownRamp_OverallVelocity = Double.parseDouble(data.get("kDownRamp_OverallVelocity"));
+		kUpRamp_OverallVelocity = Double.parseDouble(data.get("kUpRamp_OverallVelocity"));
 
-		kDownRamp_IndividualVelocityRamp = Double.parseDouble(data.get("kDownRamp_IndividualVelocityRamp"));
-		kUpRamp_IndividualVelocityRamp = Double.parseDouble(data.get("kUpRamp_IndividualVelocityRamp"));
-
-
-		kP_Shooter = Double.parseDouble(data.get("kP_Shooter"));
-
-		kI_Shooter = Double.parseDouble(data.get("kI_Shooter"));
-
-		kD_Shooter = Double.parseDouble(data.get("kD_Shooter"));
-
-		kF_Shooter = Double.parseDouble(data.get("kF_Shooter"));
-
-		kP_Feeder = Double.parseDouble(data.get("kP_Feeder"));
-
-		kI_Feeder = Double.parseDouble(data.get("kI_Feeder"));
-
-		kD_Feeder = Double.parseDouble(data.get("kD_Feeder"));
-
-		kF_Feeder = Double.parseDouble(data.get("kF_Feeder"));
-
-		kShotRPS = Double.parseDouble(data.get("kShotRPS"));
-
-		kFeederRPS = Double.parseDouble(data.get("kFeederRPS"));
+		kDownRamp_IndividualVelocity = Double.parseDouble(data.get("kDownRamp_IndividualVelocity"));
+		kUpRamp_IndividualVelocity = Double.parseDouble(data.get("kUpRamp_IndividualVelocity"));
 
 		kP_DriveSteering = Double.parseDouble(data.get("kP_DriveSteering"));
 
@@ -188,15 +196,6 @@ public class ConstantsIO {
 
 		kF_RotateTo = Double.parseDouble(data.get("kF_RotateTo"));
 		
-		kP_SWODCurrent = Double.parseDouble(data.get("kP_SWODCurrent"));
-		
-		kI_SWODCurrent = Double.parseDouble(data.get("kI_SWODCurrent"));
-
-		kD_SWODCurrent = Double.parseDouble(data.get("kD_SWODCurrent"));
-
-		kF_SWODCurrent = Double.parseDouble(data.get("kF_SWODCurrent"));
-
-		
 		kP_DriveAngVel = Double.parseDouble(data.get("kP_DriveAngVel"));
 		kI_DriveAngVel = Double.parseDouble(data.get("kI_DriveAngVel"));
 		kD_DriveAngVel = Double.parseDouble(data.get("kD_DriveAngVel"));
@@ -205,9 +204,6 @@ public class ConstantsIO {
 		
 		kUpRamp_DriveSteering = Double.parseDouble(data.get("kUpRamp_DriveSteering"));
 		kDownRamp_DriveSteering = Double.parseDouble(data.get("kDownRamp_DriveSteering"));
-		
-		kSWODCurrent = Double.parseDouble(data.get("kSWODCurrent"));
-		kSWODMaxVolts = Double.parseDouble(data.get("kSWODMaxVolts"));
 		
 	}
 

@@ -25,7 +25,7 @@ public class PrepForSelfTest extends Command {
 	@Override
 	protected void execute() {
 		
-		if (!OI.xBox.getRawButton(OI.XBOX_BTN_BACK) || !OI.xBox.getRawButton(OI.XBOX_BTN_START)) {
+		if (!OI.ben.getRawButton(OI.XBOX_BTN_BACK) || !OI.ben.getRawButton(OI.XBOX_BTN_START)) {
 			done = true;
 		}
 

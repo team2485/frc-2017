@@ -24,10 +24,10 @@ public class TestDriveTrainCurrentDraw extends Command {
 		if ((System.currentTimeMillis() - startTime) > 3000) {
 			currentLeft1 = RobotMap.driveLeft1.getOutputCurrent();
 			currentLeft2 = RobotMap.driveLeft2.getOutputCurrent();
-			currentLeftMini = RobotMap.driveLeftMini.getOutputCurrent();
+			currentLeftMini = RobotMap.driveLeft775.getOutputCurrent();
 			currentRight1 = RobotMap.driveRight1.getOutputCurrent();
 			currentRight2 = RobotMap.driveRight2.getOutputCurrent();
-			currentRightMini = RobotMap.driveRightMini.getOutputCurrent();
+			currentRightMini = RobotMap.driveRight775.getOutputCurrent();
 			isFinished = true;
 		}
 	}
