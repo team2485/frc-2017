@@ -52,7 +52,7 @@ public class OI {
 
 		new JoystickButton(ben, XBOX_BTN_LBUMPER).whileHeld(new Climb());
 
-		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
+		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
 		
 		new JoystickButton(ben, XBOX_BTN_Y).whenPressed(new RunWheelOfDeath(true));
 		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new RunWheelOfDeath(false));
@@ -71,7 +71,7 @@ public class OI {
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
 		}
 
-		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearChutePosition(true));
+		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearChutePosition(true));
 		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
 		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenPressed(new SetRollers(true));
 		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetRollers(false));
