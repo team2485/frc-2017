@@ -3,12 +3,15 @@ package org.usfirst.frc.team2485.robot;
 import org.usfirst.frc.team2485.robot.commandGroups.ResetGear;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
+import org.usfirst.frc.team2485.robot.commands.SetIntakeArmHorizontal;
 import org.usfirst.frc.team2485.robot.commands.SetRollers;
 import org.usfirst.frc.team2485.robot.commands.RunWheelOfDeath;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetGearChutePosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
+import org.usfirst.frc.team2485.robot.commands.TestVerticalSolenoid1;
+import org.usfirst.frc.team2485.robot.commands.TestVerticalSolenoid2;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
@@ -75,7 +78,13 @@ public class OI {
 		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
 		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenPressed(new SetRollers(true));
 		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetRollers(false));
-		
+		 
+		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new SetIntakeArmHorizontal(true));
+		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new TestVerticalSolenoid1(true));
+		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenReleased(new TestVerticalSolenoid1(false));
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new TestVerticalSolenoid2(true));
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new TestVerticalSolenoid2(false));
+
 //		new LogitechKeypadButton('1').whenPressed(new SetGearChutePosition(true));
 //		new LogitechKeypadButton('2').whenPressed(new SetGearChutePosition(false));
 //		new LogitechKeypadButton('8').whenPressed(new SetGearHolderPosition(false));

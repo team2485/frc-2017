@@ -19,6 +19,7 @@ import com.ctre.CANTalon.TalonControlMode;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Relay;
@@ -131,9 +132,9 @@ public class RobotMap {
 		
 		gearSolenoidBottom = new Solenoid(0);
 		gearSolenoidTop = new Solenoid(1);
-		intakeArmSolenoidHorizontal = new Solenoid(2); //possibly made up port (?)
-		intakeArmSolenoidVertical1 = new Solenoid(3); //made up port
-		intakeArmSolenoidVertical2 = new Solenoid(4); //made up port
+		intakeArmSolenoidHorizontal = new Solenoid(2); 
+		intakeArmSolenoidVertical1 = new Solenoid(3); 
+		intakeArmSolenoidVertical2 = new Solenoid(5); 
 		
 		// SENSORS
 		ahrs = new AHRS(Port.kMXP);
@@ -153,6 +154,8 @@ public class RobotMap {
 		averageEncoderRate = new MultipleEncoderWrapper(PIDSourceType.kRate, MultipleEncoderWrapperMode.AVERAGE,
 				driveEncLeft, driveEncRight);
 		ahrsRateRads = new AHRSWrapperRateAndAngle(PIDSourceType.kRate, Units.RADS);
+		
+		usbCam = CameraServer.getInstance().startAutomaticCapture();
 		
 		// CONFIGURE HARDWARE
 

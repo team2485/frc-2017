@@ -19,7 +19,6 @@ public class Robot extends IterativeRobot {
 	private AutoPath path;
 
 	public void robotInit() {
-		new Compressor().start();
 		ConstantsIO.init();
 		RobotMap.init();
 		OI.init();

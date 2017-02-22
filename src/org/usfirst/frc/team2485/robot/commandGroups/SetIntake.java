@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 public class SetIntake extends CommandGroup {
 	public SetIntake() {
 		addSequential(new SetIntakeArmHorizontal(true));
-		addSequential(new TimedCommand(.25));
+		addSequential(new TimedCommand(1));
 		addSequential(new SetIntakeArmVertical(true));
 	}
 }
