@@ -5,15 +5,17 @@ import org.usfirst.frc.team2485.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class Climb extends InstantCommand {
+	double power; 
 	
-	public Climb() {
+	public Climb(double power) {
 		requires(RobotMap.climber);
 		setInterruptible(true);
+		this.power = power;
 	}
 	
 	@Override
 	public void initialize() {
-		RobotMap.climber.climb();
+		RobotMap.climber.climb(power);
 	}
 	
 	@Override
@@ -23,6 +25,6 @@ public class Climb extends InstantCommand {
 	
 	@Override
 	protected void end() {
-		RobotMap.climber.stopClimbing();
+//		RobotMap.climber.stopClimbing();
 	}
 }

@@ -14,12 +14,12 @@ public class Climber extends Subsystem {
 	protected void initDefaultCommand() {
 	}
 	
-	public void climb() {
-		RobotMap.climberMotor.set(ConstantsIO.kClimberSpeed);
+	public void climb(double power) {
+		RobotMap.climberMotor.set(power);
 	}
 
 	public void stopClimbing() {
-		RobotMap.climberMotor.set(0.0);
+//		RobotMap.climberMotor.set(0.0);
 	}
 
 }

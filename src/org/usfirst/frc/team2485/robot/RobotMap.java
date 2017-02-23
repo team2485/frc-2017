@@ -54,7 +54,7 @@ public class RobotMap {
 	public static int kLeftDriveEnc1 = 3, kLeftDriveEnc2 = 2;
 	public static int kRightDriveEnc1 = 0, kRightDriveEnc2 = 1;
 	public static int kShooterMotorPort = 0;
-	public static int kIntakeMotorPort = 1;
+	public static int kIntakeMotorPort = 3;
 	public static int kFeederEncoderPortA = 6, kFeederEncoderPortB = 7;
 	public static int kFeederMotorPort = 2;
 	public static int kClimberMotorPort = 7;
@@ -130,11 +130,11 @@ public class RobotMap {
 		
 		lightSpike = new Relay(0);
 		
-		gearSolenoidBottom = new Solenoid(0);
-		gearSolenoidTop = new Solenoid(1);
-		intakeArmSolenoidHorizontal = new Solenoid(2); 
-		intakeArmSolenoidVertical1 = new Solenoid(3); 
-		intakeArmSolenoidVertical2 = new Solenoid(5); 
+		gearSolenoidBottom = new Solenoid(1);
+		gearSolenoidTop = new Solenoid(0);
+		intakeArmSolenoidHorizontal = new Solenoid(3); 
+		intakeArmSolenoidVertical1 = new Solenoid(5); 
+		intakeArmSolenoidVertical2 = new Solenoid(2); 
 		
 		// SENSORS
 		ahrs = new AHRS(Port.kMXP);

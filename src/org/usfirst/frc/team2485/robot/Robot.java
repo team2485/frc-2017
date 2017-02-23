@@ -32,8 +32,11 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void disabledInit() {
+		Scheduler.getInstance().disable();
 		Scheduler.getInstance().removeAll();
 		RobotMap.driveTrain.reset();
+		RobotMap.intakeArm.reset();
+		RobotMap.intakeRollers.reset();
 	}
 
 	public void disabledPeriodic() {
@@ -41,6 +44,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousInit() {
+		Scheduler.getInstance().enable();
 		ConstantsIO.init();
 		
 		RobotMap.ahrs.zeroYaw();
@@ -72,6 +76,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
+		Scheduler.getInstance().enable();
 		ConstantsIO.init();
 		RobotMap.updateConstants();
 		RobotMap.driveTrain.zeroEncoders();

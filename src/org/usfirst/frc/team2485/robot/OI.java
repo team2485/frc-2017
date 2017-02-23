@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commandGroups.ResetGear;
+import org.usfirst.frc.team2485.robot.commandGroups.SetIntake;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.SetIntakeArmHorizontal;
@@ -53,12 +54,13 @@ public class OI {
 
 		new BackStartComboButton().whenPressed(new PrepForSelfTest());
 
-		new JoystickButton(ben, XBOX_BTN_LBUMPER).whileHeld(new Climb());
+		new JoystickButton(ben, XBOX_BTN_LBUMPER).whenPressed(new Climb(1));
+		new JoystickButton(ben, XBOX_BTN_LBUMPER).whenReleased(new Climb(0));
 
-		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
+		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
 		
-		new JoystickButton(ben, XBOX_BTN_Y).whenPressed(new RunWheelOfDeath(true));
-		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new RunWheelOfDeath(false));
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new RunWheelOfDeath(true));
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new RunWheelOfDeath(false));
 
 
 		if (DriveWithControllers.TRIGGER_DRIVE) {
@@ -74,17 +76,20 @@ public class OI {
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
 		}
 
-		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearChutePosition(true));
+		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearChutePosition(true));
 		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
 		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenPressed(new SetRollers(true));
 		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetRollers(false));
 		 
 		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new SetIntakeArmHorizontal(true));
+		new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new SetIntakeArmHorizontal(false));
 		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new TestVerticalSolenoid1(true));
 		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenReleased(new TestVerticalSolenoid1(false));
 		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new TestVerticalSolenoid2(true));
 		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new TestVerticalSolenoid2(false));
 
+		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new SetIntake());
+		
 //		new LogitechKeypadButton('1').whenPressed(new SetGearChutePosition(true));
 //		new LogitechKeypadButton('2').whenPressed(new SetGearChutePosition(false));
 //		new LogitechKeypadButton('8').whenPressed(new SetGearHolderPosition(false));
