@@ -16,7 +16,6 @@ public class TestDriveMotorDirections extends Command {
 
 	private double forwardVal, reverseVal;
 	
-
 	private boolean done;
 
 	private int previousMotor;
@@ -50,7 +49,7 @@ public class TestDriveMotorDirections extends Command {
 			setMotorValue(previousMotor, 0);
 		}
 
-		if (motorToRun < 6) {
+		if (motorToRun < 4) {
 			testMotor(motorToRun, cycleTime);
 		} else {
 			done = true;
@@ -95,7 +94,7 @@ public class TestDriveMotorDirections extends Command {
 	}
 
 	private double getRateForMotor(int motorID) {
-		if (motorID < 3) {
+		if (motorID < 2) {
 			return RobotMap.driveEncRateLeft.pidGet();
 		} else {
 			return RobotMap.driveEncRateRight.pidGet();
