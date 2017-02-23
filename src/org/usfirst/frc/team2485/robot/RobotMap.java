@@ -61,7 +61,7 @@ public class RobotMap {
 	
 	// speed controllers
 	public static SpeedControllerWrapper driveTrainRight, driveTrainLeft;
-	public static CANTalon driveLeft1, driveLeft2, driveLeft775, driveRight1, driveRight2, driveRight775;
+	public static CANTalon driveLeft1, driveLeft2, driveRight1, driveRight2;
 	public static CANTalon deathMotor;
 	public static SpeedControllerWrapper shooterMotor;		
 	public static SpeedControllerWrapper intakeMotor;
@@ -110,14 +110,12 @@ public class RobotMap {
 		// ACTUATORS
 		driveLeft1 = new CANTalon(driveLeftPortCIM1);
 		driveLeft2 = new CANTalon(driveLeftPortCIM2);
-		driveLeft775 = new CANTalon(driveLeftPortMiniCIM);
 		
 		driveRight1 = new CANTalon(driveRightPortCIM1);
 		driveRight2 = new CANTalon(driveRightPortCIM2);
-		driveRight775 = new CANTalon(driveRightPortMiniCIM);
 		
-		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2, driveLeft775);
-		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRight775);
+		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2);
+		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2);
 		
 		deathMotor = new CANTalon(wheelOfDeathMotorPort);
 		deathMotor.setInverted(true);
@@ -161,7 +159,6 @@ public class RobotMap {
 
 		driveLeft1.setInverted(true);
 		driveLeft2.setInverted(true);
-		driveRight775.setInverted(true);
 		
 		driveEncLeft.setDistancePerPulse((double)1/250 * (Math.PI * WHEEL_RADIUS * 2));
 		driveEncRight.setDistancePerPulse((double)1/250 * (Math.PI * WHEEL_RADIUS * 2));
