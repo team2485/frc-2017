@@ -17,8 +17,8 @@ public class WheelOfDeath extends Subsystem {
 	}
 
 	public void setCurrent(double current) {
-//		RobotMap.deathMotor.changeControlMode(TalonControlMode.Current);
-//		RobotMap.deathMotor.set(current);
+		RobotMap.deathMotor.changeControlMode(TalonControlMode.Current);
+		RobotMap.deathMotor.set(current);
 //		System.out.println("Set current: " + current);
 	}
 

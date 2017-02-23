@@ -20,10 +20,9 @@ public class RunWheelOfDeath extends InstantCommand {
 	@Override
 	protected void initialize() {
 		if (on) {
-			RobotMap.wheelOfDeath.setPWM(.2);;
+			RobotMap.wheelOfDeath.setCurrent(ConstantsIO.kSWODCurrent);
 		} else {
-			RobotMap.wheelOfDeath.setPWM(0);
+			RobotMap.wheelOfDeath.stop();
 		}
-	}
-	
+	}	
 }
