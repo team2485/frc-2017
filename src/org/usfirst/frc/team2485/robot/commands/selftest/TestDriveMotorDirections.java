@@ -112,17 +112,11 @@ public class TestDriveMotorDirections extends Command {
 		case 1:
 			RobotMap.driveLeft2.set(val);
 			break;
-		case 2:
-			RobotMap.driveLeft775.set(val);
-			break;
 		case 3:
 			RobotMap.driveRight1.set(val);
 			break;
 		case 4:
 			RobotMap.driveRight2.set(val);
-			break;
-		case 5:
-			RobotMap.driveRight775.set(val);
 			break;
 		}
 	}

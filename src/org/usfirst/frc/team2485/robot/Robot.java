@@ -2,13 +2,11 @@
 package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
-import org.usfirst.frc.team2485.robot.commands.HighLowCurrentTest;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.util.AutoPath;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -109,8 +107,6 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
 		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
 		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
-		SmartDashboard.putNumber("Left Current 775", RobotMap.driveLeft775.getOutputCurrent());
-		SmartDashboard.putNumber("Right Current 775", RobotMap.driveRight775.getOutputCurrent());
 		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
 
 	}
