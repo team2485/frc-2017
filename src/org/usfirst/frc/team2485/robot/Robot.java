@@ -10,6 +10,7 @@ import org.usfirst.frc.team2485.util.ConstantsIO;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
@@ -44,9 +45,9 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		Scheduler.getInstance().enable();
 		ConstantsIO.init();
-		
+
 		RobotMap.ahrs.zeroYaw();
-		
+
 		CommandGroup group = new CommandGroup();
 		group.addSequential(new DriveTo(path, 150));
 		group.addSequential(new ResetDriveTrain());
@@ -54,7 +55,7 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().add(group);
 
 		isFinished = false;
-		
+
 		RobotMap.driveTrain.zeroEncoders();
 		RobotMap.driveTrain.updateConstants();
 	}
@@ -64,7 +65,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateSmartDashboard();
-		
+
 		if (!isFinished) {
 
 		} else {
@@ -78,7 +79,8 @@ public class Robot extends IterativeRobot {
 		ConstantsIO.init();
 		RobotMap.updateConstants();
 		RobotMap.driveTrain.zeroEncoders();
-//		Scheduler.getInstance().add(new HighLowCurrentTest(8, 4, 0, 0, 4000, 0, 1));
+		// Scheduler.getInstance().add(new HighLowCurrentTest(8, 4, 0, 0, 4000,
+		// 0, 1));
 	}
 
 	public void teleopPeriodic() {
@@ -89,7 +91,7 @@ public class Robot extends IterativeRobot {
 	public void testInit() {
 		ConstantsIO.init();
 		RobotMap.updateConstants();
-		
+
 		throw new RuntimeException("Don't enable test mode");
 	}
 
@@ -114,5 +116,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
 		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
 
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1", RobotMap.driveLeft1.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 2", RobotMap.driveLeft2.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Right Drive 1", RobotMap.driveRight1.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Right Drive 2", RobotMap.driveRight2.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Wheel of Death", RobotMap.deathMotor.getTemperature());
 	}
 }
