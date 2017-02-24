@@ -81,7 +81,11 @@ public abstract class WarlordsControlSystem implements PIDOutput {
 	}
 	
 	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+		if (enabled) {
+			enable();
+		} else {
+			disable();
+		}
 	}
 
 	

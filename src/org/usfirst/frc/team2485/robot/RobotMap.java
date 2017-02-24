@@ -20,6 +20,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Relay;
@@ -50,7 +51,7 @@ public class RobotMap {
 	public static int driveLeftPortCIM2 = 6;
 	public static int driveLeftPortMiniCIM = 5;
 	public static int wheelOfDeathMotorPort = 7;
-	public static int kShooterEncoderPortA = 4, kShooterEncoderPortB = 5;
+	public static int kShooterEncoderPortA = 14, kShooterEncoderPortB = 15;
 	public static int kLeftDriveEnc1 = 3, kLeftDriveEnc2 = 2;
 	public static int kRightDriveEnc1 = 0, kRightDriveEnc2 = 1;
 	public static int kShooterMotorPort = 0;
@@ -100,12 +101,16 @@ public class RobotMap {
 	public static WheelOfDeath wheelOfDeath;
 	public static Feeder feeder;
 	
+	public static Compressor compressor;
+	
 	public static void init() {
 		
 		
 		// CONSTRUCT HARDWARE
 //		compressorSpike = new Relay(0);
 //		pressureSwitch = new DigitalInput(10);
+		
+
 		
 		// ACTUATORS
 		driveLeft1 = new CANTalon(driveLeftPortCIM1);
@@ -153,7 +158,9 @@ public class RobotMap {
 				driveEncLeft, driveEncRight);
 		ahrsRateRads = new AHRSWrapperRateAndAngle(PIDSourceType.kRate, Units.RADS);
 		
-		usbCam = CameraServer.getInstance().startAutomaticCapture();
+		gearDetector = new Ultrasonic(4, 5);
+		gearDetector.setAutomaticMode(true);
+//		usbCam = CameraServer.getInstance().startAutomaticCapture();
 		
 		// CONFIGURE HARDWARE
 
@@ -173,6 +180,8 @@ public class RobotMap {
 		shooter = new Shooter(); 
 		climber = new Climber();
 		wheelOfDeath = new WheelOfDeath();
+		
+		compressor = new Compressor();
 		
 	}
 

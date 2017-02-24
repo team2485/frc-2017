@@ -13,6 +13,7 @@ import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
 import org.usfirst.frc.team2485.robot.commands.TestVerticalSolenoid1;
 import org.usfirst.frc.team2485.robot.commands.TestVerticalSolenoid2;
+import org.usfirst.frc.team2485.robot.commands.ToggleCompressor;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
@@ -52,7 +53,7 @@ public class OI {
 		ben = new Joystick(0);
 		elliot = new Joystick(1);
 
-		new BackStartComboButton().whenPressed(new PrepForSelfTest());
+		new BackStartComboButton(ben).whenPressed(new PrepForSelfTest());
 
 		new JoystickButton(ben, XBOX_BTN_LBUMPER).whenPressed(new Climb(1));
 		new JoystickButton(ben, XBOX_BTN_LBUMPER).whenReleased(new Climb(0));
@@ -90,6 +91,9 @@ public class OI {
 
 		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new SetIntake());
 		
+		new BackStartComboButton(elliot).whenPressed(new ToggleCompressor(true));
+		new BackStartComboButton(elliot).whenReleased(new ToggleCompressor(false));
+		
 //		new LogitechKeypadButton('1').whenPressed(new SetGearChutePosition(true));
 //		new LogitechKeypadButton('2').whenPressed(new SetGearChutePosition(false));
 //		new LogitechKeypadButton('8').whenPressed(new SetGearHolderPosition(false));
@@ -100,9 +104,15 @@ public class OI {
 	 * button that requires both pressed to be valid
 	 */
 	private static class BackStartComboButton extends Button {
+		Joystick joystick;
+		
+		public BackStartComboButton(Joystick joystick){
+			this.joystick = joystick;
+		}
+		
 		@Override
 		public boolean get() {
-			return ben.getRawButton(XBOX_BTN_BACK) && ben.getRawButton(XBOX_BTN_START);
+			return joystick.getRawButton(XBOX_BTN_BACK) && joystick.getRawButton(XBOX_BTN_START);
 		}
 	}
 	private static class LogitechKeypadButton extends Button {
