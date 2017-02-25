@@ -6,7 +6,7 @@ import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.SetIntakeArmHorizontal;
 import org.usfirst.frc.team2485.robot.commands.SetRollers;
-import org.usfirst.frc.team2485.robot.commands.RunWheelOfDeath;
+import org.usfirst.frc.team2485.robot.commands.ToggleWheelOfDeath;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetGearChutePosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
@@ -60,8 +60,8 @@ public class OI {
 
 		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
 		
-		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new RunWheelOfDeath(true));
-		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new RunWheelOfDeath(false));
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new ToggleWheelOfDeath(true));
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new ToggleWheelOfDeath(false));
 
 
 		if (DriveWithControllers.TRIGGER_DRIVE) {
@@ -81,6 +81,7 @@ public class OI {
 		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
 		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenPressed(new SetRollers(true));
 		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetRollers(false));
+		
 		 
 		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new SetIntakeArmHorizontal(true));
 		new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new SetIntakeArmHorizontal(false));
@@ -115,6 +116,8 @@ public class OI {
 			return joystick.getRawButton(XBOX_BTN_BACK) && joystick.getRawButton(XBOX_BTN_START);
 		}
 	}
+	
+	@SuppressWarnings("unused")
 	private static class LogitechKeypadButton extends Button {
 		private char key; 
 		

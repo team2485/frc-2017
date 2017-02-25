@@ -41,6 +41,8 @@ public class ConstantsIO {
 	public static double kF_SWODCurrent;
 	public static double kSWODCurrent;
 	public static double kSWODMaxVolts;
+	public static double kSWODForwardTime;
+	public static double kSWODReverseTime;
 
 	public static double kIntakeRollerSpeed;
 	
@@ -139,6 +141,8 @@ public class ConstantsIO {
 		kF_SWODCurrent = Double.parseDouble(data.get("kF_SWODCurrent"));
 		kSWODCurrent = Double.parseDouble(data.get("kSWODCurrent"));
 		kSWODMaxVolts = Double.parseDouble(data.get("kSWODMaxVolts"));
+		kSWODForwardTime = Double.parseDouble(data.get("kSWODForwardTime"));
+		kSWODReverseTime = Double.parseDouble(data.get("kSWODReverseTime"));
 		
 		kIntakeRollerSpeed = Double.parseDouble(data.get("kIntakeRollerSpeed"));
 	

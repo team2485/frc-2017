@@ -42,7 +42,6 @@ public class Robot extends IterativeRobot {
 
 	public void disabledPeriodic() {
 		updateSmartDashboard();
-		System.out.println("Range:" + RobotMap.gearDetector.getRangeInches());
 	}
 
 	public void autonomousInit() {
@@ -112,6 +111,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
 		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
 		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
+		SmartDashboard.putNumber("Spinning Wheel of Death Voltage", RobotMap.deathMotor.getOutputVoltage());
 		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1", RobotMap.driveLeft1.getTemperature());
