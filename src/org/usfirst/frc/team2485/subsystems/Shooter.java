@@ -16,7 +16,7 @@ public class Shooter extends Subsystem {
 
 		ratePID = new WarlordsPIDController();
 		ratePID.setSources(RobotMap.shooterEncoder);
-		ratePID.setOutputs(RobotMap.shooterMotor);
+		ratePID.setOutputs(RobotMap.shooterMotors);
 		ratePID.setBufferLength(3);
 		ratePID.setOutputRange(0, 1);
 		ratePID.setPID(ConstantsIO.kP_Shooter, ConstantsIO.kI_Shooter, ConstantsIO.kD_Shooter, ConstantsIO.kF_Shooter);
@@ -42,7 +42,7 @@ public class Shooter extends Subsystem {
 		if (isPIDEnabled()) {
 			ratePID.disable();
 		}
-		RobotMap.shooterMotor.set(pwm);
+		RobotMap.shooterMotors.set(pwm);
 	}
 
 	public void disableShooter() {
@@ -50,7 +50,7 @@ public class Shooter extends Subsystem {
 		if (ratePID.isEnabled()) {
 			ratePID.disable();
 		}
-		RobotMap.shooterMotor.set(0);
+		RobotMap.shooterMotors.set(0);
 
 	}
 
@@ -63,7 +63,7 @@ public class Shooter extends Subsystem {
 	}
 
 	public double getCurrentPower() {
-		return RobotMap.shooterMotor.get();
+		return RobotMap.shooterMotors.get();
 	}
 
 	public double getError() {
