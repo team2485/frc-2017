@@ -49,9 +49,9 @@ public class DriveTrain extends Subsystem {
 
 //	private static final boolean USE_GYRO_STEERING_CORRECTION = false;
 	private static final double STEERING_DEADBAND = 0.15;
-	private static final double THROTTLE_DEADBAND = 0.15;
-	private static final double MIN_CURRENT = 0.2;
-	private static final double MAX_CURRENT = 60;
+	private static final double THROTTLE_DEADBAND = 0.01;
+	private static final double MIN_CURRENT = 2;
+	private static final double MAX_CURRENT = 20;
 
 
 	private boolean isQuickTurn;
@@ -69,7 +69,7 @@ public class DriveTrain extends Subsystem {
 			steeringTransferNode = new TransferNode(0), overallVelocityTransferNode = new TransferNode(0),
 			angleSteeringTransferNode = new TransferNode(0), autoCurvatureTransferNode = new TransferNode(0),
 			angVelCorrectionTransferNode = new TransferNode(0);
-	private PIDSourceWrapper curvatureSource = new PIDSourceWrapper(), autoSteeringSource = new PIDSourceWrapper(),
+	private PIDSourceWrapper curvatureSource = new PIDSourceWrapper(), 
 			prescaledVelocityLeft = new PIDSourceWrapper(), prescaledVelocityRight = new PIDSourceWrapper(),
 			prescaledCurrentRight = new PIDSourceWrapper(), prescaledCurrentLeft = new PIDSourceWrapper(),
 			targetAngVelSource = new PIDSourceWrapper(), angVelSource = new PIDSourceWrapper();
@@ -122,7 +122,7 @@ public class DriveTrain extends Subsystem {
 
 		prescaledCurrentRight.setPidSource(() -> {
 			if (isQuickTurn) {
-				return -steeringTransferNode.pidGet();
+				return -MAX_CURRENT*steeringTransferNode.pidGet();
 			} else {
 				return overallCurrentTransferNode.getOutput() * (1 - steeringTransferNode.getOutput()) - angVelCorrectionTransferNode.getOutput();
 			}
@@ -130,7 +130,7 @@ public class DriveTrain extends Subsystem {
 
 		prescaledCurrentLeft.setPidSource(() -> {
 			if (isQuickTurn) {
-				return steeringTransferNode.pidGet();
+				return MAX_CURRENT*steeringTransferNode.pidGet();
 			} else {
 				return overallCurrentTransferNode.getOutput() * (1 + steeringTransferNode.getOutput()) + angVelCorrectionTransferNode.getOutput();
 			}
@@ -147,23 +147,6 @@ public class DriveTrain extends Subsystem {
 		targetAngVelSource.setPidSource(() -> {
 			return steeringTransferNode.getOutput()  * 2 / RobotMap.ROBOT_WIDTH * RobotMap.averageEncoderRate.pidGet();
 		});
-		
-//		steeringPIDController.setSources(curvatureSource);
-//		steeringPIDController.setOutputs(steeringTransferNode);
-		
-//		curvatureSource.setPidSource(() -> {
-//			double leftVelocity = RobotMap.driveEncLeft.getRate();
-//			double rightVelocity = RobotMap.driveEncRight.getRate();
-//			if (Math.abs(leftVelocity + rightVelocity) / 2 < MIN_SPEED) {
-//				steeringPIDController.disable();
-//				return 0;
-//			} else if (USE_GYRO_STEERING_CORRECTION) {
-//				return RobotMap.ahrs.getRate() / ((leftVelocity + rightVelocity) / 2) * RobotMap.ROBOT_WIDTH / 2;
-//			} else {
-//				return (leftVelocity - rightVelocity) / (leftVelocity + rightVelocity);
-//			}
-//
-//		});
 
 		overallCurrentRamp.setOutputs(overallCurrentTransferNode);
 		steeringRamp.setOutputs(steeringTransferNode);
@@ -173,6 +156,9 @@ public class DriveTrain extends Subsystem {
 		velocityPIDLeft.setOutputs(RobotMap.driveTrainLeft);
 		velocityPIDRight.setSources(RobotMap.driveEncRateRight);
 		velocityPIDRight.setOutputs(RobotMap.driveTrainRight);
+		
+		velocityPIDLeft.setOutputRange(-MAX_CURRENT, MAX_CURRENT);
+		velocityPIDRight.setOutputRange(-MAX_CURRENT, MAX_CURRENT);
 		
 		velocityRampLeft.setOutputs(velocityPIDLeft);
 		velocityRampRight.setOutputs(velocityPIDRight);
@@ -185,7 +171,7 @@ public class DriveTrain extends Subsystem {
 			if (isRotateTo) {
 				return rotateToTransferNode.getOutput();
 			} else {
-				return overallVelocityTransferNode.getOutput() * (1 + autoSteeringSource.pidGet());
+				return overallVelocityTransferNode.getOutput() * (1 + autoCurvatureTransferNode.getOutput()) + angleSteeringTransferNode.getOutput();
 			}
 		});
 
@@ -193,13 +179,10 @@ public class DriveTrain extends Subsystem {
 			if (isRotateTo) {
 				return -rotateToTransferNode.getOutput();
 			} else {
-				return overallVelocityTransferNode.getOutput() * (1 - autoSteeringSource.pidGet());
+				return overallVelocityTransferNode.getOutput() * (1 - autoCurvatureTransferNode.getOutput()) - angleSteeringTransferNode.getOutput();
 			}
 		});
 
-		autoSteeringSource.setPidSource(() -> {
-			return angleSteeringTransferNode.getOutput() + autoCurvatureTransferNode.getOutput();
-		});
 
 		anglePID.setSources(RobotMap.ahrs);
 		anglePID.setOutputs(angleSteeringTransferNode);
@@ -342,8 +325,7 @@ public class DriveTrain extends Subsystem {
 				mode.isAuto() || mode == ControlMode.TEST_VELOCITY_DIRECT);
 		velocityRampRight.setEnabled(
 				mode.isAuto() || mode == ControlMode.TEST_VELOCITY_DIRECT);
-		velocityScalingMax.setEnabled(
-				mode.isAuto() || mode == ControlMode.TEST_VELOCITY_DIRECT);
+		velocityScalingMax.setEnabled(mode.isAuto());
 		anglePID.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
 		overallVelocityRampRate.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
 		distPID.setEnabled(mode == ControlMode.AUTO_CURVE_FOLLOW);
@@ -436,6 +418,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void updateConstants() {
+		angVelPIDController.setPID(ConstantsIO.kP_DriveAngVel, ConstantsIO.kI_DriveAngVel, ConstantsIO.kD_DriveAngVel);
 		steeringPIDController.setPID(ConstantsIO.kP_DriveSteering, ConstantsIO.kI_DriveSteering,
 				ConstantsIO.kD_DriveSteering, ConstantsIO.kF_DriveSteering);
 		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
@@ -472,7 +455,7 @@ public class DriveTrain extends Subsystem {
 
 	public void reset() {
 		switchControlMode(ControlMode.OFF);
-		RobotMap.driveTrainRight.set(0);
+		RobotMap.driveTrainLeft.set(0);
 		RobotMap.driveTrainRight.set(0);
 	}
 
@@ -481,6 +464,8 @@ public class DriveTrain extends Subsystem {
 
 		velocityRampLeft.setSetpoint(l);
 		velocityRampRight.setSetpoint(r);
+		
+		System.out.println("Velocity PID Left setpoint: " + velocityPIDLeft.getSetpoint());
 	}
 	
 	public void setLeftRightCurrent(double l, double r) {
@@ -496,8 +481,8 @@ public class DriveTrain extends Subsystem {
 		distPID.setSetpoint(distance);
 		distPID.setOutputRange(-maxSpeed, maxSpeed);
 		anglePID.setSetpoint(angle);
-		return (distPID.isOnTarget() && Math
-				.abs((RobotMap.driveEncRight.getRate() + RobotMap.driveEncLeft.getRate()) / 2) < LOW_SPEED_DRIVETO);
+		return (distPID.isOnTarget() && Math.abs((RobotMap.driveEncRight.getRate() + 
+				RobotMap.driveEncLeft.getRate()) / 2) < LOW_SPEED_DRIVETO);
 	}
 
 	public boolean rotateTo(double angle) {

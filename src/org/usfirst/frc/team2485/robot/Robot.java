@@ -3,10 +3,12 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
+import org.usfirst.frc.team2485.robot.commands.SetLeftRightVelocity;
 import org.usfirst.frc.team2485.util.AutoPath;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -22,8 +24,7 @@ public class Robot extends IterativeRobot {
 		RobotMap.init();
 		OI.init();
 		path = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
-			t *= Math.PI;
-			return new Pair((Math.cos(t) - 1) * 27, (Math.sin(t) * 27));
+			return new Pair(0, 300 * t);
 		}, 10000));
 
 		RobotMap.updateConstants();
@@ -36,10 +37,12 @@ public class Robot extends IterativeRobot {
 		RobotMap.driveTrain.reset();
 		RobotMap.intakeArm.reset();
 		RobotMap.intakeRollers.reset();
+		RobotMap.compressor.stop();
 	}
 
 	public void disabledPeriodic() {
 		updateSmartDashboard();
+		System.out.println("Range:" + RobotMap.gearDetector.getRangeInches());
 	}
 
 	public void autonomousInit() {
@@ -54,23 +57,18 @@ public class Robot extends IterativeRobot {
 
 		Scheduler.getInstance().add(group);
 
-		isFinished = false;
-
 		RobotMap.driveTrain.zeroEncoders();
 		RobotMap.driveTrain.updateConstants();
+		
 	}
 
-	private boolean isFinished;
 
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateSmartDashboard();
 
-		if (!isFinished) {
-
-		} else {
-			RobotMap.driveTrain.reset();
-		}
+//		RobotMap.driveTrain.rotateTo(45);
+//		RobotMap.driveTrain.setLeftRightVelocity(40, 40);
 
 	}
 
@@ -121,5 +119,6 @@ public class Robot extends IterativeRobot {
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Right Drive 1", RobotMap.driveRight1.getTemperature());
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Right Drive 2", RobotMap.driveRight2.getTemperature());
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Wheel of Death", RobotMap.deathMotor.getTemperature());
+
 	}
 }
