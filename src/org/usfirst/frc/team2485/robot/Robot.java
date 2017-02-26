@@ -59,16 +59,14 @@ public class Robot extends IterativeRobot {
 
 		RobotMap.driveTrain.zeroEncoders();
 		RobotMap.driveTrain.updateConstants();
-		
 	}
-
 
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateSmartDashboard();
 
-//		RobotMap.driveTrain.rotateTo(45);
-//		RobotMap.driveTrain.setLeftRightVelocity(40, 40);
+		// RobotMap.driveTrain.rotateTo(45);
+		// RobotMap.driveTrain.setLeftRightVelocity(40, 40);
 
 	}
 
@@ -114,11 +112,16 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
 		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
 
-		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1", RobotMap.driveLeft1.getTemperature());
-		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 2", RobotMap.driveLeft2.getTemperature());
-		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Right Drive 1", RobotMap.driveRight1.getTemperature());
-		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Right Drive 2", RobotMap.driveRight2.getTemperature());
-		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Wheel of Death", RobotMap.deathMotor.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",
+				RobotMap.driveLeft1.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 2",
+				RobotMap.driveLeft2.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Right Drive 1",
+				RobotMap.driveRight1.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Right Drive 2",
+				RobotMap.driveRight2.getTemperature());
+		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Wheel of Death",
+				RobotMap.deathMotor.getTemperature());
 
 	}
 }
