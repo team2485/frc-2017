@@ -9,6 +9,7 @@ public class SetFeederManual extends InstantCommand {
 	private double pwm;
 	
 	public SetFeederManual (double pwm) {
+		requires(RobotMap.feeder);
 		this.pwm = pwm;
 	}
 	

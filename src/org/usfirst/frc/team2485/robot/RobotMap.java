@@ -51,13 +51,13 @@ public class RobotMap {
 	public static int driveLeftPortCIM2 = 6;
 	public static int driveLeftPortMiniCIM = 5;
 	public static int wheelOfDeathMotorPort = 7;
-	public static int kShooterEncoderPortA = 14, kShooterEncoderPortB = 15;
+	public static int kShooterEncoderPortA = 8, kShooterEncoderPortB = 9;
 	public static int kLeftDriveEnc1 = 3, kLeftDriveEnc2 = 2;
 	public static int kRightDriveEnc1 = 0, kRightDriveEnc2 = 1;
-	public static int kShooterMotorPort1 = 4, kShooterMotorPort2 = 5;
+	public static int kShooterMotorPort1 = 8, kShooterMotorPort2 = 9;
 	public static int kIntakeMotorPort = 3;
 	public static int kFeederEncoderPortA = 6, kFeederEncoderPortB = 7;
-	public static int kFeederMotorPort = 2;
+	public static int kFeederMotorPort = 6;
 	public static int kClimberMotorPort = 7;
 
 	// speed controllers
@@ -100,7 +100,7 @@ public class RobotMap {
 	public static Climber climber;
 	public static WheelOfDeath wheelOfDeath;
 	public static Feeder feeder;
-	
+
 	public static Compressor compressor;
 
 	public static void init() {
@@ -108,7 +108,7 @@ public class RobotMap {
 		// CONSTRUCT HARDWARE
 		// compressorSpike = new Relay(0);
 		// pressureSwitch = new DigitalInput(10);
-		
+
 		// ACTUATORS
 		driveLeft1 = new CANTalon(driveLeftPortCIM1);
 		driveLeft2 = new CANTalon(driveLeftPortCIM2);
@@ -140,7 +140,11 @@ public class RobotMap {
 		ahrs = new AHRS(Port.kMXP);
 
 		shooterEncoder = new Encoder(kShooterEncoderPortA, kShooterEncoderPortB);
+		shooterEncoder.setDistancePerPulse(1/250.0);
+		shooterEncoder.setPIDSourceType(PIDSourceType.kRate);
 		feederEncoder = new Encoder(kFeederEncoderPortA, kFeederEncoderPortB);
+		feederEncoder.setDistancePerPulse((1.0/250));
+		feederEncoder.setPIDSourceType(PIDSourceType.kRate);
 
 		driveEncLeft = new Encoder(kLeftDriveEnc1, kLeftDriveEnc2);
 		driveEncRight = new Encoder(kRightDriveEnc1, kRightDriveEnc2);
@@ -154,11 +158,11 @@ public class RobotMap {
 		averageEncoderRate = new MultipleEncoderWrapper(PIDSourceType.kRate, MultipleEncoderWrapperMode.AVERAGE,
 				driveEncLeft, driveEncRight);
 		ahrsRateRads = new AHRSWrapperRateAndAngle(PIDSourceType.kRate, Units.RADS);
-		
+
 		gearDetector = new Ultrasonic(4, 5);
 		gearDetector.setAutomaticMode(true);
-//		usbCam = CameraServer.getInstance().startAutomaticCapture();
-		
+		// usbCam = CameraServer.getInstance().startAutomaticCapture();
+
 		// CONFIGURE HARDWARE
 
 		driveLeft1.setInverted(true);
@@ -177,14 +181,16 @@ public class RobotMap {
 		shooter = new Shooter();
 		climber = new Climber();
 		wheelOfDeath = new WheelOfDeath();
-		
+
 		compressor = new Compressor();
-		
+
 	}
 
 	public static void updateConstants() {
 		wheelOfDeath.updateConstants();
 		driveTrain.updateConstants();
+		shooter.updateConstants();
+		feeder.updateConstants();
 
 	}
 }

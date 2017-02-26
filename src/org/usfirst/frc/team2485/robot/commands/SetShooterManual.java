@@ -1,18 +1,25 @@
 package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
-public class SpinUpShooter extends InstantCommand {
-	
-	
-	public SpinUpShooter() {
-		requires(RobotMap.shooter);
-	}
+/**
+ * @author Ben Dorsey
+ */
 
+public class SetShooterManual extends InstantCommand {
+	
+	private double pwm;
+	
+	public SetShooterManual(double pwm) {
+		requires(RobotMap.shooter);
+		this.pwm = pwm;
+	}
+	
 	@Override
 	protected void initialize() {
-		
-		RobotMap.shooter.setTargetSpeed();
+		RobotMap.shooter.setManual(pwm);
 	}
+
 }

@@ -6,8 +6,13 @@ import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.SetIntakeArmHorizontal;
 import org.usfirst.frc.team2485.robot.commands.SetRollers;
-import org.usfirst.frc.team2485.robot.commands.RunWheelOfDeath;
+import org.usfirst.frc.team2485.robot.commands.SetShooterManual;
+import org.usfirst.frc.team2485.robot.commands.SpinUpShooter;
+import org.usfirst.frc.team2485.robot.commands.StopShooter;
+import org.usfirst.frc.team2485.robot.commands.ToggleWheelOfDeath;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
+import org.usfirst.frc.team2485.robot.commands.SetFeederManual;
+import org.usfirst.frc.team2485.robot.commands.SetFeederSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetGearChutePosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearHolderPosition;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
@@ -16,6 +21,8 @@ import org.usfirst.frc.team2485.robot.commands.TestVerticalSolenoid2;
 import org.usfirst.frc.team2485.robot.commands.ToggleCompressor;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
+import org.usfirst.frc.team2485.subsystems.Shooter;
+import org.usfirst.frc.team2485.util.ConstantsIO;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -60,9 +67,7 @@ public class OI {
 
 		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
 		
-		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new RunWheelOfDeath(true));
-		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new RunWheelOfDeath(false));
-
+		
 
 		if (DriveWithControllers.TRIGGER_DRIVE) {
 			new JoystickButton(ben, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
@@ -81,13 +86,22 @@ public class OI {
 		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
 		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenPressed(new SetRollers(true));
 		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetRollers(false));
-		 
-		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new SetIntakeArmHorizontal(true));
-		new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new SetIntakeArmHorizontal(false));
-		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new TestVerticalSolenoid1(true));
-		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenReleased(new TestVerticalSolenoid1(false));
-		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new TestVerticalSolenoid2(true));
-		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new TestVerticalSolenoid2(false));
+		
+		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new SpinUpShooter());
+		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new SetFeederManual(0.5));
+		new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new StopShooter());
+		new JoystickButton(elliot, XBOX_BTN_Y).whenReleased(new SetFeederManual(0));
+		
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new ToggleWheelOfDeath(true));
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new ToggleWheelOfDeath(false));
+
+
+//		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new SetIntakeArmHorizontal(true));
+//		new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new SetIntakeArmHorizontal(false));
+//		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new TestVerticalSolenoid1(true));
+//		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenReleased(new TestVerticalSolenoid1(false));
+//		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new TestVerticalSolenoid2(true));
+//		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new TestVerticalSolenoid2(false));
 
 		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new SetIntake());
 		
@@ -115,6 +129,8 @@ public class OI {
 			return joystick.getRawButton(XBOX_BTN_BACK) && joystick.getRawButton(XBOX_BTN_START);
 		}
 	}
+	
+	@SuppressWarnings("unused")
 	private static class LogitechKeypadButton extends Button {
 		private char key; 
 		

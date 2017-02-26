@@ -1,16 +1,11 @@
 
 package org.usfirst.frc.team2485.robot;
 
-import org.usfirst.frc.team2485.robot.commands.DriveTo;
-import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
-import org.usfirst.frc.team2485.robot.commands.SetLeftRightVelocity;
 import org.usfirst.frc.team2485.util.AutoPath;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,24 +33,33 @@ public class Robot extends IterativeRobot {
 		RobotMap.intakeArm.reset();
 		RobotMap.intakeRollers.reset();
 		RobotMap.compressor.stop();
+		RobotMap.shooter.disableShooter();
+		RobotMap.feeder.disableFeeder();
+		RobotMap.wheelOfDeath.stop();
 	}
 
 	public void disabledPeriodic() {
 		updateSmartDashboard();
-		System.out.println("Range:" + RobotMap.gearDetector.getRangeInches());
 	}
 
 	public void autonomousInit() {
 		Scheduler.getInstance().enable();
 		ConstantsIO.init();
+		RobotMap.updateConstants();
 
 		RobotMap.ahrs.zeroYaw();
 
-		CommandGroup group = new CommandGroup();
-		group.addSequential(new DriveTo(path, 150));
-		group.addSequential(new ResetDriveTrain());
+		// RobotMap.wheelOfDeath.setPWM(-.5);
+		RobotMap.shooter.setManual(.8);
+		RobotMap.wheelOfDeath.setPWM(-.6);
 
-		Scheduler.getInstance().add(group);
+		// RobotMap.shooterMotors.getController(1).set(0.25);
+
+		// CommandGroup group = new CommandGroup();
+		// group.addSequential(new DriveTo(path, 150));
+		// group.addSequential(new ResetDriveTrain());
+		//
+		// Scheduler.getInstance().add(group);
 
 		RobotMap.driveTrain.zeroEncoders();
 		RobotMap.driveTrain.updateConstants();
@@ -94,6 +98,10 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		updateSmartDashboard();
 	}
+	
+	public void updateConstants() {
+		ConstantsIO.init();
+	}
 
 	public void updateSmartDashboard() {
 		// SmartDashboard.putNumber("avg error",
@@ -110,7 +118,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
 		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
 		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
+		SmartDashboard.putNumber("Spinning Wheel of Death Voltage", RobotMap.deathMotor.getOutputVoltage());
 		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
+		SmartDashboard.putNumber("Shooter Speed", RobotMap.shooter.getRate());
+		SmartDashboard.putNumber("Shooter Distance", RobotMap.shooterEncoder.getDistance());
+		SmartDashboard.putNumber("Uptake Speed", RobotMap.feeder.getRate());
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",
 				RobotMap.driveLeft1.getTemperature());

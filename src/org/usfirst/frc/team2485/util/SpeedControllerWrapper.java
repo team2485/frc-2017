@@ -89,6 +89,10 @@ public class SpeedControllerWrapper implements SpeedController {
 
 		return sum / speedControllerList.length;
 	}
+	
+	public SpeedController getController(int index) {
+		return speedControllerList[index];
+	}
 
 	@Override
 	public void set(double pwm) {
