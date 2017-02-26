@@ -6,16 +6,16 @@ import org.usfirst.frc.team2485.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class SetFeederSpeed extends InstantCommand {
-	private double rps;
+	private double ips;
 
-	public SetFeederSpeed(double rps) {
+	public SetFeederSpeed(double ips) {
 		requires(RobotMap.feeder);
-		this.rps = rps;
+		this.ips = ips;
 	}
 
 	@Override
 	protected void initialize() {
-		RobotMap.feeder.setTargetSpeed(rps);
+		RobotMap.feeder.setTargetSpeed(ips);
 	}
 
 }
