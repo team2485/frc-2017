@@ -10,9 +10,7 @@ public class RampRate extends WarlordsControlSystem {
 	
 	private double lastValue, upRampRate, downRampRate;
 	
-	public RampRate(double upRampRate, double downRampRate) {
-		this.upRampRate = upRampRate;
-		this.downRampRate = downRampRate;
+	public RampRate() {
 		lastValue = 0;
 	}
 	

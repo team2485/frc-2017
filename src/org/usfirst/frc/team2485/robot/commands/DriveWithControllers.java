@@ -2,21 +2,20 @@ package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.RobotMap;
-import org.usfirst.frc.team2485.subsystems.DriveTrain.ControlMode;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveWithControllers extends Command {
-	private ControlMode mode;
+	private boolean simple;
 
 	public static final boolean TRIGGER_DRIVE = true;
 
-	public DriveWithControllers(ControlMode mode) {
+	public DriveWithControllers(boolean simple) {
 		requires(RobotMap.driveTrain);
 		setInterruptible(true);
-		this.mode = mode;
+		this.simple = simple;
 	}
 
 	@Override
@@ -34,7 +33,7 @@ public class DriveWithControllers extends Command {
 				right = OI.ben.getRawAxis(OI.XBOX_AXIS_LX);
 			}
 
-			RobotMap.driveTrain.warlordDrive(foward, right, mode);
+			RobotMap.driveTrain.warlordDrive(foward, right, simple);
 		}
 	}
 

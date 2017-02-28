@@ -28,7 +28,7 @@ public class TestGearDropper extends Command {
 	@Override
 	protected void execute() {
 		if (System.currentTimeMillis() - startTime > 500) {
-			RobotMap.gearHolder.gearDetected();
+			gearDetected = RobotMap.gearHolder.gearDetected();
 		}
 	}
 	

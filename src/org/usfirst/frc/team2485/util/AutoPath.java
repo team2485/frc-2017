@@ -32,6 +32,10 @@ public class AutoPath {
 		public double getY() {
 			return y;
 		}
+		
+		public static Pair linearBezier(Pair p1, Pair p2, double t) {
+			return new Pair(p1.x * (1 - t) + p2.x * t, p1.y * (1 - t) + p2.y * t);
+		}
 	}
 	
 	public interface ParameterizedCurve {
@@ -99,5 +103,25 @@ public class AutoPath {
 			points[i] = p.getPointForParameter((double)i/numPoints);
 		}
 		return points;
+	}
+	
+	private static Pair bezier(Pair[] initPoints, double t) {
+		Pair[] points = new Pair[initPoints.length - 1];
+		for (int i = 0; i < initPoints.length - 1; i++) {
+			points[i] = Pair.linearBezier(points[i], points[i + 1], t);
+		}
+		
+		if (points.length == 1) {
+			return points[0];
+		} else {
+			return bezier(points, t);
+		}
+	}
+	
+	public static Pair[] getPointsForBezier(int numPoints, Pair... controlPoints) {
+		ParameterizedCurve p = (double t) -> {
+			return bezier(controlPoints, t);
+		};
+		return getPointsForFunction(p, numPoints);
 	}
 }

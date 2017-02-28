@@ -15,7 +15,7 @@ public class Climb extends InstantCommand {
 	
 	@Override
 	public void initialize() {
-		RobotMap.climber.climb(power);
+		RobotMap.climber.setPower(power);
 	}
 	
 	@Override
