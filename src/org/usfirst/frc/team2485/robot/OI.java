@@ -2,10 +2,14 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commandGroups.ResetGear;
 import org.usfirst.frc.team2485.robot.commandGroups.SetIntake;
+import org.usfirst.frc.team2485.robot.commandGroups.SetSpinUp;
+import org.usfirst.frc.team2485.robot.commandGroups.ToggleShooting;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.SetIntakeArmHorizontal;
 import org.usfirst.frc.team2485.robot.commands.SetRollers;
+import org.usfirst.frc.team2485.robot.commands.SetSWODManual;
+import org.usfirst.frc.team2485.robot.commands.SetSWODSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetShooterManual;
 import org.usfirst.frc.team2485.robot.commands.SpinUpShooter;
 import org.usfirst.frc.team2485.robot.commands.StopShooter;
@@ -66,8 +70,6 @@ public class OI {
 		new JoystickButton(ben, XBOX_BTN_LBUMPER).whenReleased(new Climb(0));
 
 		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearHolderPosition(true));
-		
-		
 
 		if (DriveWithControllers.TRIGGER_DRIVE) {
 			new JoystickButton(ben, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
@@ -82,35 +84,70 @@ public class OI {
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
 		}
 
-		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearChutePosition(true));
-		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
+//		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearChutePosition(true));
+//		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
 		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenPressed(new SetRollers(true));
-		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetRollers(false));
-		
-		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new SpinUpShooter());
-		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new SetFeederManual(0.5));
-		new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new StopShooter());
-		new JoystickButton(elliot, XBOX_BTN_Y).whenReleased(new SetFeederManual(0));
-		
-		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new ToggleWheelOfDeath(true));
-		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new ToggleWheelOfDeath(false));
+		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenReleased(new SetRollers(false));
 
+		// new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new
+		// SpinUpShooter());
+		// new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new
+		// SetFeederManual(0.5));
+		// new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new
+		// StopShooter());
+		// new JoystickButton(elliot, XBOX_BTN_Y).whenReleased(new
+		// SetFeederManual(0));
 
-//		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new SetIntakeArmHorizontal(true));
-//		new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new SetIntakeArmHorizontal(false));
-//		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new TestVerticalSolenoid1(true));
-//		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenReleased(new TestVerticalSolenoid1(false));
-//		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenPressed(new TestVerticalSolenoid2(true));
-//		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2, 1).whenReleased(new TestVerticalSolenoid2(false));
+		// new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2,
+		// 1).whenPressed(new SetSWODSpeed(1));
+		// new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2,
+		// 1).whenReleased(new SetSWODSpeed(0));
+
+		// new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2,
+		// 1).whenPressed(new ToggleWheelOfDeath(true));
+		// new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2,
+		// 1).whenReleased(new ToggleWheelOfDeath(false));
+
+		// new JoystickButton(elliot, XBOX_BTN_START).whenPressed(new
+		// SetSWODManual(.25));
+		// new JoystickButton(elliot, XBOX_BTN_START).whenReleased(new
+		// SetSWODManual(0));
+
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .11, 1).whenPressed(new ToggleShooting(true));
+		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .11, 1).whenReleased(new ToggleShooting(false));
+		
+		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new SetSpinUp(true));
+		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetSpinUp(false));
+
+		// new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new
+		// SetIntakeArmHorizontal(true));
+		// new JoystickButton(elliot, XBOX_BTN_X).whenReleased(new
+		// SetIntakeArmHorizontal(false));
+		// new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new
+		// TestVerticalSolenoid1(true));
+		// new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenReleased(new
+		// TestVerticalSolenoid1(false));
+		// new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2,
+		// 1).whenPressed(new TestVerticalSolenoid2(true));
+		// new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .2,
+		// 1).whenReleased(new TestVerticalSolenoid2(false));
 
 		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new SetIntake());
-		
+
 		new BackStartComboButton(elliot).whenPressed(new ToggleCompressor(true));
 		new BackStartComboButton(elliot).whenReleased(new ToggleCompressor(false));
-		
-//		new LogitechKeypadButton('1').whenPressed(new SetGearChutePosition(true));
-//		new LogitechKeypadButton('2').whenPressed(new SetGearChutePosition(false));
-//		new LogitechKeypadButton('8').whenPressed(new SetGearHolderPosition(false));
+
+		// new LogitechKeypadButton('1').whenPressed(new
+		// SetGearChutePosition(true));
+		// new LogitechKeypadButton('2').whenPressed(new
+		// SetGearChutePosition(false));
+		// new LogitechKeypadButton('8').whenPressed(new
+		// SetGearHolderPosition(false));
+
+		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearChutePosition(true));
+
+		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new SetGearChutePosition(false));
+		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new SetGearHolderPosition(false));
 	}
 
 	/**
@@ -119,28 +156,29 @@ public class OI {
 	 */
 	private static class BackStartComboButton extends Button {
 		Joystick joystick;
-		
-		public BackStartComboButton(Joystick joystick){
+
+		public BackStartComboButton(Joystick joystick) {
 			this.joystick = joystick;
 		}
-		
+
 		@Override
 		public boolean get() {
 			return joystick.getRawButton(XBOX_BTN_BACK) && joystick.getRawButton(XBOX_BTN_START);
 		}
 	}
-	
+
 	@SuppressWarnings("unused")
 	private static class LogitechKeypadButton extends Button {
-		private char key; 
-		
+		private char key;
+
 		public LogitechKeypadButton(char key) {
 			this.key = key;
 		}
+
 		@Override
 		public boolean get() {
 			return NetworkTable.getTable("LogitechController").getBoolean(key + "", false);
 		}
-		
+
 	}
 }

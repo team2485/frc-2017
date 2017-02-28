@@ -98,6 +98,8 @@ public class ConstantsIO {
 	public static double kD_DriveAngVel;
 	public static double kF_DriveAngVel;
 
+	public static double kSWODRPS;
+
 
 
 	public static void init() {
@@ -134,6 +136,8 @@ public class ConstantsIO {
 		kD_Feeder = Double.parseDouble(data.get("kD_Feeder"));
 		kF_Feeder = Double.parseDouble(data.get("kF_Feeder"));
 		kFeederRPS = Double.parseDouble(data.get("kFeederRPS"));
+		
+		kSWODRPS = Double.parseDouble(data.get("kSWODRPS"));
 
 		kP_SWODCurrent = Double.parseDouble(data.get("kP_SWODCurrent"));
 		kI_SWODCurrent = Double.parseDouble(data.get("kI_SWODCurrent"));

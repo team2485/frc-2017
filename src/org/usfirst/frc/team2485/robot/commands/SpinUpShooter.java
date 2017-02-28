@@ -12,7 +12,7 @@ public class SpinUpShooter extends InstantCommand {
 
 	@Override
 	protected void initialize() {
-		
+		System.out.println("Shooter");
 		RobotMap.shooter.setTargetSpeed();
 	}
 }

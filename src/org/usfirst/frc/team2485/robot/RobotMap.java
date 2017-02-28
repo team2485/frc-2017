@@ -44,6 +44,8 @@ public class RobotMap {
 	// constants
 	public static final double ROBOT_WIDTH = 27;
 	public static final double WHEEL_RADIUS = 2;
+	public static final double FEEDER_RADIUS = 0.5;
+
 	public static int driveRightPortCIM1 = 1;
 	public static int driveRightPortCIM2 = 3;
 	public static int driveRightPortMiniCIM = 2;
@@ -59,6 +61,8 @@ public class RobotMap {
 	public static int kFeederEncoderPortA = 6, kFeederEncoderPortB = 7;
 	public static int kFeederMotorPort = 6;
 	public static int kClimberMotorPort = 7;
+	public static int kSWODEncoderPort1 = 4;
+	public static int kSWODEncoderPort2 = 5;
 
 	// speed controllers
 	public static SpeedControllerWrapper driveTrainRight, driveTrainLeft;
@@ -68,7 +72,7 @@ public class RobotMap {
 	public static SpeedControllerWrapper intakeMotor;
 	public static SpeedControllerWrapper feederMotor;
 	public static SpeedControllerWrapper climberMotor;
-
+	
 	// relays
 	public static Relay lightSpike;
 
@@ -102,6 +106,7 @@ public class RobotMap {
 	public static Feeder feeder;
 
 	public static Compressor compressor;
+	public static Encoder swodEncoder;
 
 	public static void init() {
 
@@ -121,31 +126,29 @@ public class RobotMap {
 
 		deathMotor = new CANTalon(wheelOfDeathMotorPort);
 		deathMotor.setInverted(true);
-		deathMotor.changeControlMode(TalonControlMode.Current);
+		deathMotor.changeControlMode(TalonControlMode.PercentVbus);
 
 		shooterMotors = new SpeedControllerWrapper(new VictorSP(kShooterMotorPort1), new VictorSP(kShooterMotorPort2));
 		intakeMotor = new SpeedControllerWrapper(new VictorSP(kIntakeMotorPort));
 		feederMotor = new SpeedControllerWrapper(new VictorSP(kFeederMotorPort));
 		climberMotor = new SpeedControllerWrapper(new VictorSP(kClimberMotorPort));
 
+
 		lightSpike = new Relay(0);
 
 		gearSolenoidBottom = new Solenoid(1);
 		gearSolenoidTop = new Solenoid(0);
-		intakeArmSolenoidHorizontal = new Solenoid(3);
+		intakeArmSolenoidHorizontal = new Solenoid(2);
 		intakeArmSolenoidVertical1 = new Solenoid(5);
-		intakeArmSolenoidVertical2 = new Solenoid(2);
+		intakeArmSolenoidVertical2 = new Solenoid(3);
 
 		// SENSORS
 		ahrs = new AHRS(Port.kMXP);
 
 		shooterEncoder = new Encoder(kShooterEncoderPortA, kShooterEncoderPortB);
-		shooterEncoder.setDistancePerPulse(1/250.0);
-		shooterEncoder.setPIDSourceType(PIDSourceType.kRate);
+		swodEncoder = new Encoder(kSWODEncoderPort1, kSWODEncoderPort2);
 		feederEncoder = new Encoder(kFeederEncoderPortA, kFeederEncoderPortB);
-		feederEncoder.setDistancePerPulse((1.0/250));
-		feederEncoder.setPIDSourceType(PIDSourceType.kRate);
-
+		
 		driveEncLeft = new Encoder(kLeftDriveEnc1, kLeftDriveEnc2);
 		driveEncRight = new Encoder(kRightDriveEnc1, kRightDriveEnc2);
 
@@ -159,7 +162,7 @@ public class RobotMap {
 				driveEncLeft, driveEncRight);
 		ahrsRateRads = new AHRSWrapperRateAndAngle(PIDSourceType.kRate, Units.RADS);
 
-		gearDetector = new Ultrasonic(4, 5);
+		gearDetector = new Ultrasonic(14, 15);
 		gearDetector.setAutomaticMode(true);
 		// usbCam = CameraServer.getInstance().startAutomaticCapture();
 
@@ -170,6 +173,16 @@ public class RobotMap {
 
 		driveEncLeft.setDistancePerPulse((double) 1 / 250 * (Math.PI * WHEEL_RADIUS * 2));
 		driveEncRight.setDistancePerPulse((double) 1 / 250 * (Math.PI * WHEEL_RADIUS * 2));
+		
+		shooterEncoder.setDistancePerPulse(1/250.0);
+		shooterEncoder.setPIDSourceType(PIDSourceType.kRate);
+		
+		swodEncoder.setDistancePerPulse(1.0 / 250);
+		swodEncoder.setPIDSourceType(PIDSourceType.kRate);
+		
+		feederEncoder.setDistancePerPulse((1.0/250)*Math.PI*2*FEEDER_RADIUS);
+		feederEncoder.setPIDSourceType(PIDSourceType.kRate);
+
 
 		// CONSTRUCT SUBSYSTEMS
 

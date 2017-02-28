@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Shooter extends Subsystem {
 
 	// Adjusted by ConstantsIO
-	public static double RPS_SHOT;
 	public WarlordsPIDController ratePID;
 
 	public Shooter() {
@@ -21,7 +20,6 @@ public class Shooter extends Subsystem {
 		ratePID.setOutputRange(0, 1);
 		ratePID.setPID(ConstantsIO.kP_Shooter, ConstantsIO.kI_Shooter, ConstantsIO.kD_Shooter, ConstantsIO.kF_Shooter);
 
-		RPS_SHOT = ConstantsIO.kShotRPS;
 
 		disableShooter();
 
@@ -35,8 +33,8 @@ public class Shooter extends Subsystem {
 		if (!isPIDEnabled()) {
 			ratePID.enable();
 		}
-		ratePID.setSetpoint(RPS_SHOT);
-		System.out.println("Shooter to: " + RPS_SHOT);
+		ratePID.setSetpoint(ConstantsIO.kShotRPS);
+		System.out.println("Shooter to: " + ConstantsIO.kShotRPS);
 	}
 
 	public void setManual(double pwm) {
@@ -86,8 +84,6 @@ public class Shooter extends Subsystem {
 
 	public void updateConstants() {
 		ratePID.setPID(ConstantsIO.kP_Shooter, ConstantsIO.kI_Shooter, ConstantsIO.kD_Shooter, ConstantsIO.kF_Shooter);
-
-		RPS_SHOT = ConstantsIO.kShotRPS;
 	}
 
 	public void reset() {

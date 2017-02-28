@@ -1,10 +1,12 @@
 
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.robot.commands.SetSWODManual;
 import org.usfirst.frc.team2485.util.AutoPath;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -50,9 +52,10 @@ public class Robot extends IterativeRobot {
 		RobotMap.ahrs.zeroYaw();
 
 		// RobotMap.wheelOfDeath.setPWM(-.5);
-		RobotMap.shooter.setManual(.8);
-		RobotMap.wheelOfDeath.setPWM(-.6);
+		// RobotMap.shooter.setManual(.8);
+		// RobotMap.wheelOfDeath.setPWM(-.6);
 
+//		RobotMap.wheelOfDeath.setPWM(.25);
 		// RobotMap.shooterMotors.getController(1).set(0.25);
 
 		// CommandGroup group = new CommandGroup();
@@ -60,6 +63,8 @@ public class Robot extends IterativeRobot {
 		// group.addSequential(new ResetDriveTrain());
 		//
 		// Scheduler.getInstance().add(group);
+		
+		CameraServer.getInstance().startAutomaticCapture();
 
 		RobotMap.driveTrain.zeroEncoders();
 		RobotMap.driveTrain.updateConstants();
@@ -68,6 +73,9 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		updateSmartDashboard();
+		RobotMap.wheelOfDeath.setLastSpeed(RobotMap.wheelOfDeath.getSpeed());
+		System.out.println("Speed: " + RobotMap.wheelOfDeath.getSpeed());
+		System.out.println("PWM: " + RobotMap.wheelOfDeath.getPWM());
 
 		// RobotMap.driveTrain.rotateTo(45);
 		// RobotMap.driveTrain.setLeftRightVelocity(40, 40);
@@ -81,11 +89,14 @@ public class Robot extends IterativeRobot {
 		RobotMap.driveTrain.zeroEncoders();
 		// Scheduler.getInstance().add(new HighLowCurrentTest(8, 4, 0, 0, 4000,
 		// 0, 1));
+
 	}
 
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		updateSmartDashboard();
+		System.out.println("swod distance" + RobotMap.swodEncoder.getDistance());
+
 	}
 
 	public void testInit() {
@@ -98,7 +109,7 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		updateSmartDashboard();
 	}
-	
+
 	public void updateConstants() {
 		ConstantsIO.init();
 	}
@@ -117,12 +128,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
 		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
 		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
-		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
-		SmartDashboard.putNumber("Spinning Wheel of Death Voltage", RobotMap.deathMotor.getOutputVoltage());
+//		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
+//		SmartDashboard.putNumber("Spinning Wheel of Death Voltage", RobotMap.deathMotor.getOutputVoltage());
 		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
-		SmartDashboard.putNumber("Shooter Speed", RobotMap.shooter.getRate());
+		SmartDashboard.putNumber("Shooter Error", RobotMap.shooter.getAvgError());
 		SmartDashboard.putNumber("Shooter Distance", RobotMap.shooterEncoder.getDistance());
-		SmartDashboard.putNumber("Uptake Speed", RobotMap.feeder.getRate());
+		SmartDashboard.putNumber("Uptake Speed", RobotMap.feederEncoder.getRate());
+		SmartDashboard.putNumber("Spinning Wheel of Death Speed", RobotMap.swodEncoder.getRate());
+//		SmartDashboard.putNumber("Spinning Wheel of Death PWM", RobotMap.wheelOfDeath.getPWM());
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",
 				RobotMap.driveLeft1.getTemperature());
