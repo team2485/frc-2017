@@ -1,29 +1,32 @@
-kP_Shooter = 0
-kI_Shooter = 0
+kP_Shooter = 0.04
+kI_Shooter = 0.02
 kD_Shooter = 0
-kF_Shooter = 0
-kShotRPS = 0
+kF_Shooter = 0.0116
+kShotRPS = 55
 
-kP_Feeder = 0
-kI_Feeder = 0
+kP_Feeder = 0.02
+kI_Feeder = 0.02
 kD_Feeder = 0
-kF_Feeder = 0
-kFeederRPS = 0
+kF_Feeder = .01
+kFeederRPS = 5
 
-kP_SWODCurrent = .2
-kI_SWODCurrent = .001
+kP_SWODCurrent = .5
+kI_SWODCurrent = 0
 kD_SWODCurrent = 0
-kF_SWODCurrent = .08
-kSWODCurrent = 1
-kSWODMaxVolts = 2
+kF_SWODCurrent = .3
+kSWODRPS = 0.75
+kSWODCurrent = 4
+kSWODMaxVolts = 5
+kSWODForwardTime = 250
+kSWODReverseTime = 50
 
-kIntakeRollerSpeed = 0
+kIntakeRollerSpeed = -1
 
-kClimberSpeed = 0
+kClimberSpeed = 1
 
 # DriveTrain
-kP_DriveVelocity = 0.04
-kI_DriveVelocity = 0.01
+kP_DriveVelocity = 0.15
+kI_DriveVelocity = 0.02
 kD_DriveVelocity = 0
 kF_DriveVelocity = 0
 
@@ -37,15 +40,15 @@ kI_DriveCurrent775 = 0
 kD_DriveCurrent775 = 0
 kF_DriveCurrent775 = 0
 
-kP_Distance = 1
+kP_Distance = 2
 kI_Distance = 0
-kD_Distance = 0
+kD_Distance = 10
 kF_Distance = 0
 
-kUpRamp_OverallVelocity = 0.15
+kUpRamp_OverallVelocity = 0.2
 kDownRamp_OverallVelocity = 1
 
-kUpRamp_IndividualVelocity = 0.15
+kUpRamp_IndividualVelocity = .4
 kDownRamp_IndividualVelocity = 1
 
 kP_DriveSteering = .5
@@ -53,23 +56,23 @@ kI_DriveSteering = .05
 kD_DriveSteering = 0
 kF_DriveSteering = 1
 
-kUpRamp_DriveThrottle = 0.2
-kDownRamp_DriveThrottle = 0.2
+kUpRamp_DriveThrottle = 2
+kDownRamp_DriveThrottle = 8
 
-kP_DriveAngle = 0
+kP_DriveAngle = 5
 kI_DriveAngle = 0
-kD_DriveAngle = 0
+kD_DriveAngle = 0 
 
-kP_RotateTo = 0
+kP_RotateTo = 5
 kI_RotateTo = 0
-kD_RotateTo = 0
+kD_RotateTo = 80
 kF_RotateTo = 0
 
-kUpRamp_DriveSteering = 100
-kDownRamp_DriveSteering = 100
+kUpRamp_DriveSteering = 0.05
+kDownRamp_DriveSteering = 0.1
 
-kP_DriveAngVel = 0
-kI_DriveAngVel = 0
+kP_DriveAngVel = 0.5
+kI_DriveAngVel = 0.002
 kD_DriveAngVel = 0
 kF_DriveAngVel = 0
 

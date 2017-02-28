@@ -101,10 +101,6 @@ public class Robot extends IterativeRobot {
 		updateSmartDashboard();
 	}
 
-	public void updateConstants() {
-		ConstantsIO.init();
-	}
-
 	public void updateSmartDashboard() {
 		// SmartDashboard.putNumber("avg error",
 		// RobotMap.driveTrain.getLeftVelocityAvgError());
