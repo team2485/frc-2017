@@ -1,18 +1,16 @@
 package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
-public class SpinUpShooter extends InstantCommand {
-	
-	
-	public SpinUpShooter() {
-		requires(RobotMap.shooter);
+public class ResetGear extends InstantCommand {
+	public ResetGear() {
+		requires(RobotMap.gearHolder);
 	}
-
 	@Override
 	protected void initialize() {
-		
-		RobotMap.shooter.setTargetSpeed();
+		RobotMap.gearHolder.setFlapsOpen(false);
+		RobotMap.gearHolder.setWingsOpen(false);
 	}
 }

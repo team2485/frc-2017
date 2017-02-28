@@ -1,7 +1,6 @@
 package org.usfirst.frc.team2485.robot.commands.selftest;
 
 import org.usfirst.frc.team2485.robot.OI;
-import org.usfirst.frc.team2485.robot.commandGroups.SelfTest;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;

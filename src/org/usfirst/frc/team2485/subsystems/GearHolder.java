@@ -7,16 +7,16 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class GearHolder extends Subsystem {
 	
 	public GearHolder() {
-		RobotMap.gearSolenoidBottom.set(false);
-		RobotMap.gearSolenoidTop.set(false);
+		RobotMap.gearSolenoidWings.set(false);
+		RobotMap.gearSolenoidFlaps.set(false);
 	}
 	
-	public void setBottomOpen(boolean open) {
-		RobotMap.gearSolenoidBottom.set(open);
+	public void setWingsOpen(boolean open) {
+		RobotMap.gearSolenoidWings.set(open);
 	}
 	
-	public void setChuteOpen(boolean open) {
-		RobotMap.gearSolenoidTop.set(open);
+	public void setFlapsOpen(boolean open) {
+		RobotMap.gearSolenoidFlaps.set(open);
 	}
 
 	@Override

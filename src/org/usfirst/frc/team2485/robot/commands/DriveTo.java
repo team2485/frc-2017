@@ -16,6 +16,7 @@ public class DriveTo extends Command {
 	public DriveTo(AutoPath path, double maxVelocity) {
 		this.path = path;
 		this.maxVelocity =  maxVelocity;
+		requires(RobotMap.driveTrain);
 	}
 	
 	@Override

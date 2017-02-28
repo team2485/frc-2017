@@ -11,14 +11,14 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class ToggleCompressor extends InstantCommand {
 	
-	private boolean state;
+	private boolean on;
 	
-	public ToggleCompressor(boolean state) {
-		this.state = state;
+	public ToggleCompressor(boolean on) {
+		this.on = on;
 	}
 	
 	public void initialize() {
-		if (state) {
+		if (on) {
 			RobotMap.compressor.start();
 		} else {
 			RobotMap.compressor.stop();

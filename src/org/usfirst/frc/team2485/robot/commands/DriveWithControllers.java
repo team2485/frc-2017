@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DriveWithControllers extends Command {
+	
 	private boolean simple;
 
 	public static final boolean TRIGGER_DRIVE = true;
@@ -16,10 +17,6 @@ public class DriveWithControllers extends Command {
 		requires(RobotMap.driveTrain);
 		setInterruptible(true);
 		this.simple = simple;
-	}
-
-	@Override
-	protected void initialize() {
 	}
 
 	@Override

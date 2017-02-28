@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Feeder extends Subsystem {
 
-	// Adjusted by ConstantsIO
-	public static double RPS_FEEDER = 95;
 	public WarlordsPIDController ratePID;
 
 	public Feeder() {
@@ -22,8 +20,6 @@ public class Feeder extends Subsystem {
 
 		ratePID.setPID(ConstantsIO.kP_Feeder, ConstantsIO.kI_Feeder, ConstantsIO.kD_Feeder, ConstantsIO.kF_Feeder);
 
-		RPS_FEEDER = ConstantsIO.kFeederRPS;
-
 		disableFeeder();
 
 	}
@@ -32,11 +28,11 @@ public class Feeder extends Subsystem {
 		return (ratePID.isEnabled());
 	}
 
-	public void setTargetSpeed(double rpm) {
+	public void setTargetSpeed(double ips) {
 		if (!isPIDEnabled()) {
 			ratePID.enable();
 		}
-		ratePID.setSetpoint(rpm);
+		ratePID.setSetpoint(ips);
 	}
 
 	public void setManual(double pwm) {
@@ -86,8 +82,6 @@ public class Feeder extends Subsystem {
 
 	public void updateConstants() {
 		ratePID.setPID(ConstantsIO.kP_Feeder, ConstantsIO.kI_Feeder, ConstantsIO.kD_Feeder, ConstantsIO.kF_Feeder);
-
-		RPS_FEEDER = ConstantsIO.kFeederRPS;
 	}
 
 	public void reset() {

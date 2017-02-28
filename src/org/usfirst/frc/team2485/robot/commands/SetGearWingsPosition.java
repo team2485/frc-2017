@@ -4,15 +4,17 @@ import org.usfirst.frc.team2485.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
-public class SetGearChutePosition extends InstantCommand {
+public class SetGearWingsPosition extends InstantCommand {
+	
 	private boolean open;
-	public SetGearChutePosition(boolean open) {
+	
+	public SetGearWingsPosition(boolean open) {
 		this.open = open;
 	}
 	
 	@Override
 	protected void initialize() {
-		RobotMap.gearHolder.setChuteOpen(open);
+		RobotMap.gearHolder.setWingsOpen(open);
+		System.out.println("open gear");
 	}
-	
 }

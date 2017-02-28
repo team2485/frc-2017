@@ -22,7 +22,7 @@ public class TestGearDropper extends Command {
 	protected void initialize() {
 		startTime = System.currentTimeMillis();
 		done = false;
-		RobotMap.gearHolder.setBottomOpen(false);
+		RobotMap.gearHolder.setWingsOpen(false);
 	}
 	
 	@Override

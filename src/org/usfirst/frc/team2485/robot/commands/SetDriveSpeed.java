@@ -14,6 +14,7 @@ public class SetDriveSpeed extends InstantCommand {
 	private DriveSpeed speed;
 
 	public SetDriveSpeed(DriveSpeed speed) {
+		requires(RobotMap.driveTrain);
 		this.speed = speed;
 	}
 

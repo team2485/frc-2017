@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class ResetDriveTrain extends InstantCommand {
 
+	public ResetDriveTrain() {
+		requires(RobotMap.driveTrain);
+	}
+	
 	@Override
 	protected void initialize() {
 		RobotMap.driveTrain.reset();

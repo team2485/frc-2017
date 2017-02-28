@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 
 
 public class SetRollers extends InstantCommand {
+	
 	boolean setRollersOn;
+	
 	public SetRollers(boolean setRollersOn) {
 		requires(RobotMap.intakeRollers);
 		this.setRollersOn = setRollersOn;

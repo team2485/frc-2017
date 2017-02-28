@@ -1,30 +1,22 @@
 package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
+import org.usfirst.frc.team2485.util.ConstantsIO;
 
 import edu.wpi.first.wpilibj.command.InstantCommand;
 
 public class Climb extends InstantCommand {
-	double power; 
 	
-	public Climb(double power) {
+	private boolean on; 
+	
+	public Climb(boolean on) {
 		requires(RobotMap.climber);
-		setInterruptible(true);
-		this.power = power;
+		this.on = on;
 	}
 	
 	@Override
 	public void initialize() {
-		RobotMap.climber.setPower(power);
+		RobotMap.climber.setPower(on ? ConstantsIO.kClimberSpeed : 0);
 	}
 	
-	@Override
-	protected void interrupted() {
-		end();
-	}
-	
-	@Override
-	protected void end() {
-//		RobotMap.climber.stopClimbing();
-	}
 }

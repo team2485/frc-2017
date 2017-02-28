@@ -1,8 +1,4 @@
-package org.usfirst.frc.team2485.robot.commandGroups;
-
-import org.usfirst.frc.team2485.robot.commands.selftest.TestAHRSDriftRate;
-import org.usfirst.frc.team2485.robot.commands.selftest.TestDriveMotorDirections;
-import org.usfirst.frc.team2485.robot.commands.selftest.TestSWODCurrentDraw;
+package org.usfirst.frc.team2485.robot.commands.selftest;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
