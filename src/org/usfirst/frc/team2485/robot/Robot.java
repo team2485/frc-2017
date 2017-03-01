@@ -1,17 +1,14 @@
 
 package org.usfirst.frc.team2485.robot;
 
-import org.usfirst.frc.team2485.robot.commands.DriveStraight;
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
-import org.usfirst.frc.team2485.robot.commands.SetGearFlapsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
 import org.usfirst.frc.team2485.robot.commands.ZeroEncoders;
 import org.usfirst.frc.team2485.util.AutoPath;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -31,7 +28,7 @@ public class Robot extends IterativeRobot {
 			return new Pair(0, 75*t);
 		}, 10000));
 		path2 = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
-			return new Pair (0, -24*t);
+			return new Pair (0, 24*t);
 		}, 10000));
 //		path = AutoPath.getPointsForBezier(10000, new Pair(0, 0), new Pair(x, y))
 //		path = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
@@ -69,16 +66,14 @@ public class Robot extends IterativeRobot {
 		RobotMap.driveTrain.updateConstants();
 
 		 CommandGroup group = new CommandGroup();
-		 group.addSequential(new DriveTo(path1, 100));
+		 group.addSequential(new DriveTo(path1, 100, false));
 		 group.addSequential(new ResetDriveTrain());
 		 group.addSequential(new ZeroEncoders());
 		 group.addSequential(new SetGearWingsPosition(true));
 		 group.addSequential(new TimedCommand(.5));
-		 group.addSequential(new DriveStraight(-24, 0, 100));
+		 group.addSequential(new DriveTo(path2, 100, true));
 		 Scheduler.getInstance().add(group);
 		
-//		CameraServer.getInstance().startAutomaticCapture();
-
 	}
 
 	public void autonomousPeriodic() {

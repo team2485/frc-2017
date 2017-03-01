@@ -12,10 +12,11 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DriveTo extends Command {
 	private AutoPath path;
 	private double maxVelocity;
-	private boolean finished;
-	public DriveTo(AutoPath path, double maxVelocity) {
+	private boolean finished, reverse;
+	public DriveTo(AutoPath path, double maxVelocity, boolean reverse) {
 		this.path = path;
 		this.maxVelocity =  maxVelocity;
+		this.reverse = reverse;
 		requires(RobotMap.driveTrain);
 	}
 	
@@ -26,9 +27,18 @@ public class DriveTo extends Command {
 	}
 	@Override
 	protected void execute() {
-		super.execute();
-		double arcLength = RobotMap.averageEncoderDistance.pidGet();
-		finished = RobotMap.driveTrain.driveTo(path.getPathLength(), maxVelocity, path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength));
+
+		double arcLength = RobotMap.averageEncoderDistance.pidGet(), 
+				pathLength = path.getPathLength();
+		
+		if (reverse) {
+			arcLength = pathLength - arcLength;
+			pathLength *= -1;
+		}
+		
+		finished = RobotMap.driveTrain.driveTo(pathLength, maxVelocity, 
+				path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength));
+		
 	}
 
 	@Override

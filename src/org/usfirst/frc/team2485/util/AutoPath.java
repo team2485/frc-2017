@@ -1,5 +1,8 @@
 package org.usfirst.frc.team2485.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.usfirst.frc.team2485.robot.RobotMap;
 
 /**
@@ -50,12 +53,22 @@ public class AutoPath {
 	}
 	private Point[] points; 
 	
-	public AutoPath(Pair[] points) {
-		this.points = new Point[points.length];
+	public AutoPath(Pair[]... pairs) {
+		
+		// concat into single array
+		ArrayList<Pair> newPairs = new ArrayList<>();
 		for (int i = 0; i < points.length; i++) {
-			this.points[i] = new Point(points[i]);
+			newPairs.addAll(Arrays.asList(pairs[i]));
 		}
+		
+		// convert from pairs to points
+		this.points = new Point[newPairs.size()];
+		for (int i = 0; i < newPairs.size(); i++) {
+			this.points[i] = new Point(newPairs.get(i));
+		}
+		
 		generateCurve();
+		
 	} 
 	
 	private void generateCurve() {
