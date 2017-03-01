@@ -301,24 +301,22 @@ public class DriveTrain extends Subsystem {
 
 	public void updateConstants() {
 		
-		RobotMap.driveLeft1.setPID(ConstantsIO.kP_DriveCurrentCIM, ConstantsIO.kI_DriveCurrentCIM,
-				ConstantsIO.kD_DriveCurrentCIM, ConstantsIO.kF_DriveCurrentCIM, 0, 0, 0);
-		RobotMap.driveLeft2.setPID(ConstantsIO.kP_DriveCurrentCIM, ConstantsIO.kI_DriveCurrentCIM,
-				ConstantsIO.kD_DriveCurrentCIM, ConstantsIO.kF_DriveCurrentCIM, 0, 0, 0);
-		RobotMap.driveRight1.setPID(ConstantsIO.kP_DriveCurrentCIM, ConstantsIO.kI_DriveCurrentCIM,
-				ConstantsIO.kD_DriveCurrentCIM, ConstantsIO.kF_DriveCurrentCIM, 0, 0, 0);
-		RobotMap.driveRight2.setPID(ConstantsIO.kP_DriveCurrentCIM, ConstantsIO.kI_DriveCurrentCIM,
-				ConstantsIO.kD_DriveCurrentCIM, ConstantsIO.kF_DriveCurrentCIM, 0, 0, 0);
+		RobotMap.driveLeft1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveLeft2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveRight1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveRight2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		
 		angVelPIDController.setPID(ConstantsIO.kP_DriveAngVel, ConstantsIO.kI_DriveAngVel, ConstantsIO.kD_DriveAngVel);
 		velocityPIDRight.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity,
 				ConstantsIO.kD_DriveVelocity, ConstantsIO.kF_DriveVelocity);
 		velocityPIDLeft.setPID(ConstantsIO.kP_DriveVelocity, ConstantsIO.kI_DriveVelocity, ConstantsIO.kD_DriveVelocity,
 				ConstantsIO.kF_DriveVelocity);
-		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, ConstantsIO.kD_RotateTo,
-				ConstantsIO.kF_RotateTo);
-		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance,
-				ConstantsIO.kF_Distance);
+		rotateToPID.setPID(ConstantsIO.kP_RotateTo, ConstantsIO.kI_RotateTo, ConstantsIO.kD_RotateTo);
+		distPID.setPID(ConstantsIO.kP_Distance, ConstantsIO.kI_Distance, ConstantsIO.kD_Distance);
 		anglePID.setPID(ConstantsIO.kP_DriveAngle, ConstantsIO.kI_DriveAngle, ConstantsIO.kD_DriveAngle);
 		
 		overallCurrentRamp.setRampRates(ConstantsIO.kUpRamp_DriveThrottle, ConstantsIO.kDownRamp_DriveThrottle);

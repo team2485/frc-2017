@@ -27,7 +27,7 @@ public class TestSWODCurrentDraw extends Command {
 		startTime = System.currentTimeMillis();
 		done = false;
 		table = NetworkTable.getTable("SmartDashboard").getSubTable("SelfTest");
-		RobotMap.wheelOfDeath.setCurrent(ConstantsIO.kSWODCurrent);
+//		RobotMap.wheelOfDeath.setCurrent(ConstantsIO.kSWODCurrent);
 	}
 	
 	@Override

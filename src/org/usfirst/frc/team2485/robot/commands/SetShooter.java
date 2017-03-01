@@ -20,7 +20,7 @@ public class SetShooter extends InstantCommand {
 	protected void initialize() {
 		if (on) {
 			RobotMap.shooter.setTargetSpeed(ConstantsIO.kShotRPS);
-			RobotMap.feeder.setTargetSpeed(50);
+			RobotMap.feeder.setTargetSpeed(ConstantsIO.kFeederIPS);
 		} else {
 			RobotMap.shooter.disableShooter();
 			RobotMap.feeder.disableFeeder();

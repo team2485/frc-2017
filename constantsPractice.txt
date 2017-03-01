@@ -8,21 +8,17 @@ kP_Feeder = 0.02
 kI_Feeder = 0.02
 kD_Feeder = 0
 kF_Feeder = .01
-kFeederRPS = 5
+kFeederIPS = 50
 
 kP_SWODCurrent = .5
 kI_SWODCurrent = 0
 kD_SWODCurrent = 0
 kF_SWODCurrent = .3
 kSWODRPS = 0.75
-kSWODCurrent = 4
-kSWODMaxVolts = 5
-kSWODForwardTime = 250
-kSWODReverseTime = 50
 
-kIntakeRollerSpeed = -1
+kIntakeRollerPower = -1
 
-kClimberSpeed = 1
+kClimberPower = 1
 
 # DriveTrain
 kP_DriveVelocity = 0.15
@@ -30,31 +26,20 @@ kI_DriveVelocity = 0.02
 kD_DriveVelocity = 0
 kF_DriveVelocity = 0
 
-kP_DriveCurrentCIM = 0.2
-kI_DriveCurrentCIM = 0.002
-kD_DriveCurrentCIM = 0
-kF_DriveCurrentCIM = 0.07
-
-kP_DriveCurrent775 = 0
-kI_DriveCurrent775 = 0
-kD_DriveCurrent775 = 0
-kF_DriveCurrent775 = 0
+kP_DriveCurrent = 0.2
+kI_DriveCurrent = 0.002
+kD_DriveCurrent = 0
+kF_DriveCurrent = 0.07
 
 kP_Distance = 2
 kI_Distance = 0
 kD_Distance = 10
-kF_Distance = 0
 
 kUpRamp_OverallVelocity = 0.2
 kDownRamp_OverallVelocity = 1
 
 kUpRamp_IndividualVelocity = .4
 kDownRamp_IndividualVelocity = 1
-
-kP_DriveSteering = .5
-kI_DriveSteering = .05
-kD_DriveSteering = 0
-kF_DriveSteering = 1
 
 kUpRamp_DriveThrottle = 2
 kDownRamp_DriveThrottle = 8
@@ -66,7 +51,6 @@ kD_DriveAngle = 0
 kP_RotateTo = 5
 kI_RotateTo = 0
 kD_RotateTo = 80
-kF_RotateTo = 0
 
 kUpRamp_DriveSteering = 0.05
 kDownRamp_DriveSteering = 0.1

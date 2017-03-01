@@ -49,7 +49,6 @@ public class WheelOfDeath extends Subsystem {
 	public void updateConstants() {
 		ratePID.setPID(ConstantsIO.kP_SWODCurrent, ConstantsIO.kI_SWODCurrent, ConstantsIO.kD_SWODCurrent,
 				ConstantsIO.kF_SWODCurrent);
-		RobotMap.deathMotor.configPeakOutputVoltage(ConstantsIO.kSWODMaxVolts, -ConstantsIO.kSWODMaxVolts);
 	}
 
 	public void setPWM(double pwm) {
