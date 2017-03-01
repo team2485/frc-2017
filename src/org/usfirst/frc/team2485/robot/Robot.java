@@ -1,27 +1,42 @@
 
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.robot.commands.DriveStraight;
+import org.usfirst.frc.team2485.robot.commands.DriveTo;
+import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
+import org.usfirst.frc.team2485.robot.commands.SetGearFlapsPosition;
+import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
+import org.usfirst.frc.team2485.robot.commands.ZeroEncoders;
 import org.usfirst.frc.team2485.util.AutoPath;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	private AutoPath path;
+	private AutoPath path1, path2;
 
 	public void robotInit() {
 		ConstantsIO.init();
 		RobotMap.init();
 		OI.init();
-		path = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
-			return new Pair(0, 300 * t);
+		path1 = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
+			return new Pair(0, 75*t);
 		}, 10000));
+		path2 = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
+			return new Pair (0, -24*t);
+		}, 10000));
+//		path = AutoPath.getPointsForBezier(10000, new Pair(0, 0), new Pair(x, y))
+//		path = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
+//			return new Pair(50*(1-Math.cos(Math.PI*t)), 50*Math.sin(Math.PI*t));
+//		}, 10000));
 
 		RobotMap.updateConstants();
 
@@ -49,16 +64,21 @@ public class Robot extends IterativeRobot {
 		RobotMap.updateConstants();
 
 		RobotMap.ahrs.zeroYaw();
+		
+		RobotMap.driveTrain.zeroEncoders();
+		RobotMap.driveTrain.updateConstants();
 
-		// CommandGroup group = new CommandGroup();
-		// group.addSequential(new DriveTo(path, 150));
-		// group.addSequential(new ResetDriveTrain());
-		// Scheduler.getInstance().add(group);
+		 CommandGroup group = new CommandGroup();
+		 group.addSequential(new DriveTo(path1, 100));
+		 group.addSequential(new ResetDriveTrain());
+		 group.addSequential(new ZeroEncoders());
+		 group.addSequential(new SetGearWingsPosition(true));
+		 group.addSequential(new TimedCommand(.5));
+		 group.addSequential(new DriveStraight(-24, 0, 100));
+		 Scheduler.getInstance().add(group);
 		
 //		CameraServer.getInstance().startAutomaticCapture();
 
-		RobotMap.driveTrain.zeroEncoders();
-		RobotMap.driveTrain.updateConstants();
 	}
 
 	public void autonomousPeriodic() {
@@ -68,8 +88,8 @@ public class Robot extends IterativeRobot {
 		System.out.println("Speed: " + RobotMap.wheelOfDeath.getSpeed());
 		System.out.println("PWM: " + RobotMap.wheelOfDeath.getPWM());
 
-		// RobotMap.driveTrain.rotateTo(45);
-		// RobotMap.driveTrain.setLeftRightVelocity(40, 40);
+//		 RobotMap.driveTrain.rotateTo(45);
+//		 RobotMap.driveTrain.setLeftRightVelocity(40, 40);
 
 	}
 
@@ -115,6 +135,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
 //		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
 //		SmartDashboard.putNumber("Spinning Wheel of Death Voltage", RobotMap.deathMotor.getOutputVoltage());
+		SmartDashboard.putNumber("Average Angle Error", RobotMap.driveTrain.getAnglePIDError());
 		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
 		SmartDashboard.putNumber("Shooter Error", RobotMap.shooter.getAvgError());
 		SmartDashboard.putNumber("Shooter Distance", RobotMap.shooterEncoder.getDistance());
