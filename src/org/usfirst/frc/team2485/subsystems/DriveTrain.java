@@ -135,7 +135,8 @@ public class DriveTrain extends Subsystem {
 			if (isRotateTo) {
 				return rotateToTransferNode.getOutput();
 			} else {
-				return overallVelocityTransferNode.getOutput() * (1 + autoCurvatureTransferNode.getOutput()) + angleSteeringTransferNode.getOutput();
+				return overallVelocityTransferNode.getOutput() * (1 + autoCurvatureTransferNode.getOutput()) 
+						+ angleSteeringTransferNode.getOutput();
 			}
 		});
 
@@ -143,13 +144,16 @@ public class DriveTrain extends Subsystem {
 			if (isRotateTo) {
 				return -rotateToTransferNode.getOutput();
 			} else {
-				return overallVelocityTransferNode.getOutput() * (1 - autoCurvatureTransferNode.getOutput()) - angleSteeringTransferNode.getOutput();
+				return overallVelocityTransferNode.getOutput() * (1 - autoCurvatureTransferNode.getOutput()) 
+						- angleSteeringTransferNode.getOutput();
 			}
 		});
 
 		anglePID.setSources(RobotMap.ahrs);
 		anglePID.setOutputs(angleSteeringTransferNode);
-
+		anglePID.setInputRange(0, 360);
+		anglePID.setContinuous(true);
+		
 		overallVelocityRamp.setOutputs(overallVelocityTransferNode);
 
 		distPID.setSources(RobotMap.averageEncoderDistance);
@@ -160,7 +164,7 @@ public class DriveTrain extends Subsystem {
 		rotateToPID.setOutputs(rotateToTransferNode);
 		rotateToPID.setAbsoluteTolerance(ROTATETO_TOLERANCE);
 		rotateToPID.setInputRange(0, 360);
-		rotateToPID.setOutputRange(-10, 10);
+		rotateToPID.setOutputRange(-20, 20);
 		rotateToPID.setContinuous(true);
 		
 	}

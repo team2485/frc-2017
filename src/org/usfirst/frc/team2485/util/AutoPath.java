@@ -65,15 +65,23 @@ public class AutoPath {
 			double dX = points[i + 1].x - points[i].x;
 			double dY = points[i + 1].y - points[i].y;
 			points[i].heading = Math.atan2(dX, dY); // this is switched intentionally i swear
+			if (points[i].heading < 0) {
+				points[i].heading += Math.PI * 2;
+			}
 			points[i + 1].arcLength = points[i].arcLength + Math.hypot(dX, dY);
 		}
-		points[len - 1].heading = points[len - 1].heading;
+		points[len - 1].heading = points[len - 2].heading;
 		
 		for (int i = 0; i < points.length - 2; i++) {
-			points[i].curvature = (points[i + 1].heading - points[i].heading) / 
-					(points[i + 1].arcLength - points[i].arcLength);
+			double diffHeading = points[i + 1].heading - points[i].heading;
+			if (diffHeading > Math.PI) {
+				diffHeading -= Math.PI * 2;
+			} else if (diffHeading < -Math.PI) {
+				diffHeading += Math.PI * 2;
+			}
+			points[i].curvature = diffHeading / (points[i + 1].arcLength - points[i].arcLength);
 		}
-		points[len - 1].curvature = points[len - 2].heading = points[len - 3].heading;
+		points[len - 1].curvature = points[len - 2].curvature = points[len - 3].curvature;
 	}
 	
 	private Point getPointAtDist(double dist) {
