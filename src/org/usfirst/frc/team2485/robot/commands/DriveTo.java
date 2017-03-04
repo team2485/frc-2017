@@ -13,16 +13,21 @@ public class DriveTo extends Command {
 	private AutoPath path;
 	private double maxVelocity;
 	private boolean finished, reverse;
-	public DriveTo(AutoPath path, double maxVelocity, boolean reverse) {
+	private long startTime;
+	private int timeout;
+	public DriveTo(AutoPath path, double maxVelocity, boolean reverse, int timeout) {
 		this.path = path;
 		this.maxVelocity =  maxVelocity;
 		this.reverse = reverse;
+		this.timeout = timeout;
+		setInterruptible(true);
 		requires(RobotMap.driveTrain);
 	}
 	
 	@Override
 	protected void initialize() {
 		super.initialize();
+		startTime = System.currentTimeMillis();
 		RobotMap.driveTrain.zeroEncoders();
 	}
 	@Override
@@ -40,10 +45,21 @@ public class DriveTo extends Command {
 				path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength));
 		
 	}
+	
+	@Override
+	protected void interrupted() {
+		finished = true;
+	}
+	
+	@Override
+	public synchronized void cancel() {
+		finished = true;
+	}
 
 	@Override
 	protected boolean isFinished() {
-		return finished;
+		
+		return finished || (System.currentTimeMillis() - startTime) > timeout;
 	}
 
 }

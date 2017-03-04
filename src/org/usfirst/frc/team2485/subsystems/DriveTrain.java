@@ -364,6 +364,7 @@ public class DriveTrain extends Subsystem {
 		distPID.setOutputRange(-maxSpeed, maxSpeed);
 		anglePID.setSetpoint(angle);
 		anglePID.setOutputRange(-maxSpeed, maxSpeed);
+		autoCurvatureTransferNode.setOutput(curvature);
 		return (distPID.isOnTarget() && Math.abs((RobotMap.driveEncRight.getRate() + 
 				RobotMap.driveEncLeft.getRate()) / 2) < LOW_SPEED_DRIVETO);
 		

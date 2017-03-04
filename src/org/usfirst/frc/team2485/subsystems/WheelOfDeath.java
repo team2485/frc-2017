@@ -66,19 +66,19 @@ public class WheelOfDeath extends Subsystem {
 	public double getSpeed() {
 		double curEfficiency = previousSpeed / MAX_EFFICIENCY_SPEED * MAX_EFFICIENCY;
 		curEfficiency = Math.max(curEfficiency, 0.01);
-		System.out.println("Current Efficiency: " + curEfficiency);
+//		System.out.println("Current Efficiency: " + curEfficiency);
 		
 		double electricalPower = RobotMap.deathMotor.getOutputCurrent() * RobotMap.deathMotor.getOutputVoltage();
-		System.out.println("Current: " + RobotMap.deathMotor.getOutputCurrent());
-		System.out.println("Voltage: " + RobotMap.deathMotor.getOutputVoltage());
-		System.out.println("Electrical Power: " + electricalPower);
+//		System.out.println("Current: " + RobotMap.deathMotor.getOutputCurrent());
+//		System.out.println("Voltage: " + RobotMap.deathMotor.getOutputVoltage());
+//		System.out.println("Electrical Power: " + electricalPower);
 		double mechanicalPower = electricalPower * curEfficiency;
-		System.out.println("Mechanical Power: " + mechanicalPower);
+//		System.out.println("Mechanical Power: " + mechanicalPower);
 		double torque = (1 - (previousSpeed / FREE_SPEED)) * STALL_TORQUE;
-		System.out.println("Torque: " + torque);
+//		System.out.println("Torque: " + torque);
 
 		double curSpeed = mechanicalPower / torque * 2 * Math.PI;
-		System.out.println("Current speed: " + curSpeed);
+//		System.out.println("Current speed: " + curSpeed);
 
 		return curSpeed;
 	}

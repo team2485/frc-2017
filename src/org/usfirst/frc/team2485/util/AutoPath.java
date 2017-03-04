@@ -57,7 +57,7 @@ public class AutoPath {
 		
 		// concat into single array
 		ArrayList<Pair> newPairs = new ArrayList<>();
-		for (int i = 0; i < points.length; i++) {
+		for (int i = 0; i < pairs.length; i++) {
 			newPairs.addAll(Arrays.asList(pairs[i]));
 		}
 		
@@ -129,7 +129,7 @@ public class AutoPath {
 	private static Pair bezier(Pair[] initPoints, double t) {
 		Pair[] points = new Pair[initPoints.length - 1];
 		for (int i = 0; i < initPoints.length - 1; i++) {
-			points[i] = Pair.linearBezier(points[i], points[i + 1], t);
+			points[i] = Pair.linearBezier(initPoints[i], initPoints[i + 1], t);
 		}
 		
 		if (points.length == 1) {
