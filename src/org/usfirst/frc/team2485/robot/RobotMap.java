@@ -46,8 +46,10 @@ public class RobotMap {
 	// CAN
 	public static int driveRightPortCIM1 = 1;
 	public static int driveRightPortCIM2 = 3;
+	public static int driveRightPortCIM3 = 2;
 	public static int driveLeftPortCIM1 = 4;
 	public static int driveLeftPortCIM2 = 6;
+	public static int driveLeftPortCIM3 = 5;
 	public static int wheelOfDeathMotorPort = 7;
 	
 	// Other Motor Ports
@@ -65,7 +67,7 @@ public class RobotMap {
 	public static int kUltrasonicPortA = 14, kUltrasonicPortB = 15;
 
 	// Speed Controllers
-	public static CANTalon driveLeft1, driveLeft2, driveRight1, driveRight2, deathMotor;
+	public static CANTalon driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3, deathMotor;
 	public static SpeedControllerWrapper driveTrainRight, driveTrainLeft;
 	public static SpeedControllerWrapper shooterMotors, intakeMotor, feederMotor, climberMotor;
 	
@@ -94,6 +96,7 @@ public class RobotMap {
 	public static MultipleEncoderWrapper averageEncoderDistance, averageEncoderRate;
 	public static EncoderWrapperRateAndDistance driveEncRateLeft, driveEncRateRight;
 	public static AHRSWrapperRateAndAngle ahrsRateRads;
+	public static BrokenEncoderWrapper brokenSWODEnc;
 
 	// Subsystems
 	public static GearHolder gearHolder;
@@ -114,12 +117,14 @@ public class RobotMap {
 		// ACTUATORS
 		driveLeft1 = new CANTalon(driveLeftPortCIM1);
 		driveLeft2 = new CANTalon(driveLeftPortCIM2);
+		driveLeft3 = new CANTalon(driveLeftPortCIM3);
 
 		driveRight1 = new CANTalon(driveRightPortCIM1);
 		driveRight2 = new CANTalon(driveRightPortCIM2);
+		driveRight3 = new CANTalon(driveRightPortCIM3);
 
-		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2);
-		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2);
+		driveTrainLeft = new SpeedControllerWrapper(driveLeft1, driveLeft2, driveLeft3);
+		driveTrainRight = new SpeedControllerWrapper(driveRight1, driveRight2, driveRight3);
 
 		deathMotor = new CANTalon(wheelOfDeathMotorPort);
 		deathMotor.setInverted(true);
@@ -143,6 +148,7 @@ public class RobotMap {
 
 		shooterEncoder = new Encoder(kShooterEncPortA, kShooterEncPortB);
 		swodEncoder = new Encoder(kSWODEncPortA, kSWODEncPortB);
+		brokenSWODEnc = new BrokenEncoderWrapper(swodEncoder);
 		feederEncoder = new Encoder(kFeederEncPortA, kFeederEncPortB);
 		
 		driveEncLeft = new Encoder(kLeftDriveEncPortA, kLeftDriveEncPortB);
@@ -154,7 +160,7 @@ public class RobotMap {
 		gearDetector = new Ultrasonic(14, 15);
 		gearDetector.setAutomaticMode(true);
 		
-		usbCam = CameraServer.getInstance().startAutomaticCapture();
+//		usbCam = CameraServer.getInstance().startAutomaticCapture();
 		
 		averageEncoderDistance = new MultipleEncoderWrapper(PIDSourceType.kDisplacement,
 				MultipleEncoderWrapperMode.AVERAGE, driveEncLeft, driveEncRight);
@@ -167,6 +173,7 @@ public class RobotMap {
 
 		driveLeft1.setInverted(true);
 		driveLeft2.setInverted(true);
+		driveLeft3.setInverted(true);
 
 		driveEncLeft.setDistancePerPulse((double) 1 / 250 * (Math.PI * WHEEL_RADIUS * 2));
 		driveEncRight.setDistancePerPulse((double) 1 / 250 * (Math.PI * WHEEL_RADIUS * 2));

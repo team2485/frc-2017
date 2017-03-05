@@ -286,8 +286,10 @@ public class DriveTrain extends Subsystem {
 		
 		RobotMap.driveLeft1.changeControlMode(mode);
 		RobotMap.driveLeft2.changeControlMode(mode);
+		RobotMap.driveLeft3.changeControlMode(mode);
 		RobotMap.driveRight1.changeControlMode(mode);
 		RobotMap.driveRight2.changeControlMode(mode);
+		RobotMap.driveRight3.changeControlMode(mode);
 		
 	}
 	
@@ -309,9 +311,13 @@ public class DriveTrain extends Subsystem {
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveLeft2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveLeft3.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveRight1.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		RobotMap.driveRight2.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
+				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
+		RobotMap.driveRight3.setPID(ConstantsIO.kP_DriveCurrent, ConstantsIO.kI_DriveCurrent,
 				ConstantsIO.kD_DriveCurrent, ConstantsIO.kF_DriveCurrent, 0, 0, 0);
 		
 		angVelPIDController.setPID(ConstantsIO.kP_DriveAngVel, ConstantsIO.kI_DriveAngVel, ConstantsIO.kD_DriveAngVel);
@@ -352,9 +358,10 @@ public class DriveTrain extends Subsystem {
 		switchControlMode(ControlMode.TEST_CURRENT_DIRECT);
 		RobotMap.driveLeft1.set(l);
 		RobotMap.driveLeft2.set(l);
+		RobotMap.driveLeft3.set(1);
 		RobotMap.driveRight1.set(r);
 		RobotMap.driveRight2.set(r);
-		
+		RobotMap.driveRight3.set(r);
 	}
 
 	public boolean driveTo(double distance, double maxSpeed, double angle, double curvature) {

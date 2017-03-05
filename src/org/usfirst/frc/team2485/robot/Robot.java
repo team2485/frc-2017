@@ -5,6 +5,7 @@ import org.usfirst.frc.team2485.robot.commands.DriveStraight;
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
+import org.usfirst.frc.team2485.robot.commands.SetLeftRightVelocity;
 import org.usfirst.frc.team2485.robot.commands.ZeroEncoders;
 import org.usfirst.frc.team2485.util.AutoPath;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
@@ -32,11 +33,11 @@ public class Robot extends IterativeRobot {
 		path2 = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
 			return new Pair (0, 24*t);
 		}, 10000));
-		path3  = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(83.5, -250), 
-				new Pair(86, -177.5), new Pair(105, -159), new Pair(148.5, -135.25)));
+		path3  = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(0, 0), 
+				new Pair(0, 75), new Pair(25, 91), new Pair(72, 112)));
 		pathTest4 = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
 			return new Pair (0, 12*t);
-		}, 10));
+		}, 10000));
 //		path = AutoPath.getPointsForBezier(10000, new Pair(0, 0), new Pair(x, y))
 //		path = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
 //			return new Pair(50*(1-Math.cos(Math.PI*t)), 50*Math.sin(Math.PI*t));
@@ -50,6 +51,7 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().disable();
 		Scheduler.getInstance().removeAll();
 		RobotMap.driveTrain.reset();
+		RobotMap.gearHolder.reset();
 		RobotMap.intakeArm.reset();
 		RobotMap.intakeRollers.reset();
 		RobotMap.compressor.stop();
@@ -73,21 +75,26 @@ public class Robot extends IterativeRobot {
 		RobotMap.driveTrain.updateConstants();
 
 //		 CommandGroup group = new CommandGroup();
-//		 group.addSequential( new DriveTo(path1, 100, false, 6));
+//		 group.addSequential(new DriveStraight(80, 0, 50, 6000));
 //		 group.addSequential(new ResetDriveTrain());
 //		 group.addSequential(new ZeroEncoders());
 //		 group.addSequential(new SetGearWingsPosition(true));
 //		 group.addSequential(new TimedCommand(.5));
-//		 group.addSequential(new DriveTo(path2, 100, true, 6));
+//		 group.addSequential(new DriveStraight(-24, 0, 50, 6000));
+//		 group.addSequential(new ResetDriveTrain());
 //		 Scheduler.getInstance().add(group);
 		 CommandGroup group = new CommandGroup();
-		 group.addSequential(new DriveTo(path3, 25, false, 6000));
+		 group.addSequential(new DriveTo(path3, 25, false, 8000));
 		 group.addSequential(new ResetDriveTrain());
 		 group.addSequential(new ZeroEncoders());
 		 group.addSequential(new SetGearWingsPosition(true));
 		 group.addSequential(new TimedCommand(.5));
-		 group.addSequential(new DriveStraight(-24, 60, 25));
+		 group.addSequential(new DriveStraight(-24, 60, 25, 6000));
 		 Scheduler.getInstance().add(group);
+//		
+//		CommandGroup group = new CommandGroup();
+//		group.addSequential(new SetLeftRightVelocity(40, 40));
+//		Scheduler.getInstance().add(group);
 		
 	}
 
@@ -141,14 +148,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
 		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
 		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
-//		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
+		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
 //		SmartDashboard.putNumber("Spinning Wheel of Death Voltage", RobotMap.deathMotor.getOutputVoltage());
 		SmartDashboard.putNumber("Average Angle Error", RobotMap.driveTrain.getAnglePIDError());
 		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
 		SmartDashboard.putNumber("Shooter Error", RobotMap.shooter.getAvgError());
 		SmartDashboard.putNumber("Shooter Distance", RobotMap.shooterEncoder.getDistance());
 		SmartDashboard.putNumber("Uptake Speed", RobotMap.feederEncoder.getRate());
-		SmartDashboard.putNumber("Spinning Wheel of Death Speed", RobotMap.swodEncoder.getRate());
+		SmartDashboard.putNumber("Spinning Wheel of Death Speed", RobotMap.brokenSWODEnc.pidGet());
 //		SmartDashboard.putNumber("Spinning Wheel of Death PWM", RobotMap.wheelOfDeath.getPWM());
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",

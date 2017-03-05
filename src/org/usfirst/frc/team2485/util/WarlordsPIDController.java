@@ -83,6 +83,7 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 		super.disable();
 		this.integralTerm = 0;
 		this.lastPropTerm = 0;
+		errorBuffer.clear();
 	}
 	
 	/**
@@ -151,7 +152,7 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 			for (Iterator<Double> iterator = errorBuffer.iterator(); iterator.hasNext();) {
 				sum += (double) iterator.next();
 			}
-			return sum / errorBuffer.size();
+			return errorBuffer.size() == 0 ? 0 : sum / errorBuffer.size();
 		}
 	}
 	
@@ -176,7 +177,9 @@ public class WarlordsPIDController extends WarlordsControlSystem {
 	 * @return true if within specified tolerance of setpoint
 	 */
 	public boolean isOnTarget() {
-		if (usesPercentTolerance) {
+		if (errorBuffer.size() == 0) {
+			return false;
+		} else if (usesPercentTolerance) {
 			return Math.abs(getAvgError()) < setpoint * percentTolerance;
 		} else {
 			return Math.abs(getAvgError()) < absoluteTolerance;

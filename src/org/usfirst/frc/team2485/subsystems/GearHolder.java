@@ -27,4 +27,9 @@ public class GearHolder extends Subsystem {
 		//Not an accurate value
 		return RobotMap.gearDetector.getRangeInches() < 2;
 	}
+
+	public void reset() {
+		setWingsOpen(false);
+		setFlapsOpen(false);
+	}
 }

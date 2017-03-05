@@ -22,7 +22,7 @@ public class WheelOfDeath extends Subsystem {
 	public WheelOfDeath() {
 		ratePID = new WarlordsPIDController();
 		ratePID.setOutputs(RobotMap.deathMotor);
-		ratePID.setSources(RobotMap.swodEncoder);
+		ratePID.setSources(RobotMap.brokenSWODEnc);
 		stop();
 	}
 
