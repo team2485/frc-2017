@@ -35,10 +35,7 @@ public class RobotSideGearVision extends Command {
 
 	private void processImages() {
 		
-		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
-		camera.setResolution(640, 480);
-
-		CvSink cvSink = CameraServer.getInstance().getVideo();
+		CvSink cvSink = CameraServer.getInstance().getVideo(RobotMap.gearCamera);
 		CvSource outputStream = CameraServer.getInstance().putVideo("Subtracted Gear Hook Image", 640, 480);
 
 		Mat light = new Mat();
@@ -74,6 +71,11 @@ public class RobotSideGearVision extends Command {
 	@Override
 	protected boolean isFinished() {
 		return false;
+	}
+	
+	@Override
+	protected void interrupted() {
+		end();
 	}
 
 	@Override

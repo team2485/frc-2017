@@ -34,10 +34,8 @@ public class RobotSideBoilerVision extends Command {
 	}
 
 	private void processImages() {
-		UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(1);
-		camera.setResolution(640, 480);
 
-		CvSink cvSink = CameraServer.getInstance().getVideo();
+		CvSink cvSink = CameraServer.getInstance().getVideo(RobotMap.boilerCamera);
 		CvSource outputStream = CameraServer.getInstance().putVideo("Subtracted Boiler Image", 640, 480);
 
 		Mat light = new Mat();
@@ -73,6 +71,11 @@ public class RobotSideBoilerVision extends Command {
 	@Override
 	protected boolean isFinished() {
 		return false;
+	}
+	
+	@Override
+	protected void interrupted() {
+		end();
 	}
 
 	@Override

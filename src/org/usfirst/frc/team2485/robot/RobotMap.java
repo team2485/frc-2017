@@ -97,6 +97,9 @@ public class RobotMap {
 	public static EncoderWrapperRateAndDistance driveEncRateLeft, driveEncRateRight;
 	public static AHRSWrapperRateAndAngle ahrsRateRads;
 	public static BrokenEncoderWrapper brokenSWODEnc;
+	
+	// Cameras
+	public static UsbCamera gearCamera, boilerCamera;
 
 	// Subsystems
 	public static GearHolder gearHolder;
@@ -186,6 +189,11 @@ public class RobotMap {
 		
 		feederEncoder.setDistancePerPulse((1.0/250)*Math.PI*2*FEEDER_RADIUS);
 		feederEncoder.setPIDSourceType(PIDSourceType.kRate);
+		
+		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
+		gearCamera.setResolution(640, 480);
+		boilerCamera = CameraServer.getInstance().startAutomaticCapture(1);
+		boilerCamera.setResolution(640, 480);
 
 
 		// CONSTRUCT SUBSYSTEMS
