@@ -1,6 +1,8 @@
 
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.robot.commandGroups.GearAuto;
+import org.usfirst.frc.team2485.robot.commandGroups.GearAuto.AirshipSide;
 import org.usfirst.frc.team2485.robot.commands.DriveStraight;
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
@@ -21,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends IterativeRobot {
 
-	private AutoPath path1, path2, path3, pathTest4;
+	private AutoPath path1, path2, path3, pathTest4, path4;
 
 	public void robotInit() {
 		ConstantsIO.init();
@@ -38,6 +40,8 @@ public class Robot extends IterativeRobot {
 		pathTest4 = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
 			return new Pair (0, 12*t);
 		}, 10000));
+		path4 = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(0,0), new Pair(0, 75), new Pair(-49, 92), new Pair(-71, 106)));
+		
 //		path = AutoPath.getPointsForBezier(10000, new Pair(0, 0), new Pair(x, y))
 //		path = new AutoPath(AutoPath.getPointsForFunction((double t) -> {
 //			return new Pair(50*(1-Math.cos(Math.PI*t)), 50*Math.sin(Math.PI*t));
@@ -74,6 +78,7 @@ public class Robot extends IterativeRobot {
 		RobotMap.driveTrain.zeroEncoders();
 		RobotMap.driveTrain.updateConstants();
 
+//		 Gear Center
 //		 CommandGroup group = new CommandGroup();
 //		 group.addSequential(new DriveStraight(80, 0, 50, 6000));
 //		 group.addSequential(new ResetDriveTrain());
@@ -83,18 +88,34 @@ public class Robot extends IterativeRobot {
 //		 group.addSequential(new DriveStraight(-24, 0, 50, 6000));
 //		 group.addSequential(new ResetDriveTrain());
 //		 Scheduler.getInstance().add(group);
-		 CommandGroup group = new CommandGroup();
-		 group.addSequential(new DriveTo(path3, 25, false, 8000));
-		 group.addSequential(new ResetDriveTrain());
-		 group.addSequential(new ZeroEncoders());
-		 group.addSequential(new SetGearWingsPosition(true));
-		 group.addSequential(new TimedCommand(.5));
-		 group.addSequential(new DriveStraight(-24, 60, 25, 6000));
-		 Scheduler.getInstance().add(group);
+		
+//		 Gear Left
+//		 CommandGroup group = new CommandGroup();
+//		 group.addSequential(new DriveTo(path3, 25, false, 8000));
+//		 group.addSequential(new ResetDriveTrain());
+//		 group.addSequential(new ZeroEncoders());
+//		 group.addSequential(new SetGearWingsPosition(true));
+//		 group.addSequential(new TimedCommand(.5));
+//		 group.addSequential(new DriveStraight(-24, 60, 25, 6000));
+//		 Scheduler.getInstance().add(group);
+		
+//		Gear Right
+//		CommandGroup group = new CommandGroup();
+//		group.addSequential(new DriveTo(path4, 75, false, 4000));
+//		group.addSequential(new ResetDriveTrain());
+//		group.addSequential(new ZeroEncoders());
+//		group.addSequential(new SetGearWingsPosition(true));
+//		group.addSequential(new TimedCommand(.5));
+//		group.addSequential(new DriveStraight(-36, 300, 100, 6000));
+//		Scheduler.getInstance().add(group);
+		
 //		
+//		Tuning
 //		CommandGroup group = new CommandGroup();
 //		group.addSequential(new SetLeftRightVelocity(40, 40));
 //		Scheduler.getInstance().add(group);
+		
+		Scheduler.getInstance().add(new GearAuto(AirshipSide.RIGHT_SIDE, false));
 		
 	}
 
@@ -155,6 +176,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Shooter Error", RobotMap.shooter.getAvgError());
 		SmartDashboard.putNumber("Shooter Distance", RobotMap.shooterEncoder.getDistance());
 		SmartDashboard.putNumber("Uptake Speed", RobotMap.feederEncoder.getRate());
+		SmartDashboard.putNumber("Uptake Speed Error", RobotMap.feeder.getAvgError());
 		SmartDashboard.putNumber("Spinning Wheel of Death Speed", RobotMap.brokenSWODEnc.pidGet());
 //		SmartDashboard.putNumber("Spinning Wheel of Death PWM", RobotMap.wheelOfDeath.getPWM());
 
