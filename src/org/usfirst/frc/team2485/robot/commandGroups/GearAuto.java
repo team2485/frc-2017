@@ -29,7 +29,7 @@ public class GearAuto extends CommandGroup {
 			addSequential(new TimedCommand(.5));
 			addSequential(new DriveStraight(-24, 0, 50, 6000));
 			addSequential(new ResetDriveTrain());
-		} else {
+		} else { 
 			boolean isBoiler = isRed == (airshipSide == AirshipSide.RIGHT_SIDE);
 			double offset = isBoiler ? 0 : 5;
 			AutoPath path = (airshipSide == AirshipSide.LEFT_SIDE) ? 
