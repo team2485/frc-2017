@@ -10,17 +10,17 @@ import edu.wpi.first.wpilibj.command.Command;
  * @author Ben Dorsey
  */
 
-public class DriveStraight extends Command {
+public class DriveStraightConditional extends Command {
 	private double dist, angle;
 	private double maxVelocity;
 	private boolean finished;
 	private int timeout;
 	private long startTime;
 	private double tolerance;
-	public DriveStraight(double dist, double angle, double maxVelocity, int timeout) {
+	public DriveStraightConditional(double dist, double angle, double maxVelocity, int timeout) {
 		this(dist, angle, maxVelocity, timeout, DriveTrain.DRIVETO_TOLERANCE);
 	}	
-	public DriveStraight(double dist, double angle, double maxVelocity, int timeout, double tolerance) {
+	public DriveStraightConditional(double dist, double angle, double maxVelocity, int timeout, double tolerance) {
 		this.dist = dist;
 		this.angle = angle;
 		this.maxVelocity =  maxVelocity;
@@ -35,11 +35,12 @@ public class DriveStraight extends Command {
 	protected void initialize() {
 		super.initialize();
 		startTime = System.currentTimeMillis();
+		finished = !RobotMap.driveTrain.getAutoError();
 	}
 	@Override
 	protected void execute() {
 		super.execute();
-		finished = RobotMap.driveTrain.driveTo(dist, maxVelocity, angle, 0, tolerance);
+		finished = finished || RobotMap.driveTrain.driveTo(dist, maxVelocity, angle, 0, tolerance);
 	}
 
 	@Override

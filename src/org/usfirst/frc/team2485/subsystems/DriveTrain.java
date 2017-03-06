@@ -47,6 +47,7 @@ public class DriveTrain extends Subsystem {
 	private static final double THROTTLE_DEADBAND = 0.01;
 	private static final double MIN_CURRENT = 2;
 	private static final double MAX_CURRENT = 20;
+	private double lastDistError;
 
 
 	private boolean isQuickTurn;
@@ -74,8 +75,10 @@ public class DriveTrain extends Subsystem {
 
 	private static final double LOW_SPEED_DRIVETO = 1;
 	private static final double LOW_SPEED_ROTATETO = .5;
-	private static final double DRIVETO_TOLERANCE = 2;
+	public static final double DRIVETO_TOLERANCE = 2;
 	private static final double ROTATETO_TOLERANCE = .5;
+	
+	private boolean errorInAuto;
 
 	public DriveTrain() {
 
@@ -177,6 +180,15 @@ public class DriveTrain extends Subsystem {
 		this.isQuickTurn = quickTurn;
 	}
 
+	public void setAutoError() {
+		errorInAuto = (getDistanceError() > 5);
+		System.out.println("Distance Error: " + getDistanceError());
+	}
+	
+	public boolean getAutoError() {
+		return errorInAuto;
+	}
+	
 	public void simpleDrive(double throttle, double steering) {
 		
 		double leftPwm, rightPwm;
@@ -364,7 +376,7 @@ public class DriveTrain extends Subsystem {
 		RobotMap.driveRight3.set(r);
 	}
 
-	public boolean driveTo(double distance, double maxSpeed, double angle, double curvature) {
+	public boolean driveTo(double distance, double maxSpeed, double angle, double curvature, double tolerance) {
 		
 		switchControlMode(ControlMode.AUTO_CURVE_FOLLOW);
 		distPID.setSetpoint(distance);
@@ -372,6 +384,8 @@ public class DriveTrain extends Subsystem {
 		anglePID.setSetpoint(angle);
 		anglePID.setOutputRange(-maxSpeed, maxSpeed);
 		autoCurvatureTransferNode.setOutput(curvature);
+		distPID.setAbsoluteTolerance(tolerance);
+		lastDistError = distPID.getAvgError();
 		return (distPID.isOnTarget() && Math.abs((RobotMap.driveEncRight.getRate() + 
 				RobotMap.driveEncLeft.getRate()) / 2) < LOW_SPEED_DRIVETO);
 		
@@ -384,6 +398,10 @@ public class DriveTrain extends Subsystem {
 		anglePID.setSetpoint(angle);
 		return (rotateToPID.isOnTarget() && Math.abs(RobotMap.ahrs.getRate()) < LOW_SPEED_ROTATETO);
 		
+	}
+	
+	public double getDistanceError() {
+		return lastDistError;
 	}
 	
 	@Override

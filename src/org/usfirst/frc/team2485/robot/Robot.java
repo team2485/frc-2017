@@ -115,7 +115,7 @@ public class Robot extends IterativeRobot {
 //		group.addSequential(new SetLeftRightVelocity(40, 40));
 //		Scheduler.getInstance().add(group);
 		
-		Scheduler.getInstance().add(new GearAuto(AirshipSide.RIGHT_SIDE, false));
+		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, false));
 		
 	}
 
@@ -179,6 +179,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Uptake Speed Error", RobotMap.feeder.getAvgError());
 		SmartDashboard.putNumber("Spinning Wheel of Death Speed", RobotMap.brokenSWODEnc.pidGet());
 //		SmartDashboard.putNumber("Spinning Wheel of Death PWM", RobotMap.wheelOfDeath.getPWM());
+		SmartDashboard.putNumber("SWOD Current", RobotMap.wheelOfDeath.getCurrent());
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",
 				RobotMap.driveLeft1.getTemperature());

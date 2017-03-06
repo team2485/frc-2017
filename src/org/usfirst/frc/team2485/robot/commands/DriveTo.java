@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
+import org.usfirst.frc.team2485.subsystems.DriveTrain;
 import org.usfirst.frc.team2485.util.AutoPath;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -42,7 +43,7 @@ public class DriveTo extends Command {
 		}
 		
 		finished = RobotMap.driveTrain.driveTo(pathLength, maxVelocity, 
-				path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength));
+				path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength), DriveTrain.DRIVETO_TOLERANCE);
 		
 	}
 	
