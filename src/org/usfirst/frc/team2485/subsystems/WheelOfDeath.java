@@ -1,8 +1,6 @@
 package org.usfirst.frc.team2485.subsystems;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
-import org.usfirst.frc.team2485.util.ConstantsIO;
-import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
 import com.ctre.CANTalon.TalonControlMode;
 
@@ -17,12 +15,7 @@ public class WheelOfDeath extends Subsystem {
 
 	private double previousSpeed;
 	
-	private WarlordsPIDController ratePID;
-
 	public WheelOfDeath() {
-		ratePID = new WarlordsPIDController();
-		ratePID.setOutputs(RobotMap.deathMotor);
-		ratePID.setSources(RobotMap.brokenSWODEnc);
 		stop();
 	}
 
@@ -30,11 +23,6 @@ public class WheelOfDeath extends Subsystem {
 	protected void initDefaultCommand() {
 	}
 
-	public void setSpeed(double speed) {
-		RobotMap.deathMotor.changeControlMode(TalonControlMode.PercentVbus);
-		ratePID.enable();
-		ratePID.setSetpoint(speed);
-	}
 	
 	public void setCurrent(double current) {
 		RobotMap.deathMotor.changeControlMode(TalonControlMode.Current);
@@ -47,20 +35,17 @@ public class WheelOfDeath extends Subsystem {
 	}
 
 	public void updateConstants() {
-		ratePID.setPID(ConstantsIO.kP_SWODCurrent, ConstantsIO.kI_SWODCurrent, ConstantsIO.kD_SWODCurrent,
-				ConstantsIO.kF_SWODCurrent);
+		
 	}
 
 	public void setPWM(double pwm) {
 		RobotMap.deathMotor.changeControlMode(TalonControlMode.PercentVbus);
 		RobotMap.deathMotor.set(pwm);
-		ratePID.disable();
 	}
 
 	public void stop() {
 		RobotMap.deathMotor.changeControlMode(TalonControlMode.PercentVbus);
 		RobotMap.deathMotor.set(0);
-		ratePID.disable();
 	}
 
 	public double getSpeed() {
