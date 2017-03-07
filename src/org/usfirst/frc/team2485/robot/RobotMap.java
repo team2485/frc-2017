@@ -61,7 +61,6 @@ public class RobotMap {
 	// Sensor Ports
 	public static int kRightDriveEncPortA = 0, kRightDriveEncPortB = 1;
 	public static int kLeftDriveEncPortA = 3, kLeftDriveEncPortB = 2;
-	public static int kSWODEncPortA = 4, kSWODEncPortB = 5;
 	public static int kFeederEncPortA = 6, kFeederEncPortB = 7;
 	public static int kShooterEncPortA = 8, kShooterEncPortB = 9;
 	public static int kUltrasonicPortA = 14, kUltrasonicPortB = 15;
@@ -88,15 +87,12 @@ public class RobotMap {
 	public static Encoder driveEncLeft, driveEncRight;
 	public static Encoder shooterEncoder;
 	public static Encoder feederEncoder;
-	public static Encoder swodEncoder;
 	public static Ultrasonic gearDetector;
 	public static AHRS ahrs;
-	public static UsbCamera usbCam;
 	
 	public static MultipleEncoderWrapper averageEncoderDistance, averageEncoderRate;
 	public static EncoderWrapperRateAndDistance driveEncRateLeft, driveEncRateRight;
 	public static AHRSWrapperRateAndAngle ahrsRateRads;
-	public static BrokenEncoderWrapper brokenSWODEnc;
 	
 	// Cameras
 	public static UsbCamera gearCamera, boilerCamera;
@@ -150,8 +146,6 @@ public class RobotMap {
 		ahrs = new AHRS(Port.kMXP);
 
 		shooterEncoder = new Encoder(kShooterEncPortA, kShooterEncPortB);
-		swodEncoder = new Encoder(kSWODEncPortA, kSWODEncPortB);
-		brokenSWODEnc = new BrokenEncoderWrapper(swodEncoder);
 		feederEncoder = new Encoder(kFeederEncPortA, kFeederEncPortB);
 		
 		driveEncLeft = new Encoder(kLeftDriveEncPortA, kLeftDriveEncPortB);
@@ -163,7 +157,11 @@ public class RobotMap {
 		gearDetector = new Ultrasonic(14, 15);
 		gearDetector.setAutomaticMode(true);
 		
-//		usbCam = CameraServer.getInstance().startAutomaticCapture();
+		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
+		gearCamera.setResolution(640, 480);
+		
+//		boilerCamera = CameraServer.getInstance().startAutomaticCapture(1);
+//		boilerCamera.setResolution(640, 480);
 		
 		averageEncoderDistance = new MultipleEncoderWrapper(PIDSourceType.kDisplacement,
 				MultipleEncoderWrapperMode.AVERAGE, driveEncLeft, driveEncRight);
@@ -174,9 +172,7 @@ public class RobotMap {
 
 		// CONFIGURE HARDWARE
 
-		driveLeft1.setInverted(true);
-		driveLeft2.setInverted(true);
-		driveLeft3.setInverted(true);
+		driveTrainLeft.setInverted(true);
 
 		driveEncLeft.setDistancePerPulse((double) 1 / 250 * (Math.PI * WHEEL_RADIUS * 2));
 		driveEncRight.setDistancePerPulse((double) 1 / 250 * (Math.PI * WHEEL_RADIUS * 2));
@@ -184,16 +180,8 @@ public class RobotMap {
 		shooterEncoder.setDistancePerPulse(1/250.0);
 		shooterEncoder.setPIDSourceType(PIDSourceType.kRate);
 		
-		swodEncoder.setDistancePerPulse(1.0 / 250);
-		swodEncoder.setPIDSourceType(PIDSourceType.kRate);
-		
 		feederEncoder.setDistancePerPulse((1.0/250)*Math.PI*2*FEEDER_RADIUS);
 		feederEncoder.setPIDSourceType(PIDSourceType.kRate);
-		
-		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
-		gearCamera.setResolution(640, 480);
-//		boilerCamera = CameraServer.getInstance().startAutomaticCapture(1);
-//		boilerCamera.setResolution(640, 480);
 
 
 		// CONSTRUCT SUBSYSTEMS
