@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2485.subsystems;
 
+import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.util.ConstantsIO;
@@ -265,10 +266,12 @@ public class DriveTrain extends Subsystem {
 			simpleDrive(throttle, steering);
 			
 		} else {
-			
-			double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.0, 1);
+			double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.0, 0.75) + ThresholdHandler.deadbandAndScale(OI.ben.getRawAxis(OI.XBOX_AXIS_RX), STEERING_DEADBAND, 0, 1);
+			System.out.println("steering:" + steering);
 			double overallCurrent = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, MIN_CURRENT, MAX_CURRENT);
 			overallCurrent *= driveSpeed;
+//			if (!isQuickTurn)
+//				steering *= 0.5;
 			
 			overallCurrentRamp.setSetpoint(overallCurrent);
 			steeringRamp.setSetpoint(steering);
