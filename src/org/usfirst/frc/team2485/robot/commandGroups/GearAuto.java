@@ -50,7 +50,7 @@ public class GearAuto extends CommandGroup {
 			addSequential(new ZeroEncoders());
 			addSequential(new DriveStraightConditional(20, isRight ? 305 : 55, 100, 1000));
 			addSequential(new ResetDriveTrain());
-			addSequential(new ZeroEncoders());
+			addSequential(new ZeroEncoders()); 
 			addSequential(new SetGearWingsPosition(true));
 			addSequential(new TimedCommand(.5));
 			
