@@ -38,7 +38,7 @@ public class DriveTo extends Command {
 				pathLength = path.getPathLength();
 		
 		if (reverse) {
-			arcLength = pathLength - arcLength;
+			arcLength = pathLength + arcLength;
 			pathLength *= -1;
 		}
 		

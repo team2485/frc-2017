@@ -50,7 +50,7 @@ public class Robot extends IterativeRobot {
 //		group.addSequential(new SetLeftRightVelocity(40, 40));
 //		Scheduler.getInstance().add(group);
 		
-		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, false, false));
+		Scheduler.getInstance().add(new GearAuto(AirshipSide.RIGHT_SIDE, true, true));
 		
 	}
 
