@@ -83,23 +83,23 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void updateSmartDashboard() {
-		SmartDashboard.putNumber("Left Current", RobotMap.driveLeft2.getOutputCurrent());
-		SmartDashboard.putNumber("Right Current", RobotMap.driveRight2.getOutputCurrent());
-		SmartDashboard.putNumber("Left Velocity Error", RobotMap.driveTrain.getLeftVelocityPIDError());
-		SmartDashboard.putBoolean("Test Boolean", System.currentTimeMillis() % 1000 > 500);
-		SmartDashboard.putNumber("Test Number", System.currentTimeMillis() % 1000);
-		SmartDashboard.putNumber("LeftVelocity", RobotMap.driveEncRateLeft.pidGet());
-		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
-		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
-		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
-		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
-		SmartDashboard.putNumber("Average Angle Error", RobotMap.driveTrain.getAnglePIDError());
-		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
-		SmartDashboard.putNumber("Shooter Error", RobotMap.shooter.getAvgError());
-		SmartDashboard.putNumber("Shooter Distance", RobotMap.shooterEncoder.getDistance());
-		SmartDashboard.putNumber("Uptake Speed", RobotMap.feederEncoder.getRate());
-		SmartDashboard.putNumber("Uptake Speed Error", RobotMap.feeder.getAvgError());
-		SmartDashboard.putNumber("SWOD Current", RobotMap.wheelOfDeath.getCurrent());
+//		SmartDashboard.putNumber("Left Current", RobotMap.driveLeft2.getOutputCurrent());
+//		SmartDashboard.putNumber("Right Current", RobotMap.driveRight2.getOutputCurrent());
+//		SmartDashboard.putNumber("Left Velocity Error", RobotMap.driveTrain.getLeftVelocityPIDError());
+//		SmartDashboard.putBoolean("Test Boolean", System.currentTimeMillis() % 1000 > 500);
+//		SmartDashboard.putNumber("Test Number", System.currentTimeMillis() % 1000);
+//		SmartDashboard.putNumber("LeftVelocity", RobotMap.driveEncRateLeft.pidGet());
+//		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
+//		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
+//		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
+//		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
+//		SmartDashboard.putNumber("Average Angle Error", RobotMap.driveTrain.getAnglePIDError());
+//		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
+//		SmartDashboard.putNumber("Shooter Error", RobotMap.shooter.getAvgError());
+//		SmartDashboard.putNumber("Shooter Distance", RobotMap.shooterEncoder.getDistance());
+//		SmartDashboard.putNumber("Uptake Speed", RobotMap.feederEncoder.getRate());
+//		SmartDashboard.putNumber("Uptake Speed Error", RobotMap.feeder.getAvgError());
+//		SmartDashboard.putNumber("SWOD Current", RobotMap.wheelOfDeath.getCurrent());
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",
 				RobotMap.driveLeft1.getTemperature());
