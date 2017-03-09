@@ -158,7 +158,8 @@ public class RobotMap {
 		gearDetector.setAutomaticMode(true);
 		
 		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
-		gearCamera.setResolution(640, 480);
+		gearCamera.setResolution(1080, 720);
+		gearCamera.setFPS(30);
 		
 //		boilerCamera = CameraServer.getInstance().startAutomaticCapture(1);
 //		boilerCamera.setResolution(640, 480);

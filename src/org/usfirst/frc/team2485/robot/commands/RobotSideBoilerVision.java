@@ -35,7 +35,7 @@ public class RobotSideBoilerVision extends Command {
 	private void processImages() {
 
 		CvSink cvSink = CameraServer.getInstance().getVideo(RobotMap.boilerCamera);
-		CvSource outputStream = CameraServer.getInstance().putVideo("Subtracted Boiler Image", 640, 480);
+		CvSource outputStream = CameraServer.getInstance().putVideo("Subtracted Boiler Image", 1080, 720);
 
 		Mat light = new Mat();
 		Mat dark = new Mat();

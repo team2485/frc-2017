@@ -24,8 +24,11 @@ public class GearAuto extends CommandGroup {
 	public enum AirshipSide {
 		CENTER, LEFT_SIDE, RIGHT_SIDE
 	}
-	
+
 	public GearAuto(AirshipSide airshipSide, boolean isRed, boolean shoot) {
+
+		// @formatter:off
+		
 		if (airshipSide == AirshipSide.CENTER) {
 			addSequential(new DriveStraight(80, 0, 50, 6000));
 			addSequential(new ResetDriveTrain());
@@ -78,5 +81,7 @@ public class GearAuto extends CommandGroup {
 				addSequential(new DriveTo(path, 100, false, 6000));
 			}
 		}
+		// @formatter:on
+
 	}
 }
