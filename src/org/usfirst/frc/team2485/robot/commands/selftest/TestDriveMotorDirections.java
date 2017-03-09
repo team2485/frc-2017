@@ -15,13 +15,13 @@ public class TestDriveMotorDirections extends Command {
 	private long startTime;
 
 	private double forwardVal, reverseVal;
-	
+
 	private boolean done;
 
 	private int previousMotor;
 
 	private ITable table;
-	
+
 	public TestDriveMotorDirections() {
 		requires(RobotMap.driveTrain);
 	}
@@ -31,6 +31,7 @@ public class TestDriveMotorDirections extends Command {
 		RobotMap.driveTrain.reset();
 		startTime = System.currentTimeMillis();
 		table = NetworkTable.getTable("SmartDashboard").getSubTable("SelfTest");
+		previousMotor = 0;
 		done = false;
 	}
 
@@ -85,7 +86,7 @@ public class TestDriveMotorDirections extends Command {
 
 		if (cycleTime > 900 && cycleTime < 1000) {
 			forwardVal = getRateForMotor(motorToRun);
-			
+
 		}
 
 		if (cycleTime > 1900) {
@@ -100,7 +101,6 @@ public class TestDriveMotorDirections extends Command {
 			return RobotMap.driveEncRateRight.pidGet();
 		}
 	}
-	
 
 	private void setMotorValue(int id, double val) {
 		switch (id) {
