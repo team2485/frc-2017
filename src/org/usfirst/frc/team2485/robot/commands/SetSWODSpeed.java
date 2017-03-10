@@ -12,9 +12,9 @@ public class SetSWODSpeed extends Command {
 
 	private long lastJamTime;
 
-	private static final int UNJAM_TIME = 135, REJAM_TIME = 250;
-	public static final double NORMAL_POWER = .225, UNJAM_POWER = -.4;
-	public static final double JAM_CURRENT_THRESHOLD = 2;
+	private static final int UNJAM_TIME = 100, REJAM_TIME = 250;
+	public static final double NORMAL_POWER = .325, UNJAM_POWER = -.6;
+	public static final double JAM_CURRENT_THRESHOLD = 2.5;
 
 	public SetSWODSpeed() {
 		requires(RobotMap.wheelOfDeath);

@@ -267,7 +267,7 @@ public class DriveTrain extends Subsystem {
 			
 		} else {
 			double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.0, 0.75) + ThresholdHandler.deadbandAndScale(OI.ben.getRawAxis(OI.XBOX_AXIS_RX), STEERING_DEADBAND, 0, 1);
-			System.out.println("steering:" + steering);
+//			System.out.println("steering:" + steering);
 			double overallCurrent = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, MIN_CURRENT, MAX_CURRENT);
 			overallCurrent *= driveSpeed;
 //			if (!isQuickTurn)

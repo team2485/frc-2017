@@ -82,10 +82,9 @@ public class OI {
 		
 		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearFlapsPosition(true));
 		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
-		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new ExtendIntake());
 
-		new BackStartComboButton(elliot).whenPressed(new ToggleCompressor(true));
-		new BackStartComboButton(elliot).whenReleased(new ToggleCompressor(false));
+		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new ToggleCompressor(true));
+		new JoystickButton(elliot, XBOX_BTN_Y).whenReleased(new ToggleCompressor(false));
 
 		// new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new
 		// SetIntakeArmHorizontal(true));

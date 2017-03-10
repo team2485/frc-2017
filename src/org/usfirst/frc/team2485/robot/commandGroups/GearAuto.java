@@ -42,16 +42,16 @@ public class GearAuto extends CommandGroup {
 			boolean isBoiler = isRed == isRight;
 			double offset = isBoiler ? 0 : 5;
 			AutoPath path = isRight ? 
-				 new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-offset,0), new Pair(-offset, 75), new Pair(-49, 92), new Pair(-72, 107))):
-				new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(offset, 0), new Pair(offset, 75), new Pair(51, 102), new Pair(70, 115)));
+				 new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-offset,0), new Pair(-offset, 75), new Pair(-51, 92), new Pair(-74, 107))):
+				new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(offset, 0), new Pair(offset, 75), new Pair(46, 99), new Pair(65, 112)));
 			addSequential(new DriveTo(path, 75, false, 4000));
 			addSequential(new ResetDriveTrain());
 			addSequential(new ZeroEncoders());
 			addSequential(new CheckDistError());
-			addSequential(new DriveStraightConditional(-10, isRight ? 300 : 60, 100, 1000));
+			addSequential(new DriveStraightConditional(-10, isRight ? 300 : 60, 100, 2000));
 			addSequential(new ResetDriveTrain());
 			addSequential(new ZeroEncoders());
-			addSequential(new DriveStraightConditional(20, isRight ? 305 : 55, 100, 1000));
+			addSequential(new DriveStraightConditional(20, isRight ? 305 : 55, 100, 2500));
 			addSequential(new ResetDriveTrain());
 			addSequential(new ZeroEncoders()); 
 			addSequential(new SetGearWingsPosition(true));
@@ -59,8 +59,8 @@ public class GearAuto extends CommandGroup {
 			
 			if (shoot && isBoiler) {
 				path = isRight ? 
-						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-73, 50), new Pair(-33, 21), new Pair(0, 56), new Pair(-72.0, 107))) : 
-						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(75.0, 57.0), new Pair(33.0, 33.0), new Pair(-4.5, 64.5), new Pair(70.0, 115.0)));
+						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-78, 53.5), new Pair(-38, 24.5), new Pair(0, 56), new Pair(-72.0, 107))) : 
+						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(85.0, 64.0), new Pair(43.0, 40.0), new Pair(-4.5, 64.5), new Pair(70.0, 115.0)));
 				CommandGroup drive = new CommandGroup();
 				drive.addSequential(new DriveTo(path, 75, true, 10000));
 				drive.addSequential(new ResetDriveTrain());

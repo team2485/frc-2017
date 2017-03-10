@@ -12,5 +12,6 @@ public class CheckDistError extends InstantCommand {
 	@Override
 	protected void initialize() {
 		RobotMap.driveTrain.setAutoError();
+		System.out.println("Error: " + RobotMap.driveTrain.getDistanceError());
 	}
 }

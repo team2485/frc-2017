@@ -69,6 +69,7 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
 		updateSmartDashboard();
+//		System.out.println("pressure" + RobotMap.compressor.getPressureSwitchValue());
 	}
 
 	public void testInit() {
@@ -100,6 +101,8 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Uptake Speed", RobotMap.feederEncoder.getRate());
 //		SmartDashboard.putNumber("Uptake Speed Error", RobotMap.feeder.getAvgError());
 //		SmartDashboard.putNumber("SWOD Current", RobotMap.wheelOfDeath.getCurrent());
+		SmartDashboard.putNumber("Distance Error", RobotMap.driveTrain.getDistanceError());
+
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",
 				RobotMap.driveLeft1.getTemperature());
