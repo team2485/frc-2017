@@ -3,9 +3,13 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commandGroups.GearAuto;
 import org.usfirst.frc.team2485.robot.commandGroups.GearAuto.AirshipSide;
+import org.usfirst.frc.team2485.robot.commands.DriveTo;
+import org.usfirst.frc.team2485.util.AutoPath;
+import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,8 +54,15 @@ public class Robot extends IterativeRobot {
 //		group.addSequential(new SetLeftRightVelocity(40, 40));
 //		Scheduler.getInstance().add(group);
 		
-		Scheduler.getInstance().add(new GearAuto(AirshipSide.RIGHT_SIDE, true, true));
-		
+		// DRIVERS IF YOU NEED TO CHANGE AUTO DO IT HERE
+		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, // which hook we score on, left, right, or center
+				false, // true if we are red
+				true)); // true if we should shoot, only set to true near boiler
+//		CommandGroup cg = new CommandGroup();
+//		cg.addSequential(new DriveTo(new AutoPath(AutoPath.getPointsForBezier(10000, 
+//				new Pair(0, 0), new Pair(2, 2), new Pair(2, 12))), 
+//				100, false, 3000));
+//		Scheduler.getInstance().add(cg);
 	}
 
 	public void autonomousPeriodic() {
@@ -89,16 +100,16 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Left Velocity Error", RobotMap.driveTrain.getLeftVelocityPIDError());
 //		SmartDashboard.putBoolean("Test Boolean", System.currentTimeMillis() % 1000 > 500);
 //		SmartDashboard.putNumber("Test Number", System.currentTimeMillis() % 1000);
-//		SmartDashboard.putNumber("LeftVelocity", RobotMap.driveEncRateLeft.pidGet());
-//		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
+		SmartDashboard.putNumber("LeftVelocity", RobotMap.driveEncRateLeft.pidGet());
+		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
 //		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
 //		SmartDashboard.putNumber("Angle", RobotMap.ahrs.getAngle());
-//		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
+		SmartDashboard.putNumber("Spinning Wheel of Death Current", RobotMap.deathMotor.getOutputCurrent());
 //		SmartDashboard.putNumber("Average Angle Error", RobotMap.driveTrain.getAnglePIDError());
 //		SmartDashboard.putNumber("Average Angular Velocity Error", RobotMap.driveTrain.getAngularVelocityError());
-//		SmartDashboard.putNumber("Shooter Error", RobotMap.shooter.getAvgError());
+		SmartDashboard.putNumber("Shooter Error", RobotMap.shooter.getAvgError());
 //		SmartDashboard.putNumber("Shooter Distance", RobotMap.shooterEncoder.getDistance());
-//		SmartDashboard.putNumber("Uptake Speed", RobotMap.feederEncoder.getRate());
+		SmartDashboard.putNumber("Uptake Speed", RobotMap.feederEncoder.getRate());
 //		SmartDashboard.putNumber("Uptake Speed Error", RobotMap.feeder.getAvgError());
 //		SmartDashboard.putNumber("SWOD Current", RobotMap.wheelOfDeath.getCurrent());
 		SmartDashboard.putNumber("Distance Error", RobotMap.driveTrain.getDistanceError());

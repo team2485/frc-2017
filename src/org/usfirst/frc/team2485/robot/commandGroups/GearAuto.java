@@ -24,6 +24,7 @@ public class GearAuto extends CommandGroup {
 	public enum AirshipSide {
 		CENTER, LEFT_SIDE, RIGHT_SIDE
 	}
+	
 
 	public GearAuto(AirshipSide airshipSide, boolean isRed, boolean shoot) {
 
@@ -42,7 +43,7 @@ public class GearAuto extends CommandGroup {
 			boolean isBoiler = isRed == isRight;
 			double offset = isBoiler ? 0 : 5;
 			AutoPath path = isRight ? 
-				 new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-offset,0), new Pair(-offset, 75), new Pair(-51, 92), new Pair(-74, 107))):
+				 new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-offset,0), new Pair(-offset, 75), new Pair(-52.25, 94), new Pair(-75.25, 109))):
 				new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(offset, 0), new Pair(offset, 75), new Pair(46, 99), new Pair(65, 112)));
 			addSequential(new DriveTo(path, 75, false, 4000));
 			addSequential(new ResetDriveTrain());
@@ -59,8 +60,8 @@ public class GearAuto extends CommandGroup {
 			
 			if (shoot && isBoiler) {
 				path = isRight ? 
-						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-78, 53.5), new Pair(-38, 24.5), new Pair(0, 56), new Pair(-72.0, 107))) : 
-						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(85.0, 64.0), new Pair(43.0, 40.0), new Pair(-4.5, 64.5), new Pair(70.0, 115.0)));
+						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-78, 48.5), new Pair(-38, 19.5), new Pair(0, 56), new Pair(-72.0, 107))) : 
+						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(88.0, 61.0), new Pair(46.0, 37.0), new Pair(-4.5, 64.5), new Pair(70.0, 115.0)));
 				CommandGroup drive = new CommandGroup();
 				drive.addSequential(new DriveTo(path, 75, true, 10000));
 				drive.addSequential(new ResetDriveTrain());
@@ -84,4 +85,5 @@ public class GearAuto extends CommandGroup {
 		// @formatter:on
 
 	}
+	
 }

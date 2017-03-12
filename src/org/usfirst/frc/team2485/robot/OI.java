@@ -3,7 +3,9 @@ package org.usfirst.frc.team2485.robot;
 import org.usfirst.frc.team2485.robot.commandGroups.ExtendIntake;
 import org.usfirst.frc.team2485.robot.commandGroups.ToggleShooting;
 import org.usfirst.frc.team2485.robot.commands.Climb;
+import org.usfirst.frc.team2485.robot.commands.DriveStraight;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
+import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.ResetGear;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetGearFlapsPosition;
@@ -19,6 +21,8 @@ import org.usfirst.frc.team2485.util.JoystickAxisButton;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
@@ -57,6 +61,11 @@ public class OI {
 		new JoystickButton(ben, XBOX_BTN_LBUMPER).whenReleased(new Climb(false));
 
 		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearWingsPosition(true));
+		Command backup = new DriveStraight(-80, 100, 5000);
+		new JoystickButton(ben, XBOX_BTN_Y).whenPressed(backup);
+		new JoystickButton(ben, XBOX_BTN_B).cancelWhenPressed(backup);
+		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new ResetDriveTrain());
+		
 
 		if (DriveWithControllers.TRIGGER_DRIVE) {
 			new JoystickButton(ben, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));

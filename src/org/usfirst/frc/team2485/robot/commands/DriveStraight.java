@@ -16,9 +16,17 @@ public class DriveStraight extends Command {
 	private int timeout;
 	private long startTime;
 	private double tolerance;
+	private boolean setAngle = false;
+	
+	public DriveStraight(double dist, double maxVelocity, int timeout) {
+		this(dist, 0, maxVelocity, timeout);
+		setAngle = true;
+	}
+	
 	public DriveStraight(double dist, double angle, double maxVelocity, int timeout) {
 		this(dist, angle, maxVelocity, timeout, DriveTrain.DRIVETO_TOLERANCE);
 	}	
+	
 	public DriveStraight(double dist, double angle, double maxVelocity, int timeout, double tolerance) {
 		this.dist = dist;
 		this.angle = angle;
@@ -33,7 +41,10 @@ public class DriveStraight extends Command {
 	@Override
 	protected void initialize() {
 		super.initialize();
+		RobotMap.driveTrain.zeroEncoders();
 		startTime = System.currentTimeMillis();
+		if (setAngle)
+			angle = RobotMap.ahrs.getAngle();
 	}
 	@Override
 	protected void execute() {

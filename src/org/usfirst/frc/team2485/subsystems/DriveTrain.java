@@ -182,7 +182,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void setAutoError() {
-		errorInAuto = (getDistanceError() > 5);
+		errorInAuto = (getDistanceError() > 10);
 		System.out.println("Distance Error: " + getDistanceError());
 	}
 	
