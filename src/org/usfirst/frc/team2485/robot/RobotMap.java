@@ -61,8 +61,8 @@ public class RobotMap {
 	// Sensor Ports
 	public static int kRightDriveEncPortA = 0, kRightDriveEncPortB = 1;
 	public static int kLeftDriveEncPortA = 3, kLeftDriveEncPortB = 2;
-	public static int kFeederEncPortA = 6, kFeederEncPortB = 7;
-	public static int kShooterEncPortA = 8, kShooterEncPortB = 9;
+	public static int kFeederEncPortA = 8, kFeederEncPortB = 9; //on competition was 6 and 7
+	public static int kShooterEncPortA = 6, kShooterEncPortB = 7; //on competition was 8 and 9
 	public static int kUltrasonicPortA = 14, kUltrasonicPortB = 15;
 
 	// Speed Controllers

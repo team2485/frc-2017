@@ -8,6 +8,7 @@ import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.ResetGear;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
+import org.usfirst.frc.team2485.robot.commands.SetFeederManual;
 import org.usfirst.frc.team2485.robot.commands.SetGearFlapsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
@@ -16,6 +17,7 @@ import org.usfirst.frc.team2485.robot.commands.SetShooter;
 import org.usfirst.frc.team2485.robot.commands.ToggleCompressor;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
+import org.usfirst.frc.team2485.util.ConstantsIO;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -88,6 +90,13 @@ public class OI {
 		
 		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new SetShooter(true));
 		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetShooter(false));
+		
+//		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenPressed(new SetFeederManual(.5));
+//		new JoystickButton(elliot, XBOX_BTN_RBUMPER).whenReleased(new SetFeederManual(0));
+//		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenPressed(new SetShooter(true));
+//		new JoystickButton(elliot, XBOX_BTN_LBUMPER).whenReleased(new SetShooter(false));
+		//Test Code ^^
+		
 		
 		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearFlapsPosition(true));
 		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
