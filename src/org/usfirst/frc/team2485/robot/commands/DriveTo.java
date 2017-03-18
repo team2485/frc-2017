@@ -16,6 +16,7 @@ public class DriveTo extends Command {
 	private boolean finished, reverse;
 	private long startTime;
 	private int timeout;
+	private FinishedCondition finishedCondition = FinishedCondition.FALSE_CONDITION;
 	public DriveTo(AutoPath path, double maxVelocity, boolean reverse, int timeout) {
 		this.path = path;
 		this.maxVelocity =  maxVelocity;
@@ -23,6 +24,10 @@ public class DriveTo extends Command {
 		this.timeout = timeout;
 		setInterruptible(true);
 		requires(RobotMap.driveTrain);
+	}
+	
+	public void setFinishedCondition(FinishedCondition finishedCondition) {
+		this.finishedCondition = finishedCondition;
 	}
 	
 	@Override
@@ -43,7 +48,8 @@ public class DriveTo extends Command {
 		}
 		
 		finished = RobotMap.driveTrain.driveTo(pathLength, maxVelocity, 
-				path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength), DriveTrain.DRIVETO_TOLERANCE);
+				path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength), DriveTrain.DRIVETO_TOLERANCE) ||
+				finishedCondition.isFinished();
 		
 	}
 	

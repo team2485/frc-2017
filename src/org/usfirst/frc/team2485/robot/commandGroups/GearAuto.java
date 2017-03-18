@@ -1,8 +1,8 @@
 package org.usfirst.frc.team2485.robot.commandGroups;
 
+import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.robot.commands.CheckDistError;
 import org.usfirst.frc.team2485.robot.commands.DriveStraight;
-import org.usfirst.frc.team2485.robot.commands.DriveStraightConditional;
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
@@ -43,18 +43,22 @@ public class GearAuto extends CommandGroup {
 			boolean isBoiler = isRed == isRight;
 			double offset = isBoiler ? 0 : 5;
 			AutoPath path = isRight ? 
-				 new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-offset,0), new Pair(-offset, 75), new Pair(-52.25, 94), new Pair(-75.25, 109))):
+				 new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-offset, 0), new Pair(-offset, 75), new Pair(-52.25, 94), new Pair(-75.25, 109))):
 				new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(offset, 0), new Pair(offset, 75), new Pair(46, 99), new Pair(65, 112)));
-			addSequential(new DriveTo(path, 75, false, 4000));
+			DriveTo placeGear = new DriveTo(path, 75, false, 4000);
+			placeGear.setFinishedCondition(() -> {
+				return Math.abs(RobotMap.driveTrain.getAvgEncRate()) < 2;
+			});
+			addSequential(placeGear);
 			addSequential(new ResetDriveTrain());
 			addSequential(new ZeroEncoders());
 			addSequential(new CheckDistError());
-			addSequential(new DriveStraightConditional(-10, isRight ? 300 : 60, 100, 2000));
-			addSequential(new ResetDriveTrain());
-			addSequential(new ZeroEncoders());
-			addSequential(new DriveStraightConditional(20, isRight ? 305 : 55, 100, 2500));
-			addSequential(new ResetDriveTrain());
-			addSequential(new ZeroEncoders()); 
+//			addSequential(new DriveStraightConditional(-10, isRight ? 300 : 60, 100, 2000));
+//			addSequential(new ResetDriveTrain());
+//			addSequential(new ZeroEncoders());
+//			addSequential(new DriveStraightConditional(20, isRight ? 305 : 55, 100, 2500));
+//			addSequential(new ResetDriveTrain());
+//			addSequential(new ZeroEncoders()); 
 			addSequential(new SetGearWingsPosition(true));
 			addSequential(new TimedCommand(.5));
 			
