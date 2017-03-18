@@ -44,8 +44,10 @@ public class RampRate extends WarlordsControlSystem {
 			if (Math.abs(desired - lastValue) > downRampRate) {
 				if (lastValue > 0) {
 					lastValue -= downRampRate;
+
 				} else {
 					lastValue += downRampRate;
+
 				}
 			} else {
 				lastValue = desired;

@@ -157,9 +157,9 @@ public class RobotMap {
 		gearDetector = new Ultrasonic(14, 15);
 		gearDetector.setAutomaticMode(true);
 		
-		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
-		gearCamera.setResolution(320, 240);
-		gearCamera.setFPS(30);
+//		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
+//		gearCamera.setResolution(320, 240);
+//		gearCamera.setFPS(30);
 		
 //		boilerCamera = CameraServer.getInstance().startAutomaticCapture(1);
 //		boilerCamera.setResolution(640, 480);

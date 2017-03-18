@@ -56,7 +56,7 @@ public class DriveTrain extends Subsystem {
 
 	private double driveSpeed = DriveSpeed.NORMAL_SPEED_RATING.getSpeedFactor();
 
-	private WarlordsPIDController velocityPIDRight = new WarlordsPIDController(),
+	public WarlordsPIDController velocityPIDRight = new WarlordsPIDController(),
 			velocityPIDLeft = new WarlordsPIDController(), rotateToPID = new WarlordsPIDController(),
 			distPID = new WarlordsPIDController(), anglePID = new WarlordsPIDController(),
 			angVelPIDController = new WarlordsPIDController();

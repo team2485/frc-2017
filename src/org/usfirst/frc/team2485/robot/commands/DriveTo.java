@@ -16,18 +16,24 @@ public class DriveTo extends Command {
 	private boolean finished, reverse;
 	private long startTime;
 	private int timeout;
+	private double tolerance;
 	private FinishedCondition finishedCondition = FinishedCondition.FALSE_CONDITION;
 	public DriveTo(AutoPath path, double maxVelocity, boolean reverse, int timeout) {
 		this.path = path;
 		this.maxVelocity =  maxVelocity;
 		this.reverse = reverse;
 		this.timeout = timeout;
+		this.tolerance = DriveTrain.DRIVETO_TOLERANCE;
 		setInterruptible(true);
 		requires(RobotMap.driveTrain);
 	}
 	
 	public void setFinishedCondition(FinishedCondition finishedCondition) {
 		this.finishedCondition = finishedCondition;
+	}
+	
+	public void setTolerance (double tolerance) {
+		this.tolerance = tolerance;
 	}
 	
 	@Override
@@ -48,7 +54,7 @@ public class DriveTo extends Command {
 		}
 		
 		finished = RobotMap.driveTrain.driveTo(pathLength, maxVelocity, 
-				path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength), DriveTrain.DRIVETO_TOLERANCE) ||
+				path.getHeadingAtDist(arcLength), path.getCurvatureAtDist(arcLength), tolerance) ||
 				finishedCondition.isFinished();
 		
 	}
