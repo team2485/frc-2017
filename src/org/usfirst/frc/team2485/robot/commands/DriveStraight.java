@@ -17,6 +17,7 @@ public class DriveStraight extends Command {
 	private long startTime;
 	private double tolerance;
 	private boolean setAngle = false;
+	private FinishedCondition finishedCondition = FinishedCondition.FALSE_CONDITION;
 	
 	public DriveStraight(double dist, double maxVelocity, int timeout) {
 		this(dist, 0, maxVelocity, timeout);
@@ -36,7 +37,9 @@ public class DriveStraight extends Command {
 		requires(RobotMap.driveTrain);
 	}
 	
-	
+	public void setFinishedCondition(FinishedCondition finishedCondition) {
+		this.finishedCondition = finishedCondition;
+	}
 	
 	@Override
 	protected void initialize() {
@@ -49,7 +52,8 @@ public class DriveStraight extends Command {
 	@Override
 	protected void execute() {
 		super.execute();
-		finished = RobotMap.driveTrain.driveTo(dist, maxVelocity, angle, 0, tolerance);
+		finished = RobotMap.driveTrain.driveTo(dist, maxVelocity, angle, 0, tolerance) ||
+				finishedCondition.isFinished();
 	}
 
 	@Override

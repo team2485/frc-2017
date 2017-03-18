@@ -3,9 +3,7 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commandGroups.GearAuto;
 import org.usfirst.frc.team2485.robot.commandGroups.GearAuto.AirshipSide;
-import org.usfirst.frc.team2485.robot.commands.DriveTo;
-import org.usfirst.frc.team2485.util.AutoPath;
-import org.usfirst.frc.team2485.util.AutoPath.Pair;
+import org.usfirst.frc.team2485.robot.commands.SetLeftRightVelocity;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -50,14 +48,16 @@ public class Robot extends IterativeRobot {
 		RobotMap.driveTrain.zeroEncoders();
 		
 //		Tuning
-//		CommandGroup group = new CommandGroup();
-//		group.addSequential(new SetLeftRightVelocity(40, 40));
-//		Scheduler.getInstance().add(group);
+		CommandGroup group = new CommandGroup();
+		group.addSequential(new SetLeftRightVelocity(60, 60));
+		Scheduler.getInstance().add(group);
 		
 		// DRIVERS IF YOU NEED TO CHANGE AUTO DO IT HERE
-		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, // which hook we score on, left, right, or center
-				false, // true if we are red
-				true)); // true if we should shoot, only set to true near boiler
+//		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, // which hook we score on, left, right, or center
+//				false, // true if we are red
+//				true)); // true if we should shoot, only set to true near boiler
+		
+		
 //		CommandGroup cg = new CommandGroup();
 //		cg.addSequential(new DriveTo(new AutoPath(AutoPath.getPointsForBezier(10000, 
 //				new Pair(0, 0), new Pair(2, 2), new Pair(2, 12))), 

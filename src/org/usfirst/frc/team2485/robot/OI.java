@@ -1,6 +1,5 @@
 package org.usfirst.frc.team2485.robot;
 
-import org.usfirst.frc.team2485.robot.commandGroups.ExtendIntake;
 import org.usfirst.frc.team2485.robot.commandGroups.ToggleShooting;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveStraight;
@@ -24,7 +23,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**

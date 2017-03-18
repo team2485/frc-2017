@@ -315,6 +315,10 @@ public class DriveTrain extends Subsystem {
 	public double getLeftVelocityPIDError() {
 		return velocityPIDLeft.getAvgError();
 	}
+	
+	public double getAvgEncRate() {
+		return (RobotMap.driveEncLeft.getRate() + RobotMap.driveEncRight.getRate()) / 2;
+	}
 
 	public double getAnglePIDError() {
 		return anglePID.getAvgError();
