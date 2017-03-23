@@ -9,18 +9,18 @@ import org.usfirst.frc.team2485.subsystems.IntakeRollers;
 import org.usfirst.frc.team2485.subsystems.Shooter;
 import org.usfirst.frc.team2485.subsystems.WheelOfDeath;
 import org.usfirst.frc.team2485.util.AHRSWrapperRateAndAngle;
+import org.usfirst.frc.team2485.util.AHRSWrapperRateAndAngle.Units;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
+import org.usfirst.frc.team2485.util.LidarWrapper;
 import org.usfirst.frc.team2485.util.MultipleEncoderWrapper;
 import org.usfirst.frc.team2485.util.MultipleEncoderWrapper.MultipleEncoderWrapperMode;
 import org.usfirst.frc.team2485.util.SpeedControllerWrapper;
-import org.usfirst.frc.team2485.util.AHRSWrapperRateAndAngle.Units;
 
 import com.ctre.CANTalon;
 import com.ctre.CANTalon.TalonControlMode;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -89,6 +89,7 @@ public class RobotMap {
 	public static Encoder feederEncoder;
 	public static Ultrasonic gearDetector;
 	public static AHRS ahrs;
+//	public static LidarWrapper lidar;
 	
 	public static MultipleEncoderWrapper averageEncoderDistance, averageEncoderRate;
 	public static EncoderWrapperRateAndDistance driveEncRateLeft, driveEncRateRight;
@@ -156,6 +157,8 @@ public class RobotMap {
 
 		gearDetector = new Ultrasonic(14, 15);
 		gearDetector.setAutomaticMode(true);
+		
+//		lidar = new LidarWrapper(edu.wpi.first.wpilibj.I2C.Port.kOnboard);
 		
 //		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
 //		gearCamera.setResolution(320, 240);

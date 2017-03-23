@@ -63,6 +63,7 @@ public class Robot extends IterativeRobot {
 //		Scheduler.getInstance().add(group);
 		
 //		 DRIVERS IF YOU NEED TO CHANGE AUTO DO IT HERE
+
 		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, // which hook we score on, left, right, or center
 				false, // true if we are red
 				true)); // true if we should shoot, only set to true near boiler
@@ -103,7 +104,7 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Right Current", RobotMap.driveRight2.getOutputCurrent());
 		SmartDashboard.putNumber("Left Velocity Error", RobotMap.driveTrain.getLeftVelocityPIDError());
 //		SmartDashboard.putBoolean("Test Boolean", System.currentTimeMillis() % 1000 > 500);
-//		SmartDashboard.putNumber("Test Number", System.currentTimeMillis() % 1000);
+		SmartDashboard.putNumber("Test Number", System.currentTimeMillis() % 1000);
 		SmartDashboard.putNumber("LeftVelocity", RobotMap.driveEncRateLeft.pidGet());
 		SmartDashboard.putNumber("RightVelocity", RobotMap.driveEncRateRight.pidGet());
 //		SmartDashboard.putNumber("Dist", RobotMap.averageEncoderDistance.pidGet());
@@ -117,6 +118,7 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("SWOD Current", RobotMap.wheelOfDeath.getCurrent());
 		SmartDashboard.putNumber("Distance Error", RobotMap.driveTrain.getDistanceError());
 		SmartDashboard.putNumber("Left Vel Setpoint", RobotMap.driveTrain.velocityPIDLeft.getSetpoint());
+		SmartDashboard.putNumber("Gyro Angle", RobotMap.ahrs.getAngle());
 
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",

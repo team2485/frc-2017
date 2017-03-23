@@ -56,7 +56,7 @@ kUpRamp_DriveSteering = 0.05
 kDownRamp_DriveSteering = 0.1
 
 kP_DriveAngVel = 0.5
-kI_DriveAngVel = 0.002
+kI_DriveAngVel = 0
 kD_DriveAngVel = 0
 kF_DriveAngVel = 0
 

@@ -15,7 +15,7 @@ public class ConditionalCommandGroup extends CommandGroup {
 	public ConditionalCommandGroup(FinishedCondition finishedCondition) {
 		this.finishedCondition = finishedCondition;
 	}
-	
+
 	@Override
 	protected boolean isFinished() {
 		return super.isFinished() || finishedCondition.isFinished();
