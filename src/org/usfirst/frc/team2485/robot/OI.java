@@ -11,7 +11,6 @@ import org.usfirst.frc.team2485.robot.commands.SetFeederManual;
 import org.usfirst.frc.team2485.robot.commands.SetGearFlapsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
-import org.usfirst.frc.team2485.robot.commands.SetRollers;
 import org.usfirst.frc.team2485.robot.commands.SetShooter;
 import org.usfirst.frc.team2485.robot.commands.ToggleCompressor;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
@@ -80,9 +79,7 @@ public class OI {
 					.whenReleased(new SetDriveSpeed(DriveSpeed.NORMAL_SPEED_RATING));
 		}
 
-		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenPressed(new SetRollers(true));
-		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, 0.2, 1).whenReleased(new SetRollers(false));
-
+	
 		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .11, 1).whenPressed(new ToggleShooting(true));
 		new JoystickAxisButton(elliot, XBOX_AXIS_RTRIGGER, .11, 1).whenReleased(new ToggleShooting(false));
 		

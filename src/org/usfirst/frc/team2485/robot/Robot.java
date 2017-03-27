@@ -36,8 +36,6 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().removeAll();
 		RobotMap.driveTrain.reset();
 		RobotMap.gearHolder.reset();
-		RobotMap.intakeArm.reset();
-		RobotMap.intakeRollers.reset();
 		RobotMap.compressor.stop();
 		RobotMap.shooter.disableShooter();
 		RobotMap.feeder.disableFeeder();

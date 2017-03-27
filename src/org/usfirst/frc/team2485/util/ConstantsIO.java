@@ -84,6 +84,11 @@ public class ConstantsIO {
 
 	public static double kSWODRPS;
 
+	public static double kP_GearArm;
+	public static double kI_GearArm;
+	public static double kD_GearArm;
+
+
 
 
 	public static void init() {
@@ -166,6 +171,10 @@ public class ConstantsIO {
 		kI_DriveAngVel = Double.parseDouble(data.get("kI_DriveAngVel"));
 		kD_DriveAngVel = Double.parseDouble(data.get("kD_DriveAngVel"));
 		kF_DriveAngVel = Double.parseDouble(data.get("kF_DriveAngVel"));
+		
+		kP_GearArm = Double.parseDouble(data.get("kP_GearArm"));
+		kI_GearArm = Double.parseDouble(data.get("kI_GearArm"));
+		kD_GearArm = Double.parseDouble(data.get("kD_GearArm"));
 
 		kUpRamp_DriveSteering = Double.parseDouble(data.get("kUpRamp_DriveSteering"));
 		kDownRamp_DriveSteering = Double.parseDouble(data.get("kDownRamp_DriveSteering"));
