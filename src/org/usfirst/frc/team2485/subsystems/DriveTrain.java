@@ -389,7 +389,7 @@ public class DriveTrain extends Subsystem {
 		distPID.setSetpoint(distance);
 		distPID.setOutputRange(-maxSpeed, maxSpeed);
 		anglePID.setSetpoint(angle);
-		anglePID.setOutputRange(-maxSpeed, maxSpeed);
+		anglePID.setOutputRange(-20, 20);
 		autoCurvatureTransferNode.setOutput(curvature);
 		distPID.setAbsoluteTolerance(tolerance);
 		lastDistError = distPID.getAvgError();

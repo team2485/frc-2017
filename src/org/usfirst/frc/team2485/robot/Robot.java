@@ -117,6 +117,7 @@ public class Robot extends IterativeRobot {
 //		SmartDashboard.putNumber("Uptake Speed Error", RobotMap.feeder.getAvgError());
 //		SmartDashboard.putNumber("SWOD Current", RobotMap.wheelOfDeath.getCurrent());
 		SmartDashboard.putNumber("Distance Error", RobotMap.driveTrain.getDistanceError());
+		SmartDashboard.putNumber("Distance", RobotMap.driveEncLeft.getDistance());
 		SmartDashboard.putNumber("Left Vel Setpoint", RobotMap.driveTrain.velocityPIDLeft.getSetpoint());
 		SmartDashboard.putNumber("Gyro Angle", RobotMap.ahrs.getAngle());
 
