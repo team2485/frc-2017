@@ -10,20 +10,23 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class RunRollers extends Command {
 	private static final double PWM = .5;
-	private static final double CURRENT_THRESHOLD = 5;
+	private static final double CURRENT_THRESHOLD = 20;
+	private static final double MIN_TIME = 1500;
+	private static double startTime;
 	
 	@Override
 	protected void initialize() {
-		RobotMap.gearIntakeRollers.setManual(PWM);
+		RobotMap.gearIntakeRoller.setManual(PWM);
+		startTime = System.currentTimeMillis();
 	}
 	
 	protected void end() {
-		RobotMap.gearIntakeRollers.setManual(0);
+		RobotMap.gearIntakeRoller.setManual(0);
 	}
 
 	@Override
 	protected boolean isFinished() {
-		return RobotMap.gearIntakeRollers.getCurrent() > CURRENT_THRESHOLD;
+		return RobotMap.gearIntakeRoller.getCurrent() > CURRENT_THRESHOLD && System.currentTimeMillis() - startTime > MIN_TIME;
 	}
 
 }

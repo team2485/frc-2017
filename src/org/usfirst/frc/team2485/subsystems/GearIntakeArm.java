@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GearIntakeArm extends Subsystem {
 	private WarlordsPIDController armPID;
-	public static final double GROUND = 0, STOWED = .25;
+	public static final double GROUND = 0, STOWED = 80;
 	
 	public GearIntakeArm() {
 		armPID = new WarlordsPIDController();
 		armPID.setPID(ConstantsIO.kP_GearArm, ConstantsIO.kI_GearArm, ConstantsIO.kD_GearArm);
 		armPID.setOutputs(RobotMap.gearIntakeArmMotor);
 		armPID.setSources(RobotMap.gearIntakeEncoder);
+		armPID.setOutputRange(-0.15, 0.5);
 	}
 	
 	
@@ -33,6 +34,10 @@ public class GearIntakeArm extends Subsystem {
 	public void setSetpoint(double setpoint) {
 		armPID.enable();
 		armPID.setSetpoint(setpoint);
+	}
+	
+	public void reset() {
+		setManual(0);
 	}
 	
 	public void setManual(double pwm) {

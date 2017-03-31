@@ -1,5 +1,7 @@
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.robot.commandGroups.InitializeIntakeArm;
+import org.usfirst.frc.team2485.robot.commandGroups.IntakeGear;
 import org.usfirst.frc.team2485.robot.commandGroups.ToggleShooting;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveStraight;
@@ -13,8 +15,11 @@ import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
 import org.usfirst.frc.team2485.robot.commands.SetShooter;
 import org.usfirst.frc.team2485.robot.commands.ToggleCompressor;
+import org.usfirst.frc.team2485.robot.commands.ZeroGearIntakeEncoder;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
+import org.usfirst.frc.team2485.subsystems.LowerGearIntakeArm;
+import org.usfirst.frc.team2485.subsystems.SetIntakeArm;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
@@ -98,6 +103,9 @@ public class OI {
 
 		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new ToggleCompressor(true));
 		new JoystickButton(elliot, XBOX_BTN_Y).whenReleased(new ToggleCompressor(false));
+		
+		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new InitializeIntakeArm());
+		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, .5, 1).whenPressed(new IntakeGear());
 
 		// new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new
 		// SetIntakeArmHorizontal(true));

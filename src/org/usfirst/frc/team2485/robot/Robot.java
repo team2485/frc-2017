@@ -9,7 +9,7 @@ import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.RotateTo;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetLeftRightVelocity;
-import org.usfirst.frc.team2485.robot.commands.ZeroEncoders;
+import org.usfirst.frc.team2485.robot.commands.ZeroDriveEncoders;
 import org.usfirst.frc.team2485.util.AutoPath;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
@@ -40,6 +40,7 @@ public class Robot extends IterativeRobot {
 		RobotMap.shooter.disableShooter();
 		RobotMap.feeder.disableFeeder();
 		RobotMap.wheelOfDeath.stop();
+		RobotMap.gearIntakeArm.reset();
 	}
 
 	public void disabledPeriodic() {
@@ -62,7 +63,7 @@ public class Robot extends IterativeRobot {
 		
 //		 DRIVERS IF YOU NEED TO CHANGE AUTO DO IT HERE
 
-		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, // which hook we score on, left, right, or center
+		Scheduler.getInstance().add(new GearAuto(AirshipSide.CENTER, // which hook we score on, left, right, or center
 				false, // true if we are red
 				true)); // true if we should shoot, only set to true near boiler
 		
@@ -118,6 +119,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Distance", RobotMap.driveEncLeft.getDistance());
 		SmartDashboard.putNumber("Left Vel Setpoint", RobotMap.driveTrain.velocityPIDLeft.getSetpoint());
 		SmartDashboard.putNumber("Gyro Angle", RobotMap.ahrs.getAngle());
+		SmartDashboard.putNumber("Gear Intake Arm", RobotMap.gearIntakeEncoder.getDistance());
+		SmartDashboard.putNumber("Gear Intake Roller Current", RobotMap.gearIntakeRoller.getCurrent());
 
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",

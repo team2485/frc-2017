@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
  * @author Ben Dorsey
  */
 
-public class ZeroEncoders extends InstantCommand {
-	public ZeroEncoders() {
+public class ZeroDriveEncoders extends InstantCommand {
+	public ZeroDriveEncoders() {
 		requires(RobotMap.driveTrain);
 	}
 	

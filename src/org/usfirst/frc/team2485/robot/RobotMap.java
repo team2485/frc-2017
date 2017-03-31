@@ -64,7 +64,7 @@ public class RobotMap {
 	public static int kLeftDriveEncPortA = 3, kLeftDriveEncPortB = 2;
 	public static int kFeederEncPortA = 8, kFeederEncPortB = 9; //on competition was 6 and 7
 	public static int kShooterEncPortA = 6, kShooterEncPortB = 7; //on competition was 8 and 9
-	public static int kGearIntakePortA = 4, kGearIntakePortB = 5;
+	public static int kGearIntakePortA = 5, kGearIntakePortB = 4;
 	public static int kUltrasonicPortA = 14, kUltrasonicPortB = 15;
 
 	// Speed Controllers
@@ -109,7 +109,7 @@ public class RobotMap {
 	public static WheelOfDeath wheelOfDeath;
 	public static Feeder feeder;
 	public static GearIntakeArm gearIntakeArm;
-	public static GearIntakeRollers gearIntakeRollers;
+	public static GearIntakeRollers gearIntakeRoller;
 
 	public static void init() {
 
@@ -201,7 +201,7 @@ public class RobotMap {
 		driveTrain = new DriveTrain();
 		gearHolder = new GearHolder();
 		gearIntakeArm = new GearIntakeArm();
-		gearIntakeRollers = new GearIntakeRollers();
+		gearIntakeRoller = new GearIntakeRollers();
 		feeder = new Feeder();
 		shooter = new Shooter();
 		climber = new Climber();
