@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class GearIntakeArm extends Subsystem {
 	private WarlordsPIDController armPID;
-	public static final double GROUND = 0, STOWED = 80;
+	public static final double GROUND = 0, STOWED = 55;
 	
 	public GearIntakeArm() {
 		armPID = new WarlordsPIDController();
@@ -38,6 +38,7 @@ public class GearIntakeArm extends Subsystem {
 	
 	public void reset() {
 		setManual(0);
+		armPID.disable();
 	}
 	
 	public void setManual(double pwm) {

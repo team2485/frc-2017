@@ -41,7 +41,7 @@ public class GearAuto extends CommandGroup {
 			AutoPath centerShoot = isRed ?
 					new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(0, -20.5), new Pair(0, 0)), AutoPath.getPointsForBezier(10000, new Pair(41, -75), new Pair(131.5, 97.5), new Pair(0, -39.5), new Pair(0, -20.5))) :
 					new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-49.28, -21.1), new Pair(-113.5, -57), new Pair(0, -48.5), new Pair(0, -20.5)), AutoPath.getPointsForBezier(10000, new Pair(0, -20.5), new Pair(0, 0)));
-			addSequential(new DriveTo(centerShoot, 40, true, 40000)); //-49.28, -19.93
+			addSequential(new DriveTo(centerShoot, 40, true, 40000)); //-49.28, -19.93 21.1
 			addSequential(new ResetDriveTrain());
 			addSequential(new ZeroDriveEncoders());
 			addSequential(new SetShooter(true));
