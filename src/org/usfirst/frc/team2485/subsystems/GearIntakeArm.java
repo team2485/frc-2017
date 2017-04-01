@@ -1,6 +1,8 @@
 package org.usfirst.frc.team2485.subsystems;
 
+import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.RobotMap;
+import org.usfirst.frc.team2485.robot.commands.SetIntakeArmManual;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 import org.usfirst.frc.team2485.util.WarlordsPIDController;
 
@@ -11,8 +13,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 
 public class GearIntakeArm extends Subsystem {
-	private WarlordsPIDController armPID;
-	public static final double GROUND = 0, STOWED = 55;
+	public WarlordsPIDController armPID;
+	public static final double GROUND = 0, STOWED = 55, UP = 80;
 	
 	public GearIntakeArm() {
 		armPID = new WarlordsPIDController();
@@ -25,6 +27,7 @@ public class GearIntakeArm extends Subsystem {
 	
 	@Override
 	protected void initDefaultCommand() {
+		this.setDefaultCommand(new SetIntakeArmManual());
 	}
 	
 	public void zeroEncoder() {
@@ -34,6 +37,7 @@ public class GearIntakeArm extends Subsystem {
 	public void setSetpoint(double setpoint) {
 		armPID.enable();
 		armPID.setSetpoint(setpoint);
+		armPID.setPercentTolerance(.05);;
 	}
 	
 	public void reset() {

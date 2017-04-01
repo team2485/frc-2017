@@ -89,7 +89,7 @@ public class DriveTrain extends Subsystem {
 
 		prescaledCurrentRight.setPidSource(() -> {
 			if (isQuickTurn) {
-				return -MAX_CURRENT * steeringTransferNode.pidGet();
+				return MAX_CURRENT * steeringTransferNode.pidGet();
 			} else {
 				return overallCurrentTransferNode.getOutput() * (1 - steeringTransferNode.getOutput()) - angVelCorrectionTransferNode.getOutput();
 			}
@@ -97,7 +97,7 @@ public class DriveTrain extends Subsystem {
 
 		prescaledCurrentLeft.setPidSource(() -> {
 			if (isQuickTurn) {
-				return MAX_CURRENT * steeringTransferNode.pidGet();
+				return -MAX_CURRENT * steeringTransferNode.pidGet();
 			} else {
 				return overallCurrentTransferNode.getOutput() * (1 + steeringTransferNode.getOutput()) + angVelCorrectionTransferNode.getOutput();
 			}

@@ -2,6 +2,7 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commandGroups.InitializeIntakeArm;
 import org.usfirst.frc.team2485.robot.commandGroups.IntakeGear;
+import org.usfirst.frc.team2485.robot.commandGroups.PlaceGear;
 import org.usfirst.frc.team2485.robot.commandGroups.ToggleShooting;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveStraight;
@@ -69,8 +70,8 @@ public class OI {
 
 		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearWingsPosition(true));
 		Command backup = new DriveStraight(-80, 100, 5000);
-		new JoystickButton(ben, XBOX_BTN_Y).whenPressed(backup);
-		new JoystickButton(ben, XBOX_BTN_B).cancelWhenPressed(backup);
+//		new JoystickButton(ben, XBOX_BTN_Y).whenPressed(backup);
+//		new JoystickButton(ben, XBOX_BTN_B).cancelWhenPressed(backup);
 //		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new ResetDriveTrain());
 		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new EjectGear());
 		
@@ -104,14 +105,22 @@ public class OI {
 		
 		new JoystickButton(elliot, XBOX_BTN_A).whenPressed(new SetGearFlapsPosition(true));
 		new JoystickButton(elliot, XBOX_BTN_B).whenPressed(new ResetGear());
+		
+		new JoystickButton(elliot, XBOX_BTN_BACK).whenPressed(new ToggleCompressor(true));
+		new JoystickButton(elliot, XBOX_BTN_BACK).whenReleased(new ToggleCompressor(false));
+
+	
 
 //		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new ToggleCompressor(true));
 //		new JoystickButton(elliot, XBOX_BTN_Y).whenReleased(new ToggleCompressor(false));
 		
 		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new SetIntakeArm(GearIntakeArm.STOWED));
+		new JoystickButton(elliot, XBOX_BTN_L_AXIS).whenPressed(new SetIntakeArm(GearIntakeArm.UP));
 		
-		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new InitializeIntakeArm());
+		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new ZeroGearIntakeEncoder());
 		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, .5, 1).whenPressed(new RunRollers());
+			
+		
 
 		// new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new
 		// SetIntakeArmHorizontal(true));

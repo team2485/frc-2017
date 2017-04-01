@@ -29,7 +29,7 @@ public class LowerGearIntakeArm extends Command {
 	
 	@Override
 	protected boolean isFinished() {
-		return System.currentTimeMillis() - startTime > timeout;
+		return (System.currentTimeMillis() - startTime) > (timeout + 4000);
 	}
 
 }

@@ -27,7 +27,11 @@ public class DriveWithControllers extends Command {
 
 			if (TRIGGER_DRIVE) {
 				foward = OI.ben.getRawAxis(OI.XBOX_AXIS_RTRIGGER) - OI.ben.getRawAxis(OI.XBOX_AXIS_LTRIGGER);
-				right = OI.ben.getRawAxis(OI.XBOX_AXIS_LX);
+				if (foward > 0) {
+					right = OI.ben.getRawAxis(OI.XBOX_AXIS_LX);
+				} else {
+					right = -OI.ben.getRawAxis(OI.XBOX_AXIS_LX);
+				}
 			}
 
 			RobotMap.driveTrain.warlordDrive(foward, right, simple);

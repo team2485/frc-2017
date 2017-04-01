@@ -1,5 +1,6 @@
 package org.usfirst.frc.team2485.robot.commandGroups;
 
+import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.robot.commands.CheckDistError;
 import org.usfirst.frc.team2485.robot.commands.DriveStraight;
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
@@ -34,8 +35,10 @@ public class GearAuto extends CommandGroup {
 			center.setTolerance(15);
 			addSequential(center);
 			addSequential(new CheckDistError());
-			addSequential(new ResetDriveTrain());
-			addSequential(new ZeroDriveEncoders());
+			if (RobotMap.driveTrain.getDistanceError() > 7) {
+				AutoPath correctionPath = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(0, 0), new Pair(2, 5), new Pair(2, 15)));
+				addSequential(new DriveTo(correctionPath, 40, false, 4000));
+			}
 			addSequential(new SetGearWingsPosition(true));
 			addSequential(new TimedCommand(.5));
 			AutoPath centerShoot = isRed ?

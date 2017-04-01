@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 public class InitializeIntakeArm extends CommandGroup {
 	public InitializeIntakeArm() {
 		addSequential(new LowerGearIntakeArm(1000));
-		addSequential(new TimedCommand(2));
 		addSequential(new ZeroGearIntakeEncoder());
 	}
 }

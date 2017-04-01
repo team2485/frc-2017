@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 
 public class EjectGear extends Command {
-	private static final double PWM = -.8;
-	private static final double MIN_TIME = 2000;
+	private static final double PWM = -.5;
+	private static final double MIN_TIME = 1000;
 	private static double startTime;
 	
 	@Override
