@@ -122,6 +122,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Gear Intake Arm", RobotMap.gearIntakeEncoder.getDistance());
 		SmartDashboard.putNumber("Gear Intake Roller Current", RobotMap.gearIntakeRoller.getCurrent());
 
+		SmartDashboard.putString("gearIntake", RobotMap.gearIntakeEncoder.getDistance() + ",0," + "true");
+		
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",
 				RobotMap.driveLeft1.getTemperature());
