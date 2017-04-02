@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class GearIntakeArm extends Subsystem {
 	public WarlordsPIDController armPID;
 	public static final double GROUND = 0, STOWED = 55, UP = 80;
+	private double armAngle;
 	
 	public GearIntakeArm() {
 		armPID = new WarlordsPIDController();
