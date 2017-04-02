@@ -2,7 +2,9 @@ package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.RobotMap;
+import org.usfirst.frc.team2485.subsystems.DriveTrain;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
+import org.usfirst.frc.team2485.util.ThresholdHandler;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.command.Command;
@@ -23,18 +25,15 @@ public class DriveWithControllers extends Command {
 	protected void execute() {
 		if (DriverStation.getInstance().isOperatorControl()) {
 			double foward = -OI.ben.getRawAxis(OI.XBOX_AXIS_LY);
-			double right = OI.ben.getRawAxis(OI.XBOX_AXIS_RX);
+			double steering = ThresholdHandler.deadbandAndScale(OI.ben.getRawAxis(OI.XBOX_AXIS_RX), DriveTrain.STEERING_DEADBAND, 0, 1);
+;
 
 			if (TRIGGER_DRIVE) {
 				foward = OI.ben.getRawAxis(OI.XBOX_AXIS_RTRIGGER) - OI.ben.getRawAxis(OI.XBOX_AXIS_LTRIGGER);
-				if (foward > 0) {
-					right = OI.ben.getRawAxis(OI.XBOX_AXIS_LX);
-				} else {
-					right = -OI.ben.getRawAxis(OI.XBOX_AXIS_LX);
-				}
+				steering += ThresholdHandler.deadbandAndScale(OI.ben.getRawAxis(OI.XBOX_AXIS_LX), DriveTrain.STEERING_DEADBAND, 0.0, 0.75);
 			}
 
-			RobotMap.driveTrain.warlordDrive(foward, right, simple);
+			RobotMap.driveTrain.warlordDrive(foward, steering, simple);
 		}
 	}
 

@@ -1,6 +1,5 @@
 package org.usfirst.frc.team2485.subsystems;
 
-import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.util.ConstantsIO;
@@ -44,8 +43,8 @@ public class DriveTrain extends Subsystem {
 		}
 	}
 
-	private static final double STEERING_DEADBAND = 0.15;
-	private static final double THROTTLE_DEADBAND = 0.01;
+	public static final double STEERING_DEADBAND = 0.15;
+	public static final double THROTTLE_DEADBAND = 0.05;
 	private static final double MIN_CURRENT = 2;
 	private static final double MAX_CURRENT = 20;
 	private double lastDistError;
@@ -91,7 +90,9 @@ public class DriveTrain extends Subsystem {
 			if (isQuickTurn) {
 				return MAX_CURRENT * steeringTransferNode.pidGet();
 			} else {
-				return overallCurrentTransferNode.getOutput() * (1 - steeringTransferNode.getOutput()) - angVelCorrectionTransferNode.getOutput();
+				return overallCurrentTransferNode.getOutput() 
+						- Math.abs(overallCurrentTransferNode.getOutput()) * steeringTransferNode.getOutput() 
+						- angVelCorrectionTransferNode.getOutput();
 			}
 		});
 
@@ -99,7 +100,9 @@ public class DriveTrain extends Subsystem {
 			if (isQuickTurn) {
 				return -MAX_CURRENT * steeringTransferNode.pidGet();
 			} else {
-				return overallCurrentTransferNode.getOutput() * (1 + steeringTransferNode.getOutput()) + angVelCorrectionTransferNode.getOutput();
+				return overallCurrentTransferNode.getOutput() 
+						+ Math.abs(overallCurrentTransferNode.getOutput()) * steeringTransferNode.getOutput()
+						+ angVelCorrectionTransferNode.getOutput();
 			}
 		});
 		
@@ -112,7 +115,7 @@ public class DriveTrain extends Subsystem {
 		angVelPIDController.setSetpointSource(targetAngVelSource);
 		
 		targetAngVelSource.setPidSource(() -> {
-			return steeringTransferNode.getOutput() * 2 / RobotMap.ROBOT_WIDTH * RobotMap.averageEncoderRate.pidGet();
+			return steeringTransferNode.getOutput() * 2 / RobotMap.ROBOT_WIDTH * Math.abs(RobotMap.averageEncoderRate.pidGet());
 		});
 
 		overallCurrentRamp.setOutputs(overallCurrentTransferNode);
@@ -253,20 +256,18 @@ public class DriveTrain extends Subsystem {
 	 *            controllerY should be positive for forward motion
 	 * @param controllerX
 	 */
-	public void warlordDrive(double controllerY, double controllerX, boolean simple) {
+	public void warlordDrive(double controllerY, double steering, boolean simple) {
 		
 		switchControlMode(simple ? ControlMode.OFF : ControlMode.TELEOP_CURRENT);
 
 		if (simple) {
 			
-			double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.0, 1);
 			double throttle = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, 0.02, 1);
 			throttle *= driveSpeed;
 			
 			simpleDrive(throttle, steering);
 			
 		} else {
-			double steering = ThresholdHandler.deadbandAndScale(controllerX, STEERING_DEADBAND, 0.0, 0.75) + ThresholdHandler.deadbandAndScale(OI.ben.getRawAxis(OI.XBOX_AXIS_RX), STEERING_DEADBAND, 0, 1);
 //			System.out.println("steering:" + steering);
 			double overallCurrent = ThresholdHandler.deadbandAndScale(controllerY, THROTTLE_DEADBAND, MIN_CURRENT, MAX_CURRENT);
 			overallCurrent *= driveSpeed;
