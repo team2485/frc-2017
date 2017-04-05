@@ -7,6 +7,7 @@ import org.usfirst.frc.team2485.robot.commands.DriveStraight;
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.RotateTo;
+import org.usfirst.frc.team2485.robot.commands.Rumble;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetLeftRightVelocity;
 import org.usfirst.frc.team2485.robot.commands.ZeroDriveEncoders;
@@ -79,6 +80,7 @@ public class Robot extends IterativeRobot {
 		ConstantsIO.init();
 		RobotMap.updateConstants();
 		RobotMap.driveTrain.zeroEncoders();
+//		Scheduler.getInstance().add(new Rumble(1, 0, 2050));
 	}
 
 	public void teleopPeriodic() {

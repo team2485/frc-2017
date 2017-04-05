@@ -28,6 +28,7 @@ import org.usfirst.frc.team2485.util.ConstantsIO;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
@@ -41,6 +42,7 @@ public class OI {
 
 	public static Joystick ben;
 	public static Joystick elliot;
+	public static XboxController benRumble;
 
 	public static final int XBOX_BTN_A = 1;
 	public static final int XBOX_BTN_B = 2;
@@ -62,6 +64,7 @@ public class OI {
 	public static void init() {
 		ben = new Joystick(0);
 		elliot = new Joystick(1);
+		benRumble = new XboxController(0);
 
 		new BackStartComboButton(ben).whenPressed(new PrepForSelfTest());
 

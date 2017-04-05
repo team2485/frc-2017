@@ -35,6 +35,7 @@ public class GearIntakeArm extends Subsystem {
 		RobotMap.gearIntakeEncoder.reset();
 	}
 	
+	
 	public void setSetpoint(double setpoint) {
 		armPID.enable();
 		armPID.setSetpoint(setpoint);
