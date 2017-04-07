@@ -64,8 +64,8 @@ public class Robot extends IterativeRobot {
 		
 //		 DRIVERS IF YOU NEED TO CHANGE AUTO DO IT HERE
 
-		Scheduler.getInstance().add(new GearAuto(AirshipSide.CENTER, // which hook we score on, left, right, or center
-				false, // true if we are red
+		Scheduler.getInstance().add(new GearAuto(AirshipSide.RIGHT_SIDE, // which hook we score on, left, right, or center
+				true, // true if we are red
 				true)); // true if we should shoot, only set to true near boiler
 		
 	}
@@ -123,7 +123,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Gyro Angle", RobotMap.ahrs.getAngle());
 		SmartDashboard.putNumber("Gear Intake Arm", RobotMap.gearIntakeEncoder.getDistance());
 		SmartDashboard.putNumber("Gear Intake Roller Current", RobotMap.gearIntakeRoller.getCurrent());
-
+		SmartDashboard.putNumber("Gear PID Error", RobotMap.gearIntakeArm.getError());
 		SmartDashboard.putString("gearIntake", RobotMap.gearIntakeEncoder.getDistance() + ",0," + "true");
 		
 

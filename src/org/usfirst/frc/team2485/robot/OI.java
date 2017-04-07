@@ -4,12 +4,14 @@ import org.usfirst.frc.team2485.robot.commandGroups.InitializeIntakeArm;
 import org.usfirst.frc.team2485.robot.commandGroups.IntakeGear;
 import org.usfirst.frc.team2485.robot.commandGroups.PlaceGear;
 import org.usfirst.frc.team2485.robot.commandGroups.ToggleShooting;
+import org.usfirst.frc.team2485.robot.commands.CancelCommand;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveStraight;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.EjectGear;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.ResetGear;
+import org.usfirst.frc.team2485.robot.commands.Rumble;
 import org.usfirst.frc.team2485.robot.commands.RunRollers;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetFeederManual;
@@ -27,6 +29,7 @@ import org.usfirst.frc.team2485.subsystems.SetIntakeArm;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -43,6 +46,7 @@ public class OI {
 	public static Joystick ben;
 	public static Joystick elliot;
 	public static XboxController benRumble;
+	public static XboxController elliotRumble;
 
 	public static final int XBOX_BTN_A = 1;
 	public static final int XBOX_BTN_B = 2;
@@ -65,6 +69,7 @@ public class OI {
 		ben = new Joystick(0);
 		elliot = new Joystick(1);
 		benRumble = new XboxController(0);
+		elliotRumble = new XboxController(1);
 
 		new BackStartComboButton(ben).whenPressed(new PrepForSelfTest());
 
@@ -78,7 +83,8 @@ public class OI {
 //		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new ResetDriveTrain());
 		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new EjectGear());
 		
-
+		new JoystickButton(ben, 9).whenPressed(new Rumble(elliotRumble, 1, 1, 1));
+		
 		if (DriveWithControllers.TRIGGER_DRIVE) {
 			new JoystickButton(ben, XBOX_BTN_X).whenPressed(new SetQuickTurn(true));
 			new JoystickButton(ben, XBOX_BTN_X).whenReleased(new SetQuickTurn(false));
@@ -114,15 +120,20 @@ public class OI {
 
 	
 
+		
 //		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new ToggleCompressor(true));
 //		new JoystickButton(elliot, XBOX_BTN_Y).whenReleased(new ToggleCompressor(false));
 		
 		new JoystickButton(elliot, XBOX_BTN_Y).whenPressed(new SetIntakeArm(GearIntakeArm.STOWED));
 		new JoystickButton(elliot, XBOX_BTN_L_AXIS).whenPressed(new SetIntakeArm(GearIntakeArm.UP));
+		 
+		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new InitializeIntakeArm());
 		
-		new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new ZeroGearIntakeEncoder());
-		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, .5, 1).whenPressed(new RunRollers());
-			
+		IntakeGear intakeGear = new IntakeGear();
+		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, .5, 1).whenPressed(intakeGear);
+		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, .5, 1).whenReleased(new CancelCommand(intakeGear));
+
+		
 		
 
 		// new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new

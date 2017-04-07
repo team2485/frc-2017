@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2485.subsystems;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
+import org.usfirst.frc.team2485.robot.commands.SetIntakeArmManual;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.InstantCommand;
@@ -19,6 +20,8 @@ public class SetIntakeArm extends Command {
 	@Override
 	protected void initialize() {
 		RobotMap.gearIntakeArm.setSetpoint(setpoint);
+		SetIntakeArmManual.passiveControl = false;
+		
 	}
 
 	@Override

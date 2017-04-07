@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 
 public class EjectGear extends Command {
-	private static final double PWM = -.5;
+	private static final double PWM = -.6;
 	private static final double MIN_TIME = 1000;
 	private static double startTime;
 	

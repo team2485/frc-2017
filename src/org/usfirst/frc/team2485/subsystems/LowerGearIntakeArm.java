@@ -1,6 +1,7 @@
 package org.usfirst.frc.team2485.subsystems;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
+import org.usfirst.frc.team2485.robot.commands.SetIntakeArmManual;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -9,18 +10,21 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 
 public class LowerGearIntakeArm extends Command {
-	private static final double PWM = -.15;
+	private static final double PWM = -.2;
+	private static final long MIN_TIME = 250;
 	private long startTime;
 	private int timeout;
 	
 	public LowerGearIntakeArm(int timeout) {
 		this.timeout = timeout;
+		requires(RobotMap.gearIntakeArm);
 	}
 	
 	@Override
 	protected void initialize() {
 		RobotMap.gearIntakeArm.setManual(PWM);
 		startTime = System.currentTimeMillis();
+		SetIntakeArmManual.passiveControl = true;
 	}
 	
 	protected void end() {
@@ -29,7 +33,7 @@ public class LowerGearIntakeArm extends Command {
 	
 	@Override
 	protected boolean isFinished() {
-		return (System.currentTimeMillis() - startTime) > (timeout + 4000);
+		return (System.currentTimeMillis() - startTime) > (MIN_TIME) && ((System.currentTimeMillis() - startTime) > (timeout) || Math.abs(RobotMap.gearIntakeEncoder.getRate()) < Math.PI);
 	}
 
 }

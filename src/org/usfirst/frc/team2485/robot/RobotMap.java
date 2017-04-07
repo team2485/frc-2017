@@ -20,8 +20,10 @@ import com.ctre.CANTalon.TalonControlMode;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SerialPort.Port;
@@ -51,26 +53,27 @@ public class RobotMap {
 	public static int driveLeftPortCIM3 = 5;
 	public static int wheelOfDeathMotorPort = 7;
 	public static int gearIntakeRollerMotorPort = 8;
+	public static int kGearIntakeArmMotorPort = 9;
+
 	
 	// Other Motor Ports
 	public static int kShooterMotorPort1 = 8, kShooterMotorPort2 = 9;
 	public static int kIntakeMotorPort = 3;
 	public static int kFeederMotorPort = 6;
 	public static int kClimberMotorPort = 7;
-	public static int kGearIntakeArmMotorPort = 5;
 	
 	// Sensor Ports
 	public static int kRightDriveEncPortA = 0, kRightDriveEncPortB = 1;
 	public static int kLeftDriveEncPortA = 3, kLeftDriveEncPortB = 2;
-	public static int kFeederEncPortA = 8, kFeederEncPortB = 9; //on competition was 6 and 7
-	public static int kShooterEncPortA = 6, kShooterEncPortB = 7; //on competition was 8 and 9
+	public static int kFeederEncPortA = 6, kFeederEncPortB = 7; //on competition was 6 and 7
+	public static int kShooterEncPortA = 8, kShooterEncPortB = 9; //on competition was 8 and 9
 	public static int kGearIntakePortA = 5, kGearIntakePortB = 4;
 	public static int kUltrasonicPortA = 14, kUltrasonicPortB = 15;
 
 	// Speed Controllers
-	public static CANTalon driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3, deathMotor, gearIntakeRollerMotor;
+	public static CANTalon driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3, deathMotor, gearIntakeRollerMotor, gearIntakeArmMotor;
 	public static SpeedControllerWrapper driveTrainRight, driveTrainLeft;
-	public static SpeedControllerWrapper shooterMotors, gearIntakeArmMotor, feederMotor, climberMotor;
+	public static SpeedControllerWrapper shooterMotors, feederMotor, climberMotor;
 	
 	// Relays
 	public static Relay lightSpike;
@@ -110,6 +113,7 @@ public class RobotMap {
 	public static Feeder feeder;
 	public static GearIntakeArm gearIntakeArm;
 	public static GearIntakeRollers gearIntakeRoller;
+	public static EncoderWrapperRateAndDistance gearIntakeEncoderRate;
 
 	public static void init() {
 
@@ -139,7 +143,7 @@ public class RobotMap {
 		shooterMotors = new SpeedControllerWrapper(new VictorSP(kShooterMotorPort1), new VictorSP(kShooterMotorPort2));
 		feederMotor = new SpeedControllerWrapper(new VictorSP(kFeederMotorPort));
 		climberMotor = new SpeedControllerWrapper(new VictorSP(kClimberMotorPort));
-		gearIntakeArmMotor = new SpeedControllerWrapper(new VictorSP(kGearIntakeArmMotorPort));
+		gearIntakeArmMotor = new CANTalon(kGearIntakeArmMotorPort);
 
 		lightSpike = new Relay(0);
 
@@ -161,6 +165,8 @@ public class RobotMap {
 		driveEncRateLeft = new EncoderWrapperRateAndDistance(driveEncLeft, PIDSourceType.kRate);
 		driveEncRateRight = new EncoderWrapperRateAndDistance(driveEncRight, PIDSourceType.kRate);
 
+		gearIntakeEncoderRate = new EncoderWrapperRateAndDistance(gearIntakeEncoder, PIDSourceType.kRate);
+		
 		gearDetector = new Ultrasonic(14, 15);
 		gearDetector.setAutomaticMode(true);
 		
@@ -168,7 +174,7 @@ public class RobotMap {
 		
 //		lidar = new LidarWrapper(edu.wpi.first.wpilibj.I2C.Port.kOnboard);
 		
-//		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
+		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
 //		gearCamera.setResolution(320, 240);
 //		gearCamera.setFPS(30);
 		

@@ -88,6 +88,10 @@ public class ConstantsIO {
 	public static double kI_GearArm;
 	public static double kD_GearArm;
 
+	public static double kP_GearArmRate;
+	public static double kI_GearArmRate;
+	public static double kD_GearArmRate;
+	public static double kF_GearArmRate;
 
 
 
