@@ -185,7 +185,7 @@ public class DriveTrain extends Subsystem {
 	}
 
 	public void setAutoError() {
-		errorInAuto = (getDistanceError() > 10);
+		errorInAuto = (getDistanceError() > 8);
 		System.out.println("Distance Error: " + getDistanceError());
 	}
 	
@@ -257,7 +257,8 @@ public class DriveTrain extends Subsystem {
 	 * @param controllerX
 	 */
 	public void warlordDrive(double controllerY, double steering, boolean simple) {
-		
+		simple = simple || Math.abs(RobotMap.ahrs.getRoll()) > 50;
+//		System.out.println(RobotMap.ahrs.getRoll());
 		switchControlMode(simple ? ControlMode.OFF : ControlMode.TELEOP_CURRENT);
 
 		if (simple) {
@@ -284,6 +285,7 @@ public class DriveTrain extends Subsystem {
 				angVelPIDController.disable();
 				angVelCorrectionTransferNode.setOutput(0);
 			}
+			
 			
 		}
 		

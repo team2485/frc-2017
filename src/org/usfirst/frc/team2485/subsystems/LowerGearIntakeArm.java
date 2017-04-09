@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 
 public class LowerGearIntakeArm extends Command {
-	private static final double PWM = -.2;
+	private static final double PWM = -.3;
 	private static final long MIN_TIME = 250;
 	private long startTime;
 	private int timeout;
@@ -24,7 +24,6 @@ public class LowerGearIntakeArm extends Command {
 	protected void initialize() {
 		RobotMap.gearIntakeArm.setManual(PWM);
 		startTime = System.currentTimeMillis();
-		SetIntakeArmManual.passiveControl = true;
 	}
 	
 	protected void end() {

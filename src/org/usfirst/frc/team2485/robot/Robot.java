@@ -64,9 +64,9 @@ public class Robot extends IterativeRobot {
 		
 //		 DRIVERS IF YOU NEED TO CHANGE AUTO DO IT HERE
 
-		Scheduler.getInstance().add(new GearAuto(AirshipSide.RIGHT_SIDE, // which hook we score on, left, right, or center
+		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, // which hook we score on, left, right, or center
 				true, // true if we are red
-				true)); // true if we should shoot, only set to true near boiler
+				false)); // true if we should shoot, only set to true near boiler or center
 		
 	}
 

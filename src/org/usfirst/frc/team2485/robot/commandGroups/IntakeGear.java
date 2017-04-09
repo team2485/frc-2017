@@ -9,6 +9,7 @@ import org.usfirst.frc.team2485.subsystems.SetIntakeArm;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.Scheduler;
 
 /**
  * @author Ben Dorsey
@@ -21,11 +22,11 @@ public class IntakeGear extends CommandGroup {
 		addSequential(new RunRollers());
 		addSequential(new ToggleRumble(OI.elliotRumble, 0, 0));
 //		addSequential(new SetIntakeArm(GearIntakeArm.STOWED));
-		addSequential(new Rumble(OI.benRumble, 1, 1, .25));
 	}
 	@Override
 	protected void end() {
 		super.end();
+		Scheduler.getInstance().add(new Rumble(OI.benRumble, 1, 1, .25));
 		OI.elliotRumble.setRumble(RumbleType.kLeftRumble, 0);
 		OI.elliotRumble.setRumble(RumbleType.kRightRumble, 0);
 	}

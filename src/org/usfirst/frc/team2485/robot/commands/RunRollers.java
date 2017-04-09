@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 
 public class RunRollers extends Command {
 	private static final double PWM = .8;
-	private static final double CURRENT_THRESHOLD = 20;
+	private static final double CURRENT_THRESHOLD = 10;
 	private static final double MIN_TIME = 1000;
-	private static final double TIME_OVER_CURRENT = 500;
+	private static final double TIME_OVER_CURRENT = 400;
 	private static double startTime;
 	private static long lastTimeUnderCurrent;
 	
@@ -21,12 +21,10 @@ public class RunRollers extends Command {
 	protected void initialize() {
 		RobotMap.gearIntakeRoller.setManual(PWM);
 		startTime = System.currentTimeMillis();
-		System.out.println("start");
 	}
 	
 	protected void end() {
 			RobotMap.gearIntakeRoller.setManual(0);
-			System.out.println("end");
 	}
 
 	@Override
