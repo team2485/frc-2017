@@ -3,22 +3,10 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commandGroups.GearAuto;
 import org.usfirst.frc.team2485.robot.commandGroups.GearAuto.AirshipSide;
-import org.usfirst.frc.team2485.robot.commands.DriveStraight;
-import org.usfirst.frc.team2485.robot.commands.DriveTo;
-import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
-import org.usfirst.frc.team2485.robot.commands.RotateTo;
-import org.usfirst.frc.team2485.robot.commands.Rumble;
-import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
-import org.usfirst.frc.team2485.robot.commands.SetLeftRightVelocity;
-import org.usfirst.frc.team2485.robot.commands.ZeroDriveEncoders;
-import org.usfirst.frc.team2485.util.AutoPath;
-import org.usfirst.frc.team2485.util.AutoPath.Pair;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -53,7 +41,6 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().enable();
 		ConstantsIO.init();
 		RobotMap.updateConstants();
-		RobotMap.ahrs.zeroYaw();
 		RobotMap.driveTrain.zeroEncoders();
 		
 //		Tuning

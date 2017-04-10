@@ -10,6 +10,7 @@ import org.usfirst.frc.team2485.subsystems.Shooter;
 import org.usfirst.frc.team2485.subsystems.WheelOfDeath;
 import org.usfirst.frc.team2485.util.AHRSWrapperRateAndAngle;
 import org.usfirst.frc.team2485.util.AHRSWrapperRateAndAngle.Units;
+import org.usfirst.frc.team2485.util.DeadReckoning;
 import org.usfirst.frc.team2485.util.EncoderWrapperRateAndDistance;
 import org.usfirst.frc.team2485.util.MultipleEncoderWrapper;
 import org.usfirst.frc.team2485.util.MultipleEncoderWrapper.MultipleEncoderWrapperMode;
@@ -22,8 +23,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SerialPort.Port;
@@ -69,6 +70,7 @@ public class RobotMap {
 	public static int kShooterEncPortA = 8, kShooterEncPortB = 9; //on competition was 8 and 9
 	public static int kGearIntakePortA = 5, kGearIntakePortB = 4;
 	public static int kUltrasonicPortA = 14, kUltrasonicPortB = 15;
+	public static int kAutoLimitSwitchPort = 10;
 
 	// Speed Controllers
 	public static CANTalon driveLeft1, driveLeft2, driveLeft3, driveRight1, driveRight2, driveRight3, deathMotor, gearIntakeRollerMotor, gearIntakeArmMotor;
@@ -95,11 +97,13 @@ public class RobotMap {
 	public static Encoder gearIntakeEncoder;
 	public static Ultrasonic gearDetector;
 	public static AHRS ahrs;
+	public static DigitalInput autoLimitSwitch;
 //	public static LidarWrapper lidar;
 	
 	public static MultipleEncoderWrapper averageEncoderDistance, averageEncoderRate;
 	public static EncoderWrapperRateAndDistance driveEncRateLeft, driveEncRateRight;
 	public static AHRSWrapperRateAndAngle ahrsRateRads;
+	public static DeadReckoning autoDeadReckoning;
 	
 	// Cameras
 	public static UsbCamera gearCamera, boilerCamera;
@@ -172,6 +176,8 @@ public class RobotMap {
 		
 		gearIntakeEncoder = new Encoder(kGearIntakePortA, kGearIntakePortB);
 		
+		autoLimitSwitch = new DigitalInput(kAutoLimitSwitchPort);
+		
 //		lidar = new LidarWrapper(edu.wpi.first.wpilibj.I2C.Port.kOnboard);
 		
 		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
@@ -187,6 +193,7 @@ public class RobotMap {
 		averageEncoderRate = new MultipleEncoderWrapper(PIDSourceType.kRate, MultipleEncoderWrapperMode.AVERAGE,
 				driveEncLeft, driveEncRight);
 		ahrsRateRads = new AHRSWrapperRateAndAngle(PIDSourceType.kRate, Units.RADS);
+		autoDeadReckoning = new DeadReckoning(ahrs, driveEncLeft, driveEncRight);
 
 		// CONFIGURE HARDWARE
 

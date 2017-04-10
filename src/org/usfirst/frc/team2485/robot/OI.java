@@ -2,39 +2,31 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commandGroups.InitializeIntakeArm;
 import org.usfirst.frc.team2485.robot.commandGroups.IntakeGear;
-import org.usfirst.frc.team2485.robot.commandGroups.PlaceGear;
 import org.usfirst.frc.team2485.robot.commandGroups.ToggleShooting;
 import org.usfirst.frc.team2485.robot.commands.CancelCommand;
 import org.usfirst.frc.team2485.robot.commands.Climb;
-import org.usfirst.frc.team2485.robot.commands.DriveStraight;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.EjectGear;
-import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.ResetGear;
 import org.usfirst.frc.team2485.robot.commands.Rumble;
-import org.usfirst.frc.team2485.robot.commands.RunRollers;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
-import org.usfirst.frc.team2485.robot.commands.SetFeederManual;
 import org.usfirst.frc.team2485.robot.commands.SetGearFlapsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
 import org.usfirst.frc.team2485.robot.commands.SetShooter;
+import org.usfirst.frc.team2485.robot.commands.StartDeadReckoning;
 import org.usfirst.frc.team2485.robot.commands.ToggleCompressor;
-import org.usfirst.frc.team2485.robot.commands.ZeroGearIntakeEncoder;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 import org.usfirst.frc.team2485.subsystems.GearIntakeArm;
-import org.usfirst.frc.team2485.subsystems.LowerGearIntakeArm;
 import org.usfirst.frc.team2485.subsystems.SetIntakeArm;
-import org.usfirst.frc.team2485.util.ConstantsIO;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
-import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
@@ -77,7 +69,7 @@ public class OI {
 		new JoystickButton(ben, XBOX_BTN_LBUMPER).whenReleased(new Climb(false));
 
 		new JoystickButton(ben, XBOX_BTN_A).whenPressed(new SetGearWingsPosition(true));
-		Command backup = new DriveStraight(-80, 100, 5000);
+//		Command backup = new DriveStraight(-80, 100, 5000);
 //		new JoystickButton(ben, XBOX_BTN_Y).whenPressed(backup);
 //		new JoystickButton(ben, XBOX_BTN_B).cancelWhenPressed(backup);
 //		new JoystickButton(ben, XBOX_BTN_B).whenPressed(new ResetDriveTrain());
@@ -134,7 +126,7 @@ public class OI {
 		new JoystickAxisButton(elliot, XBOX_AXIS_LTRIGGER, .5, 1).whenReleased(new CancelCommand(intakeGear));
 
 		
-		
+		new LimitSwitchButton(RobotMap.autoLimitSwitch).whenPressed(new StartDeadReckoning());
 
 		// new JoystickButton(elliot, XBOX_BTN_X).whenPressed(new
 		// SetIntakeArmHorizontal(true));
@@ -181,5 +173,18 @@ public class OI {
 			return NetworkTable.getTable("LogitechController").getBoolean(key + "", false);
 		}
 
+	}
+	
+	private static class LimitSwitchButton extends Button {
+		private DigitalInput input;
+		public LimitSwitchButton(DigitalInput input) {
+			this.input = input;
+		}
+		
+		@Override
+		public boolean get() {
+			return input.get();
+		}
+		
 	}
 }

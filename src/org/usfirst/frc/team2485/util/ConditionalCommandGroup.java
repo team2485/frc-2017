@@ -1,6 +1,4 @@
-package org.usfirst.frc.team2485.robot.commandGroups;
-
-import org.usfirst.frc.team2485.robot.commands.FinishedCondition;
+package org.usfirst.frc.team2485.util;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 

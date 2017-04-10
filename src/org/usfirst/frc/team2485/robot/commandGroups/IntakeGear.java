@@ -4,8 +4,6 @@ import org.usfirst.frc.team2485.robot.OI;
 import org.usfirst.frc.team2485.robot.commands.Rumble;
 import org.usfirst.frc.team2485.robot.commands.RunRollers;
 import org.usfirst.frc.team2485.robot.commands.ToggleRumble;
-import org.usfirst.frc.team2485.subsystems.GearIntakeArm;
-import org.usfirst.frc.team2485.subsystems.SetIntakeArm;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.CommandGroup;

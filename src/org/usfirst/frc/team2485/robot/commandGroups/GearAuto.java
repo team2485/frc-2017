@@ -11,6 +11,7 @@ import org.usfirst.frc.team2485.robot.commands.SetSWODSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetShooter;
 import org.usfirst.frc.team2485.robot.commands.ZeroDriveEncoders;
 import org.usfirst.frc.team2485.util.AutoPath;
+import org.usfirst.frc.team2485.util.ConditionalCommandGroup;
 import org.usfirst.frc.team2485.util.AutoPath.Pair;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -29,7 +30,8 @@ public class GearAuto extends CommandGroup {
 	public GearAuto(AirshipSide airshipSide, boolean isRed, boolean shoot) {
 
 		// @formatter:off
-		
+		RobotMap.ahrs.zeroYaw();
+
 		if (airshipSide == AirshipSide.CENTER) {
 			int sign = isRed ? 1 : -1;
 			DriveTo center = new DriveTo(new AutoPath(AutoPath.getPointsForBezier(4000, new Pair(0, 0), new Pair(0, 86))), 50, false, 4000);

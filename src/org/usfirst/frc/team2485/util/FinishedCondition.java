@@ -1,4 +1,4 @@
-package org.usfirst.frc.team2485.robot.commands;
+package org.usfirst.frc.team2485.util;
 
 public interface FinishedCondition {
 	public boolean isFinished();
