@@ -2,16 +2,17 @@ package org.usfirst.frc.team2485.robot;
 
 import org.usfirst.frc.team2485.robot.commandGroups.InitializeIntakeArm;
 import org.usfirst.frc.team2485.robot.commandGroups.IntakeGear;
+import org.usfirst.frc.team2485.robot.commandGroups.Rumble;
 import org.usfirst.frc.team2485.robot.commandGroups.ToggleShooting;
 import org.usfirst.frc.team2485.robot.commands.CancelCommand;
 import org.usfirst.frc.team2485.robot.commands.Climb;
 import org.usfirst.frc.team2485.robot.commands.DriveWithControllers;
 import org.usfirst.frc.team2485.robot.commands.EjectGear;
 import org.usfirst.frc.team2485.robot.commands.ResetGear;
-import org.usfirst.frc.team2485.robot.commands.Rumble;
 import org.usfirst.frc.team2485.robot.commands.SetDriveSpeed;
 import org.usfirst.frc.team2485.robot.commands.SetGearFlapsPosition;
 import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
+import org.usfirst.frc.team2485.robot.commands.SetIntakeArm;
 import org.usfirst.frc.team2485.robot.commands.SetQuickTurn;
 import org.usfirst.frc.team2485.robot.commands.SetShooter;
 import org.usfirst.frc.team2485.robot.commands.StartDeadReckoning;
@@ -19,7 +20,6 @@ import org.usfirst.frc.team2485.robot.commands.ToggleCompressor;
 import org.usfirst.frc.team2485.robot.commands.selftest.PrepForSelfTest;
 import org.usfirst.frc.team2485.subsystems.DriveTrain.DriveSpeed;
 import org.usfirst.frc.team2485.subsystems.GearIntakeArm;
-import org.usfirst.frc.team2485.subsystems.SetIntakeArm;
 import org.usfirst.frc.team2485.util.JoystickAxisButton;
 
 import edu.wpi.first.wpilibj.DigitalInput;

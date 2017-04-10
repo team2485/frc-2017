@@ -1,7 +1,6 @@
-package org.usfirst.frc.team2485.subsystems;
+package org.usfirst.frc.team2485.robot.commands;
 
 import org.usfirst.frc.team2485.robot.RobotMap;
-import org.usfirst.frc.team2485.robot.commands.SetIntakeArmManual;
 
 import edu.wpi.first.wpilibj.command.Command;
 

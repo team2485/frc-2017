@@ -18,7 +18,6 @@ public class GearIntakeArm extends Subsystem {
 	private PIDOutputWrapper armPidOutput = new PIDOutputWrapper();
 
 	public static final double GROUND = 0, STOWED = 47, UP = 80;
-	private double armAngle;
 	public GearIntakeArm() {
 		armPID.setPID(ConstantsIO.kP_GearArm, ConstantsIO.kI_GearArm, ConstantsIO.kD_GearArm);
 		armPID.setOutputs(armPidOutput);

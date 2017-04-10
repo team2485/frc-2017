@@ -1,4 +1,6 @@
-package org.usfirst.frc.team2485.robot.commands;
+package org.usfirst.frc.team2485.robot.commandGroups;
+
+import org.usfirst.frc.team2485.robot.commands.ToggleRumble;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.command.CommandGroup;

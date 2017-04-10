@@ -5,15 +5,15 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 
 public class PIDSourceWrapper implements PIDSource {
 	
-	private WARLordsPIDSource pidSource;
+	private WarlordsPIDSource pidSource;
 	
 	public PIDSourceWrapper() {	}
 	
-	public PIDSourceWrapper(WARLordsPIDSource pidSource) {
+	public PIDSourceWrapper(WarlordsPIDSource pidSource) {
 		setPidSource(pidSource);
 	}
 	
-	public void setPidSource(WARLordsPIDSource pidSource) {
+	public void setPidSource(WarlordsPIDSource pidSource) {
 		this.pidSource = pidSource;
 	}
 	

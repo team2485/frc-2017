@@ -1,7 +1,7 @@
 package org.usfirst.frc.team2485.robot.commandGroups;
 
+import org.usfirst.frc.team2485.robot.commands.LowerGearIntakeArm;
 import org.usfirst.frc.team2485.robot.commands.ZeroGearIntakeEncoder;
-import org.usfirst.frc.team2485.subsystems.LowerGearIntakeArm;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.TimedCommand;
