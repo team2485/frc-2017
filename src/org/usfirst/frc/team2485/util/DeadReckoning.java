@@ -50,8 +50,8 @@ public class DeadReckoning {
 		double deltaDist = curDist - lastDist;
 		double angle = gyro.getAngle();
 		
-		x += deltaDist * Math.sin(Math.toDegrees(angle));
-		y += deltaDist * Math.cos(Math.toDegrees(angle));
+		x += deltaDist * Math.sin(Math.toRadians(angle));
+		y += deltaDist * Math.cos(Math.toRadians(angle));
 		
 		lastDist = curDist;
 	}

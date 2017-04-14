@@ -17,12 +17,12 @@ public class DeadReckoningGearAuto extends CommandGroup {
 		double y = RobotMap.autoDeadReckoning.getY();
 		double curAngle = RobotMap.ahrs.getAngle();
 		AutoPath placeGearPath = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(x, y), 
-				new Pair(x + CONTROL_LENGTH_OUT * Math.sin(Math.toDegrees(curAngle)), y + Math.cos(Math.toDegrees(curAngle))),
+				new Pair(x + CONTROL_LENGTH_OUT * Math.sin(Math.toRadians(curAngle)), y + CONTROL_LENGTH_OUT * Math.cos(Math.toRadians(curAngle))),
 				new Pair(0, -CONTROL_LENGTH_IN), new Pair(0, 0)));
 		DriveTo drivePlaceGear = new DriveTo(placeGearPath, 75, false, 5000);
 		addSequential(drivePlaceGear);
 		addSequential(new SetGearWingsPosition(true));
 		addSequential(new TimedCommand(0.5));
-		addSequential(new DriveStraight(50, 0, 75, 3000));
+		addSequential(new DriveStraight(-50, 0, 75, 3000));
 	}
 }
