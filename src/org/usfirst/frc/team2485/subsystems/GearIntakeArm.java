@@ -17,12 +17,12 @@ public class GearIntakeArm extends Subsystem {
 	public WarlordsPIDController armRatePid = new WarlordsPIDController();
 	private PIDOutputWrapper armPidOutput = new PIDOutputWrapper();
 
-	public static final double GROUND = 0, STOWED = 47, UP = 80;
+	public static final double GROUND = 0, STOWED = 49, UP = 80;
 	public GearIntakeArm() {
 		armPID.setPID(ConstantsIO.kP_GearArm, ConstantsIO.kI_GearArm, ConstantsIO.kD_GearArm);
 		armPID.setOutputs(armPidOutput);
 		armPID.setSources(RobotMap.gearIntakeEncoder);
-		armPID.setOutputRange(-0.3, 0.3);
+		armPID.setOutputRange(-0.35, 0.35);
 		
 		armRatePid.setPID(ConstantsIO.kP_GearArmRate, ConstantsIO.kI_GearArmRate, ConstantsIO.kD_GearArmRate,
 				ConstantsIO.kF_GearArmRate);
@@ -32,7 +32,7 @@ public class GearIntakeArm extends Subsystem {
 		
 		armPidOutput.setPidOutput((double out) -> {
 			double angle = RobotMap.gearIntakeEncoder.getDistance() * 360.0 / 250;
-			RobotMap.gearIntakeArmMotor.set(out + 0.3 * Math.cos(Math.toRadians(angle)));
+			RobotMap.gearIntakeArmMotor.set(out + 0.35 * Math.cos(Math.toRadians(angle)));
 		});
 	}
 	

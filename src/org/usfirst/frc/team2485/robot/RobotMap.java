@@ -181,8 +181,8 @@ public class RobotMap {
 //		lidar = new LidarWrapper(edu.wpi.first.wpilibj.I2C.Port.kOnboard);
 		
 		gearCamera = CameraServer.getInstance().startAutomaticCapture(0);
-//		gearCamera.setResolution(320, 240);
-//		gearCamera.setFPS(30);
+//		gearCamera.setResolution(320, 240); //DRIVERS comment out for practice match two
+//		gearCamera.setFPS(30); //DRIVERS comment out for practice match two
 		
 //		boilerCamera = CameraServer.getInstance().startAutomaticCapture(1);
 //		boilerCamera.setResolution(640, 480);

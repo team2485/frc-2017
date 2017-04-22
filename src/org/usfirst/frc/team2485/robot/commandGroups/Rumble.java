@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.command.TimedCommand;
 
 public class Rumble extends CommandGroup {
 	public Rumble(XboxController xbox, double rumbleLeft, double rumbleRight, double timeout) {
+		setRunWhenDisabled(true);
 		addSequential(new ToggleRumble(xbox, rumbleLeft, rumbleRight));
 		addSequential(new TimedCommand(timeout));
 		addSequential(new ToggleRumble(xbox, 0, 0));

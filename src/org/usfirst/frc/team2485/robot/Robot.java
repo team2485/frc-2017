@@ -1,12 +1,22 @@
 
 package org.usfirst.frc.team2485.robot;
 
+import org.usfirst.frc.team2485.robot.commandGroups.DeadReckoningGearAuto;
 import org.usfirst.frc.team2485.robot.commandGroups.GearAuto;
 import org.usfirst.frc.team2485.robot.commandGroups.GearAuto.AirshipSide;
+import org.usfirst.frc.team2485.robot.commands.DriveTo;
+import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
+import org.usfirst.frc.team2485.robot.commands.RotateTo;
+import org.usfirst.frc.team2485.robot.commands.SetGearWingsPosition;
+import org.usfirst.frc.team2485.robot.commands.ZeroDriveEncoders;
+import org.usfirst.frc.team2485.util.AutoPath;
+import org.usfirst.frc.team2485.util.AutoPath.Pair;
+import org.usfirst.frc.team2485.util.ConditionalCommandGroup;
 import org.usfirst.frc.team2485.util.ConstantsIO;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.TimedCommand;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -16,12 +26,12 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		ConstantsIO.init();
 		RobotMap.init();
+		RobotMap.ahrs.reset();
 		OI.init();
 		RobotMap.updateConstants();
 	}
 
 	public void disabledInit() {
-		Scheduler.getInstance().disable();
 		Scheduler.getInstance().removeAll();
 		RobotMap.driveTrain.reset();
 		RobotMap.gearHolder.reset();
@@ -33,6 +43,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void disabledPeriodic() {
+		Scheduler.getInstance().run();
 		updateSmartDashboard();
 	}
 
@@ -54,6 +65,9 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().add(new GearAuto(AirshipSide.LEFT_SIDE, // which hook we score on, left, right, or center
 				true, // true if we are red
 				false)); // true if we should shoot, only set to true near boiler or center
+		
+		//Scheduler.getInstance().add(new DeadReckoningGearAuto());
+		
 		
 	}
 
@@ -112,6 +126,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Gear Intake Roller Current", RobotMap.gearIntakeRoller.getCurrent());
 		SmartDashboard.putNumber("Gear PID Error", RobotMap.gearIntakeArm.getError());
 		SmartDashboard.putString("gearIntake", RobotMap.gearIntakeEncoder.getDistance() + ",0," + "true");
+		SmartDashboard.putBoolean("Limit Switch", RobotMap.autoLimitSwitch.get());
+		SmartDashboard.putNumber("Left Encoder Value", RobotMap.driveEncLeft.getDistance());
+		SmartDashboard.putNumber("Right Encoder Value", RobotMap.driveEncRight.getDistance());
+		SmartDashboard.putNumber("X", RobotMap.autoDeadReckoning.getX());
+		SmartDashboard.putNumber("Y", RobotMap.autoDeadReckoning.getY());	
 		
 
 		NetworkTable.getTable("SmartDashboard").getSubTable("Temperatures").putNumber("Left Drive 1",

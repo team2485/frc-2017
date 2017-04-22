@@ -13,6 +13,7 @@ public class SetIntakeArm extends Command {
 	
 	public SetIntakeArm(double setpoint) {
 		this.setpoint = setpoint;
+		requires(RobotMap.gearIntakeArm);
 	}
 	
 	@Override

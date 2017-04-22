@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class LowerGearIntakeArm extends Command {
 	private static final double PWM = -.3;
-	private static final long MIN_TIME = 250;
+	private static final long MIN_TIME = 500;
 	private long startTime;
 	private int timeout;
 	

@@ -23,10 +23,10 @@ public class SetIntakeArmManual extends Command {
 	@Override
 	protected void execute() {
 		double val = ThresholdHandler.deadbandAndScale(OI.elliot.getRawAxis(OI.XBOX_AXIS_RY), 0.15, 0.15, 0.3) + 
-				ThresholdHandler.deadbandAndScale(OI.elliot.getRawAxis(OI.XBOX_AXIS_LY), 0.15, 0.01, 0.15);
+				ThresholdHandler.deadbandAndScale(OI.elliot.getRawAxis(OI.XBOX_AXIS_LY), 0.2, 0.01, 0.2);
 		if (val != 0) {
 			double angle = RobotMap.gearIntakeEncoder.getDistance() * 360.0 / 250;
-			RobotMap.gearIntakeArm.setManual(val + 0.3 * Math.cos(Math.toRadians(angle)));
+			RobotMap.gearIntakeArm.setManual(val + 0.35 * Math.cos(Math.toRadians(angle)));
 			passiveControl = false;
 		} else {
 			

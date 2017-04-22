@@ -3,6 +3,7 @@ package org.usfirst.frc.team2485.robot.commandGroups;
 import org.usfirst.frc.team2485.robot.RobotMap;
 import org.usfirst.frc.team2485.robot.commands.CheckDistError;
 import org.usfirst.frc.team2485.robot.commands.DriveStraight;
+import org.usfirst.frc.team2485.robot.commands.DriveStraightConditional;
 import org.usfirst.frc.team2485.robot.commands.DriveTo;
 import org.usfirst.frc.team2485.robot.commands.ResetDriveTrain;
 import org.usfirst.frc.team2485.robot.commands.RotateTo;
@@ -34,32 +35,33 @@ public class GearAuto extends CommandGroup {
 
 		if (airshipSide == AirshipSide.CENTER) {
 			int sign = isRed ? 1 : -1;
-			DriveTo center = new DriveTo(new AutoPath(AutoPath.getPointsForBezier(4000, new Pair(0, 0), new Pair(0, 86))), 50, false, 4000);
-			center.setTolerance(5);
+			DriveTo center = new DriveTo(new AutoPath(AutoPath.getPointsForBezier(4000, new Pair(0, 0), new Pair(0, 90))), 50, false, 5000);
+			center.setTolerance(3);
 			addSequential(center);
 			addSequential(new CheckDistError());
 			ConditionalCommandGroup correctionGroup = new ConditionalCommandGroup(() -> {
 				return !RobotMap.driveTrain.getAutoError();
 			});
-			RotateTo correctionRotation = new RotateTo(isRed ? 10 : 350
-					
-					, 1000);
+			RotateTo correctionRotation = new RotateTo(isRed ? 10 : 350, 1000);
 			correctionGroup.addSequential(correctionRotation);
 			correctionGroup.addSequential(new ResetDriveTrain());
 			correctionGroup.addSequential(new ZeroDriveEncoders());
 			AutoPath correctionPath = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(0, 0), new Pair(sign * 2, 5), new Pair(sign * 2, 15)));
-			DriveTo correction = new DriveTo(correctionPath, 40, false, 4000);
+			DriveTo correction = new DriveTo(correctionPath, 50, false, 4000);
 			correctionGroup.addSequential(correction);
 			correctionGroup.addSequential(new ResetDriveTrain());
 			correctionGroup.addSequential(new ZeroDriveEncoders());
 			addSequential(correctionGroup);
 			addSequential(new SetGearWingsPosition(true));
-			addSequential(new TimedCommand(.5));
+			addSequential(new TimedCommand(.8));
+			if (!shoot) {
+				addSequential(new DriveStraight(-50, 40, 4000));
+			}
 			if (shoot) {
 				AutoPath centerShoot = isRed ?
 						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(0, -20.5), new Pair(0, 0)), AutoPath.getPointsForBezier(10000, new Pair(41, -75), new Pair(131.5, 97.5), new Pair(0, -39.5), new Pair(0, -20.5))) :
 						new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-49.28, -21.1), new Pair(-113.5, -57), new Pair(0, -48.5), new Pair(0, -20.5)), AutoPath.getPointsForBezier(10000, new Pair(0, -20.5), new Pair(0, 0)));
-				addSequential(new DriveTo(centerShoot, 40, true, 40000)); //-49.28, -19.93 21.1
+				addSequential(new DriveTo(centerShoot, 50, true, 40000)); //-49.28, -19.93 21.1
 				addSequential(new ResetDriveTrain());
 				addSequential(new ZeroDriveEncoders());
 				addSequential(new SetShooter(true));
@@ -74,29 +76,37 @@ public class GearAuto extends CommandGroup {
 			}
 			int sign = isRight ? -1 : 1;
 			AutoPath path = isRight ? 
-				 new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-offset, 2), new Pair(-offset, 75), new Pair(-52.25, 94), new Pair(-75.25, 109))):
-				new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(offset, 2), new Pair(offset, 75), new Pair(54.13, 105.23), new Pair(73.13, 117.23))); //46, 99, 65, 112
+				 new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(-offset, 2), new Pair(-offset, 75), new Pair(-60.21, 93.41), new Pair(-80.21, 108.41))):
+				new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(offset, 2), new Pair(offset, 75), new Pair(65.24, 109.97), new Pair(84.24, 121.97)));
 			DriveTo drivePath = new DriveTo(path, 75, false, 4000);
 			drivePath.setTolerance(5);
 			addSequential(drivePath);
 			addSequential(new ResetDriveTrain());
 			addSequential(new ZeroDriveEncoders());
 			addSequential(new CheckDistError());
-			ConditionalCommandGroup correctionGroup = new ConditionalCommandGroup(() -> {
-				return !RobotMap.driveTrain.getAutoError();
-			});
-			RotateTo correctionRotation = new RotateTo(isRight ? 290 : 70, 1000);
-			correctionGroup.addSequential(correctionRotation);
-			correctionGroup.addSequential(new ResetDriveTrain());
-			correctionGroup.addSequential(new ZeroDriveEncoders());
-			AutoPath correctionPath = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(0, 0), new Pair(sign * 5.33, 0.77), new Pair(sign * 13.99, 5.77)));
-			DriveTo correction = new DriveTo(correctionPath, 40, false, 4000);
-			correctionGroup.addSequential(correction);
-			correctionGroup.addSequential(new ResetDriveTrain());
-			correctionGroup.addSequential(new ZeroDriveEncoders());
-			addSequential(correctionGroup);
+			addSequential(new DriveStraightConditional(-10, isRight ? 300 : 60, 100, 2000));
+			addSequential(new ResetDriveTrain());
+			addSequential(new ZeroDriveEncoders());
+			addSequential(new DriveStraightConditional(20, isRight ? 308 : 52, 100, 2500));
+			addSequential(new ResetDriveTrain());
+			addSequential(new ZeroDriveEncoders()); 
 			addSequential(new SetGearWingsPosition(true));
-			addSequential(new TimedCommand(.5)); 
+			addSequential(new TimedCommand(.8));
+//			ConditionalCommandGroup correctionGroup = new ConditionalCommandGroup(() -> {
+//				return !RobotMap.driveTrain.getAutoError();
+//			});
+//			RotateTo correctionRotation = new RotateTo(isRight ? 290 : 70, 1000);
+//			correctionGroup.addSequential(correctionRotation);
+//			correctionGroup.addSequential(new ResetDriveTrain());
+//			correctionGroup.addSequential(new ZeroDriveEncoders());
+//			AutoPath correctionPath = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(0, 0), new Pair(sign * 5.33, 0.77), new Pair(sign * 13.99, 5.77)));
+//			DriveTo correction = new DriveTo(correctionPath, 40, false, 4000);
+//			correctionGroup.addSequential(correction);
+//			correctionGroup.addSequential(new ResetDriveTrain());
+//			correctionGroup.addSequential(new ZeroDriveEncoders());
+//			addSequential(correctionGroup);
+//			addSequential(new SetGearWingsPosition(true));
+//			addSequential(new TimedCommand(.5)); 
 			
 			if (shoot && isBoiler) {
 				path = isRight ? 
@@ -116,11 +126,11 @@ public class GearAuto extends CommandGroup {
 				drive.addSequential(new SetSWODSpeed());
 				addParallel(drive);
 			} else {
-				addSequential(new DriveStraight(-80, isRight ? 305 : 55, 100, 3000));
+				addSequential(new DriveStraight(-80, isRight ? 310 : 65, 100, 3000));
 				addSequential(new ResetDriveTrain());
 				addSequential(new ZeroDriveEncoders());
-				path = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(sign * 2, 66), new Pair(sign * 33, 85), new Pair(sign * 28, 158.5), new Pair(sign * 27, 370)));
-				addSequential(new DriveTo(path, 100, false, 6000));
+//				path = new AutoPath(AutoPath.getPointsForBezier(10000, new Pair(sign * 2, 66), new Pair(sign * 33, 85), new Pair(sign * 28, 158.5), new Pair(sign * 27, 370)));
+//				addSequential(new DriveTo(path, 100, false, 6000));
 			}
 		}
 		// @formatter:on
